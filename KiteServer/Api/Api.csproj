@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>6a96a205-af11-40cb-9e9d-b333ff0e8baf</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>SwaggerXml/api.xml</DocumentationFile>
+	<SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EasyCaching.InMemory" Version="1.9.4-alpha20241225060119" />
+    <PackageReference Include="EasyCaching.Redis" Version="1.9.2" />
+    <PackageReference Include="EasyCaching.Serialization.SystemTextJson" Version="1.9.2" />
+    <PackageReference Include="IGeekFan.AspNetCore.Knife4jUI" Version="0.0.16" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="SwaggerXml\api.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SwaggerXml\application.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SwaggerXml\domain.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SwaggerXml\domainshared.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SwaggerXml\filterextensions.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="SwaggerXml\" />
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\uploads\2025\02\14\111.txt" />
+    <_ContentIncludedByDefault Remove="wwwroot\uploads\2025\02\14\cursor命令.txt" />
+    <_ContentIncludedByDefault Remove="publish\web.config" />
+    <_ContentIncludedByDefault Remove="publish\Api.deps.json" />
+    <_ContentIncludedByDefault Remove="publish\Api.runtimeconfig.json" />
+    <_ContentIncludedByDefault Remove="publish\appsettings.Development.json" />
+    <_ContentIncludedByDefault Remove="publish\appsettings.json" />
+    <_ContentIncludedByDefault Remove="publish\appsettings.Production.json" />
+    <_ContentIncludedByDefault Remove="publish\appsettings.Test.json" />
+  </ItemGroup>
+
+</Project>

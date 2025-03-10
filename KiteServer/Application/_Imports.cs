@@ -1,0 +1,21 @@
+﻿global using Application.Command;
+global using Application.Services;
+global using Autofac;
+global using Domain;
+global using DomainShared.Dto;
+global using DomainShared.Dto.DingTalk;
+global using DomainShared.Enum;
+global using FluentValidation;
+global using Infrastructure.Exceptions;
+global using Infrastructure.Extension;
+global using Infrastructure.Utility;
+global using Mapster;
+global using MediatR;
+global using Microsoft.CognitiveServices.Speech;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Refit;
+global using Repository;
+global using SqlSugar;
+global using System.ComponentModel.DataAnnotations;
+

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>..\Api\SwaggerXml\domain.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.169" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DomainShared\DomainShared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="SqlSugar">
+      <HintPath>..\..\..\..\..\environment\.nuget\packages\systemcommon\8.5.0\lib\netstandard2.1\SqlSugar.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
