@@ -1,33 +1,57 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
-import ImportDetail from '../views/importDetail/index.vue'
+import Layout from '../components/layout/index.vue'
+import MainLayout from '../components/layout/MainLayout.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/login'
+    redirect: '/dashboard'
   },
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/login/index.vue')
+    component: () => import('../views/login/index.vue'),
+    meta: {
+      title: '登录',
+      requiresAuth: false
+    }
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('../views/home/index.vue'),
+    path: '/dashboard',
+    component: Layout,
+    redirect: '/dashboard/index',
+    children: [
+      {
+        path: 'index',
+        name: 'Dashboard',
+        component: () => import('../views/dashboard/index.vue'),
+        meta: {
+          title: '仪表盘',
+          requiresAuth: true
+        }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/menu',
     meta: {
+      title: '系统管理',
       requiresAuth: true
     },
-  },
-  {
-    path: '/import',
-    name: 'import',
-    component: ImportDetail,
-    meta: {
-      title: '导入明细',
-      requiresAuth: true
-    }
+    children: [
+      {
+        path: 'menu',
+        name: 'Menu',
+        component: () => import('../views/system/menu/index.vue'),
+        meta: {
+          title: '菜单管理',
+          requiresAuth: true
+        }
+      }
+    ]
   }
 ]
 
@@ -40,6 +64,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
   const token = userStore.jwtAccessToken
+  
+  // 设置页面标题
+  document.title = to.meta.title ? `${to.meta.title}` : 'Admin System'
 
   if (to.meta.requiresAuth && !token) {
     next('/login')
@@ -48,4 +75,4 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-export default router 
+export default router

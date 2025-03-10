@@ -3,7 +3,7 @@
     <el-menu :default-active="activeMenu" class="el-menu-vertical" background-color="#304156" text-color="#bfcbd9"
       active-text-color="#409EFF" :collapse="isCollapse" router>
       <div class="logo-container">
-        <span class="logo-title" v-show="!isCollapse">库存积压导入系统</span>
+        <span class="logo-title" v-show="!isCollapse">{{ NAMES.APP_NAME }}</span>
         <el-icon class="toggle-icon" @click="toggleCollapse">
           <Fold v-if="!isCollapse" />
           <Expand v-else />
@@ -38,7 +38,7 @@
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { HomeFilled, Document, List, Fold, Expand } from '@element-plus/icons-vue'
-
+import { NAMES } from '../../constants/index'
 const route = useRoute()
 const activeMenu = ref(route.path)
 const isCollapse = ref(false)

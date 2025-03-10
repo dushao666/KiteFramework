@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form :model="formData" ref="loginFormRef">
-      <p class="form-title">库存积压导入系统</p>
+      <p class="form-title">{{ NAMES.APP_NAME }}</p>
 
       <el-form-item>
         <el-input v-model="formData.Login" placeholder="请输入用户名" prefix-icon="User" />
@@ -36,6 +36,7 @@ import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import { useUserStore } from '../../stores/userStore'
 import { login } from '../../api/user'
+import { NAMES } from '../../constants/index'
 
 const router = useRouter()
 const userStore = useUserStore()
