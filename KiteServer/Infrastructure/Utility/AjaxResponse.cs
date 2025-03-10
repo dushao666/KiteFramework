@@ -60,6 +60,7 @@ public class AjaxResponse<TData> : AjaxResponse
         Data = data;
         base.Results = true;
         base.Messages = "请求成功!";
+        base.Code = 200;
     }
 
     public AjaxResponse(string messages, bool success = false)
@@ -70,7 +71,7 @@ public class AjaxResponse<TData> : AjaxResponse
 
     public static AjaxResponse Successed(TData data)
     {
-        return Result(isSuccess: true, 0, data, "请求成功");
+        return Result(isSuccess: true, 200, data, "请求成功");
     }
 
     public static AjaxResponse Failed(int code, TData data = default(TData), string message = "请求失败")

@@ -25,7 +25,8 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, LoginUserDto>
             case LoginType.Password:
                 using (var context = _unitOfWork.CreateContext(false))
                 {
-                    var password = EncryptionHelper.Sha512(command.Password);
+                    // var password = EncryptionHelper.Sha512(command.Password);
+                    var password = command.Password;
                     var user = await context.Users.GetFirstAsync(x =>
                         x.Name == command.Login && x.PassWord == password);
                     if (user is null) throw new UserFriendlyException("用户不存在");
