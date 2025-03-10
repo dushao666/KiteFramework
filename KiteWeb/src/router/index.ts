@@ -1,12 +1,11 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
 import Layout from '../components/layout/index.vue'
-import MainLayout from '../components/layout/MainLayout.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/dashboard'
+    redirect: '/home'
   },
   {
     path: '/login',
@@ -16,6 +15,21 @@ const routes: Array<RouteRecordRaw> = [
       title: '登录',
       requiresAuth: false
     }
+  },
+  {
+    path: '/home',
+    component: Layout,
+    children: [
+      {
+        path: '',
+        name: 'Home',
+        component: () => import('../views/home/index.vue'),
+        meta: {
+          title: '首页',
+          requiresAuth: true
+        }
+      }
+    ]
   },
   {
     path: '/dashboard',

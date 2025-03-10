@@ -28,15 +28,94 @@ export async function getMenuTree(): Promise<ApiResponse<MenuItem[]>> {
         id: 1,
         name: '首页',
         path: '/home',
-        icon: 'HomeFilled',
-        children: []
+        icon: 'HomeFilled'
       },
       {
         id: 2,
-        name: '导入明细',
-        path: '/import',
-        icon: 'Document',
-        children: []
+        name: '系统管理',
+        path: '/system',
+        icon: 'Setting',
+        children: [
+          {
+            id: 21,
+            name: '用户管理',
+            path: '/system/user',
+            icon: 'User',
+            parentId: 2
+          },
+          {
+            id: 22,
+            name: '角色管理',
+            path: '/system/role',
+            icon: 'UserFilled',
+            parentId: 2
+          },
+          {
+            id: 23,
+            name: '菜单管理',
+            path: '/system/menu',
+            icon: 'Menu',
+            parentId: 2
+          },
+          {
+            id: 24,
+            name: '部门管理',
+            path: '/system/dept',
+            icon: 'Office',
+            parentId: 2
+          }
+        ]
+      },
+      {
+        id: 3,
+        name: '监控管理',
+        path: '/monitor',
+        icon: 'Monitor',
+        children: [
+          {
+            id: 31,
+            name: '在线用户',
+            path: '/monitor/online',
+            icon: 'Connection',
+            parentId: 3
+          },
+          {
+            id: 32,
+            name: '操作日志',
+            path: '/monitor/log',
+            icon: 'Document',
+            parentId: 3
+          },
+          {
+            id: 33,
+            name: '系统性能',
+            path: '/monitor/server',
+            icon: 'Cpu',
+            parentId: 3
+          }
+        ]
+      },
+      {
+        id: 4,
+        name: '系统工具',
+        path: '/tool',
+        icon: 'Tools',
+        children: [
+          {
+            id: 41,
+            name: '代码生成',
+            path: '/tool/gen',
+            icon: 'Edit',
+            parentId: 4
+          },
+          {
+            id: 42,
+            name: '系统接口',
+            path: '/tool/swagger',
+            icon: 'Link',
+            parentId: 4
+          }
+        ]
       }
     ]
   };

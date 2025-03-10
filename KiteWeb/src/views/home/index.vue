@@ -1,16 +1,16 @@
 <template>
-  <main-layout>
-    <excel-import />
-  </main-layout>
+  <div class="home-container">
+    <h1>首页</h1>
+    <!-- 添加你的首页内容 -->
+  </div>
 </template>
 
 <script setup lang="ts">
-import MainLayout from '../../components/layout/MainLayout.vue'
-import ExcelImport from '../../components/ExcelImport.vue'
+// 你的首页逻辑
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .home-container {
-  padding: 12px;
+  padding: 20px;
 }
 </style>
