@@ -28,22 +28,22 @@
 
       <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :default-expand-all="isExpanded"
         :tree-props="{ children: 'children' }">
-        <el-table-column prop="name" label="菜单名称" width="180" />
-        <el-table-column prop="path" label="路径" width="180" />
-        <el-table-column prop="icon" label="图标" width="100">
+        <el-table-column prop="name" label="菜单名称" width="180" align="left" />
+        <el-table-column prop="path" label="路径" width="180" align="center" />
+        <el-table-column prop="icon" label="图标" width="100" align="center">
           <template #default="scope">
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="sort" label="排序" width="80" />
-        <el-table-column prop="isHidden" label="是否隐藏" width="100">
+        <el-table-column prop="sort" label="排序" width="80" align="center" />
+        <el-table-column prop="isHidden" label="是否隐藏" width="100" align="center">
           <template #default="scope">
             <el-tag :type="scope.row.isHidden ? 'danger' : 'success'">
               {{ scope.row.isHidden ? '是' : '否' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
+        <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
             <el-button type="text" @click="handleEdit(scope.row)">{{ NAMES.BUTTONS.EDIT }}</el-button>
             <el-button type="text" @click="handleAdd(scope.row)">添加子菜单</el-button>
@@ -450,6 +450,28 @@ onMounted(() => {
   .cell {
     display: flex;
     align-items: center;
+    justify-content: center;
+  }
+  
+  /* 确保表头居中 */
+  th .cell {
+    justify-content: center;
+  }
+  
+  /* 确保操作按钮居中 */
+  .el-button {
+    margin: 0 5px;
+  }
+  
+  /* 确保图标居中 */
+  .el-table-column--icon .cell {
+    justify-content: center;
+  }
+  
+  /* 修改菜单名称列为左对齐 - 使用更精确的选择器 */
+  th:first-child .cell,
+  td:first-child .cell {
+    justify-content: flex-start;
   }
 }
 </style>
