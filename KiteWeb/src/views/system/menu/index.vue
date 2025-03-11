@@ -26,13 +26,7 @@
         </el-button>
       </div>
 
-      <el-table 
-        ref="tableRef" 
-        v-loading="loading" 
-        :data="menuList" 
-        row-key="id" 
-        border 
-        :default-expand-all="isExpanded"
+      <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :default-expand-all="isExpanded"
         :tree-props="{ children: 'children' }">
         <el-table-column prop="name" label="菜单名称" width="180" />
         <el-table-column prop="path" label="路径" width="180" />
@@ -147,12 +141,12 @@ const dialogTitle = computed(() => {
 // 切换展开/折叠状态
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
-  
+
   // 强制表格重新渲染
   if (tableRef.value) {
     // 获取表格的所有行数据
     const rows = tableRef.value.data || []
-    
+
     // 递归处理所有行及其子行
     const processRows = (items: MenuItem[]) => {
       items.forEach(row => {
@@ -164,14 +158,14 @@ const toggleExpand = () => {
           // 折叠行
           tableRef.value.toggleRowExpansion(row, false)
         }
-        
+
         // 处理子行
         if (row.children && row.children.length > 0) {
           processRows(row.children)
         }
       })
     }
-    
+
     // 处理所有行
     processRows(rows)
   }
@@ -408,31 +402,34 @@ onMounted(() => {
     overflow: hidden;
     min-height: 0;
 
-    /* 确保表格占满容器宽度和高度 */
-    :deep(.el-table) {
-      width: 100% !important;
+    :deep(.el-scrollbar) {
+      height: 100% !important;
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
     }
 
-    /* 调整表格滚动区域 */
-    :deep(.el-table__body-wrapper) {
-      flex: 1;
-      overflow-y: auto;
-      min-height: 0;
+    :deep(.el-scrollbar__wrap) {
+      height: 100% !important;
     }
-    
-    /* 确保表格头部固定 */
-    :deep(.el-table__header-wrapper) {
-      flex-shrink: 0;
+
+    :deep(.el-table) {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .el-table__body-wrapper {
+        height: 100% !important;
+      }
+    }
+
+    :deep(.el-table__body) {
+      width: 100% !important;
     }
   }
 }
 
 /* 调整表格列宽度 */
 :deep(.el-table) {
+
   .el-table__header,
   .el-table__body {
     width: 100% !important;
@@ -442,13 +439,13 @@ onMounted(() => {
   .el-table__row .cell {
     white-space: nowrap;
   }
-  
+
   /* 移除表格底部可能的间隙 */
-  .el-table__footer-wrapper, 
+  .el-table__footer-wrapper,
   .el-table__append-wrapper {
     display: none;
   }
-  
+
   /* 确保表格内容垂直居中 */
   .cell {
     display: flex;
