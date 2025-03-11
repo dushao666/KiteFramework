@@ -26,8 +26,14 @@
         </el-button>
       </div>
 
-      <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :expand-row-keys="expandedKeys as string[]"
-        :tree-props="{ children: 'children' }" @expand-change="handleExpandChange">
+      <el-table 
+        ref="tableRef" 
+        v-loading="loading" 
+        :data="menuList" 
+        row-key="id" 
+        border 
+        :default-expand-all="isExpanded"
+        :tree-props="{ children: 'children' }">
         <el-table-column prop="name" label="菜单名称" width="180" />
         <el-table-column prop="path" label="路径" width="180" />
         <el-table-column prop="icon" label="图标" width="100">
@@ -132,71 +138,70 @@ const dialogType = ref('add')
 const menuFormRef = ref()
 const tableRef = ref()
 const isExpanded = ref(true)
-const expandedKeys = ref<(string | number)[]>([])
 
 // 对话框标题
 const dialogTitle = computed(() => {
   return dialogType.value === 'add' ? '添加菜单' : '编辑菜单'
 })
 
-// 处理行展开/折叠事件
-const handleExpandChange = (row: MenuItem, expanded: boolean) => {
-  if (row.id !== undefined) {
-    if (expanded) {
-      // 如果是展开，添加到expandedKeys
-      if (!expandedKeys.value.includes(row.id)) {
-        expandedKeys.value.push(row.id)
-      }
-    } else {
-      // 如果是折叠，从expandedKeys中移除
-      expandedKeys.value = expandedKeys.value.filter(key => key !== row.id)
-    }
-  }
-}
-
-// 获取所有菜单的 ID
-const getAllMenuIds = (menus: MenuItem[]): (string | number)[] => {
-  const ids: (string | number)[] = []
-  const getIds = (items: MenuItem[]) => {
-    items.forEach(item => {
-      if (item.id !== undefined) {
-        ids.push(item.id)
-      }
-      if (item.children && item.children.length > 0) {
-        getIds(item.children)
-      }
-    })
-  }
-  getIds(menus)
-  return ids
-}
-
 // 切换展开/折叠状态
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
-  if (isExpanded.value) {
-    expandedKeys.value = getAllMenuIds(menuList.value)
-  } else {
-    expandedKeys.value = []
-  }
   
-  // 强制更新表格
+  // 强制表格重新渲染
   if (tableRef.value) {
-    tableRef.value.doLayout()
+    // 获取表格的所有行数据
+    const rows = tableRef.value.data || []
     
-    // 手动触发展开/折叠
-    const expandBtns = document.querySelectorAll('.el-table__expand-icon')
-    expandBtns.forEach((btn: any) => {
-      if (isExpanded.value) {
-        if (!btn.classList.contains('el-table__expand-icon--expanded')) {
-          btn.click()
+    // 递归处理所有行及其子行
+    const processRows = (items: MenuItem[]) => {
+      items.forEach(row => {
+        // 根据当前状态展开或折叠行
+        if (isExpanded.value) {
+          // 展开行
+          tableRef.value.toggleRowExpansion(row, true)
+        } else {
+          // 折叠行
+          tableRef.value.toggleRowExpansion(row, false)
         }
-      } else {
-        if (btn.classList.contains('el-table__expand-icon--expanded')) {
-          btn.click()
+        
+        // 处理子行
+        if (row.children && row.children.length > 0) {
+          processRows(row.children)
         }
-      }
-    })
+      })
+    }
+    
+    // 处理所有行
+    processRows(rows)
+  }
+}
+
+// 获取菜单选项（用于上级菜单选择）
+const getMenuOptions = async () => {
+  try {
+    const res = await getMenuTree()
+    if (res.code === 200) {
+      // 添加一个"顶级菜单"选项
+      const topMenu = { id: 0, name: '顶级菜单', path: '' };
+      menuOptions.value = [topMenu, ...res.data];
+    }
+  } catch (error) {
+    console.error('获取菜单选项失败:', error)
+    // 如果后端API还未实现，使用模拟数据
+    menuOptions.value = [
+      { id: 0, name: '顶级菜单', path: '' },
+      {
+        id: 1,
+        name: '系统管理',
+        path: '/system',
+        children: [
+          { id: 2, name: '菜单管理', path: '/system/menu' },
+          { id: 3, name: '用户管理', path: '/system/user' }
+        ]
+      },
+      { id: 4, name: '仪表盘', path: '/dashboard' }
+    ]
   }
 }
 
@@ -207,22 +212,6 @@ const getList = async () => {
     const res = await getMenuTree()
     if (res.code === 200) {
       menuList.value = res.data
-      // 初始化时展开所有节点
-      if (isExpanded.value) {
-        expandedKeys.value = getAllMenuIds(res.data)
-        // 确保在下一个渲染周期更新展开状态
-        if (tableRef.value) {
-          tableRef.value.doLayout()
-          
-          // 手动触发展开
-          const expandBtns = document.querySelectorAll('.el-table__expand-icon')
-          expandBtns.forEach((btn: any) => {
-            if (!btn.classList.contains('el-table__expand-icon--expanded')) {
-              btn.click()
-            }
-          })
-        }
-      }
     } else {
       ElMessage.error(res.message || '获取菜单列表失败')
     }
@@ -269,51 +258,8 @@ const getList = async () => {
         parentId: undefined
       }
     ]
-    if (isExpanded.value) {
-      expandedKeys.value = getAllMenuIds(menuList.value)
-      // 确保在下一个渲染周期更新展开状态
-      if (tableRef.value) {
-        tableRef.value.doLayout()
-        
-        // 手动触发展开
-        const expandBtns = document.querySelectorAll('.el-table__expand-icon')
-        expandBtns.forEach((btn: any) => {
-          if (!btn.classList.contains('el-table__expand-icon--expanded')) {
-            btn.click()
-          }
-        })
-      }
-    }
   } finally {
     loading.value = false
-  }
-}
-
-// 获取菜单选项（用于上级菜单选择）
-const getMenuOptions = async () => {
-  try {
-    const res = await getMenuTree()
-    if (res.code === 200) {
-      // 添加一个"顶级菜单"选项
-      const topMenu = { id: 0, name: '顶级菜单', path: '' };
-      menuOptions.value = [topMenu, ...res.data];
-    }
-  } catch (error) {
-    console.error('获取菜单选项失败:', error)
-    // 如果后端API还未实现，使用模拟数据
-    menuOptions.value = [
-      { id: 0, name: '顶级菜单', path: '' },
-      {
-        id: 1,
-        name: '系统管理',
-        path: '/system',
-        children: [
-          { id: 2, name: '菜单管理', path: '/system/menu' },
-          { id: 3, name: '用户管理', path: '/system/user' }
-        ]
-      },
-      { id: 4, name: '仪表盘', path: '/dashboard' }
-    ]
   }
 }
 
