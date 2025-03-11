@@ -4,7 +4,7 @@
 
 // 名称配置
 export const NAMES = {
-  APP_NAME: 'KiteWeb',
+  APP_NAME: import.meta.env.VITE_APP_TITLE || 'KiteWeb',
   APP_DESCRIPTION: 'KiteWeb',
   COMPANY_NAME: 'Kite Framework',
   COPYRIGHT: ' 2025 Kite Framework. All rights reserved.',

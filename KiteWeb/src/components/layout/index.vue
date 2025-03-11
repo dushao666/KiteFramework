@@ -73,7 +73,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const isCollapse = ref(false)
 const menuList = ref<MenuItem[]>([])
-const username = computed(() => userStore.userInfo?.username || '用户')
+const username = computed(() => userStore.getUsername || '用户')
 
 // 获取当前激活的菜单
 const activeMenu = computed(() => {
