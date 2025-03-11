@@ -4,15 +4,11 @@
         <div class="sidebar-container" :class="{ 'is-collapsed': isCollapse }">
             <div class="logo-container">
                 <img src="../../assets/logo.png" alt="Logo" class="logo" />
-                <span class="title" v-if="!isCollapse">{{ NAMES.APP_NAME }}</span>
+                <span class="title">{{ NAMES.APP_NAME }}</span>
             </div>
 
             <el-scrollbar>
-                <el-menu :default-active="activeMenu" :collapse="isCollapse" :unique-opened="true"
-                    background-color="#304156" text-color="#bfcbd9" active-text-color="#409EFF" router
-                    class="sidebar-menu">
-                    <SidebarItem v-for="menu in menuList" :key="menu.path" :item="menu" :base-path="menu.path" />
-                </el-menu>
+                <CustomMenu :menu-items="menuList" :is-collapse="isCollapse" />
             </el-scrollbar>
         </div>
 
@@ -69,7 +65,7 @@ import type { MenuItem } from '../../api/menu'
 import { getMenuTree } from '../../api/menu'
 import { NAMES } from '../../constants'
 import Breadcrumb from './Breadcrumb.vue'
-import SidebarItem from './SidebarItem.vue'
+import CustomMenu from './CustomMenu.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
 
@@ -170,72 +166,62 @@ onMounted(() => {
 }
 
 .sidebar-container {
-    width: 210px;
+    width: 220px;
     height: 100%;
-    background-color: #304156;
-    transition: width 0.3s;
+    background-color: #fff;
+    transition: width 0.3s ease;
     position: relative;
     z-index: 1001;
-    box-shadow: 2px 0 6px rgba(0, 21, 41, 0.15);
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    overflow: hidden;
 
     &.is-collapsed {
         width: 64px;
+
+        .logo-container {
+            .title {
+                width: 0;
+                opacity: 0;
+            }
+        }
     }
 }
 
 .logo-container {
-    height: 60px;
-    padding: 10px;
+    height: 56px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
-    background-color: #263445;
-    position: relative;
+    background-color: #fff;
+    border-bottom: 1px solid #f0f0f0;
     overflow: hidden;
 
     .logo {
-        width: 32px;
-        height: 32px;
-        margin-right: 10px;
+        height: 28px;
+        width: 28px;
+        flex-shrink: 0;
     }
 
     .title {
-        color: #fff;
-        font-size: 16px;
-        font-weight: bold;
+        margin-left: 8px;
+        color: #1a1a1a;
+        font-size: 15px;
+        font-weight: 600;
         white-space: nowrap;
-        overflow: hidden;
+        opacity: 1;
+        width: auto;
+        transition: all 0.3s ease;
     }
 }
 
 /* 修改滚动条样式 */
 :deep(.el-scrollbar) {
-    height: calc(100% - 60px);
-    background-color: #304156;
+    height: calc(100% - 56px);
+    background-color: #fff;
 }
 
 :deep(.el-scrollbar__wrap) {
     overflow-x: hidden !important;
-}
-
-/* 菜单样式调整 */
-:deep(.sidebar-menu) {
-    border-right: none;
-    height: 100%;
-}
-
-:deep(.el-menu) {
-    border-right: none;
-}
-
-:deep(.el-menu-item),
-:deep(.el-sub-menu__title) {
-    &:hover {
-        background-color: #263445 !important;
-    }
-}
-
-:deep(.el-menu-item.is-active) {
-    background-color: #263445 !important;
 }
 
 /* 主容器样式 */
@@ -303,22 +289,6 @@ onMounted(() => {
     background-color: #f5f7fa;
 }
 
-/* 确保子菜单弹出层样式正确 */
-:deep(.el-menu--popup) {
-    background-color: #304156 !important;
-
-    .el-menu-item {
-        background-color: #304156;
-        color: #bfcbd9;
-
-        &:hover,
-        &.is-active {
-            background-color: #263445 !important;
-            color: #409EFF;
-        }
-    }
-}
-
 /* 修复过渡动画 */
 .fade-transform-enter-active,
 .fade-transform-leave-active {
@@ -329,5 +299,42 @@ onMounted(() => {
 .fade-transform-leave-to {
     opacity: 0;
     transform: translateX(20px);
+}
+
+/* 修改菜单过渡效果 */
+:deep(.el-menu) {
+    --el-transition-duration: 0s !important;
+    --el-menu-transition-duration: 0s !important;
+}
+
+:deep(.el-sub-menu) {
+    .el-sub-menu__title {
+        transition: background-color 0.3s, color 0.3s !important;
+    }
+
+    /* 禁用子菜单的高度过渡 */
+    .el-menu--inline {
+        transition: none !important;
+        padding: 0 !important;
+
+        /* 为子菜单项添加自定义过渡 */
+        .el-menu-item {
+            transition: background-color 0.3s, color 0.3s !important;
+            padding-left: 40px !important;
+            height: 40px;
+            line-height: 40px;
+            margin: 4px 8px;
+        }
+    }
+}
+
+/* 只保留箭头的过渡 */
+:deep(.el-sub-menu__icon-arrow) {
+    transition: transform 0.3s !important;
+}
+
+/* 禁用折叠菜单的过渡 */
+:deep(.el-menu--collapse) {
+    transition: width 0.3s !important;
 }
 </style>

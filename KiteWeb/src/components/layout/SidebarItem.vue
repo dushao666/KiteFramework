@@ -8,7 +8,7 @@
         </el-menu-item>
     </template>
 
-    <el-sub-menu v-else :index="resolvePath(item.path)">
+    <el-sub-menu v-else :index="resolvePath(item.path)" :popper-append-to-body="false">
         <template #title>
             <el-icon v-if="item.icon">
                 <component :is="item.icon" />
@@ -41,6 +41,18 @@ const resolvePath = (routePath: string) => {
 </script>
 
 <style scoped>
+/* 完全禁用过渡效果 */
+:deep(.el-sub-menu) {
+    .el-sub-menu__title {
+        transition: background-color 0.3s, color 0.3s !important;
+    }
+
+    .el-menu {
+        transition: none !important;
+        border: none !important;
+    }
+}
+
 .el-menu-item .el-icon,
 .el-sub-menu .el-icon {
     margin-right: 16px;
