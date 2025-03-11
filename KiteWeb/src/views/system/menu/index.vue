@@ -18,16 +18,16 @@
     <div class="table-container">
       <div class="toolbar">
         <el-button type="primary" @click="() => handleAdd()">{{ NAMES.BUTTONS.ADD }}</el-button>
+        <el-button @click="toggleExpand">
+          {{ isExpanded ? '折叠所有' : '展开所有' }}
+          <el-icon class="el-icon--right">
+            <component :is="isExpanded ? FolderOpened : Folder" />
+          </el-icon>
+        </el-button>
       </div>
 
-      <el-table
-        v-loading="loading"
-        :data="menuList"
-        row-key="id"
-        border
-        default-expand-all
-        :tree-props="{ children: 'children' }"
-      >
+      <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :expand-row-keys="expandedKeys as string[]"
+        :tree-props="{ children: 'children' }" @expand-change="handleExpandChange">
         <el-table-column prop="name" label="菜单名称" width="180" />
         <el-table-column prop="path" label="路径" width="180" />
         <el-table-column prop="icon" label="图标" width="100">
@@ -47,35 +47,19 @@
           <template #default="scope">
             <el-button type="text" @click="handleEdit(scope.row)">{{ NAMES.BUTTONS.EDIT }}</el-button>
             <el-button type="text" @click="handleAdd(scope.row)">添加子菜单</el-button>
-            <el-button 
-              type="text" 
-              @click="handleDelete(scope.row)"
-              :disabled="scope.row.children && scope.row.children.length > 0"
-            >{{ NAMES.BUTTONS.DELETE }}</el-button>
+            <el-button type="text" @click="handleDelete(scope.row)"
+              :disabled="scope.row.children && scope.row.children.length > 0">{{ NAMES.BUTTONS.DELETE }}</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
 
     <!-- 添加/编辑菜单对话框 -->
-    <el-dialog
-      :title="dialogTitle"
-      v-model="dialogVisible"
-      width="500px"
-      append-to-body
-    >
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" append-to-body>
       <el-form ref="menuFormRef" :model="menuForm" :rules="rules" label-width="100px">
         <el-form-item label="上级菜单">
-          <el-tree-select
-            v-model="menuForm.parentId"
-            :data="menuOptions"
-            check-strictly
-            default-expand-all
-            node-key="id"
-            :props="{ label: 'name', value: 'id' }"
-            placeholder="请选择上级菜单"
-            clearable
-          />
+          <el-tree-select v-model="menuForm.parentId" :data="menuOptions" check-strictly default-expand-all
+            node-key="id" :props="{ label: 'name', value: 'id' }" placeholder="请选择上级菜单" clearable />
         </el-form-item>
         <el-form-item label="菜单名称" prop="name">
           <el-input v-model="menuForm.name" placeholder="请输入菜单名称" />
@@ -108,6 +92,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getMenuTree, addMenu, updateMenu, deleteMenu, MenuItem } from '../../../api/menu'
 import { NAMES } from '../../../constants'
+import { Folder, FolderOpened } from '@element-plus/icons-vue'
 
 // 查询参数
 const queryParams = reactive({
@@ -118,12 +103,17 @@ const queryParams = reactive({
 })
 
 // 菜单表单
-const menuForm = reactive<MenuItem>({
-  id: undefined,
+interface MenuFormData extends MenuItem {
+  sort: number;
+  isHidden: boolean;
+}
+
+const menuForm = reactive<MenuFormData>({
+  id: undefined as unknown as number,
   name: '',
   path: '',
   icon: '',
-  parentId: undefined,
+  parentId: undefined as unknown as number,
   sort: 0,
   isHidden: false
 })
@@ -140,11 +130,75 @@ const menuOptions = ref<MenuItem[]>([])
 const dialogVisible = ref(false)
 const dialogType = ref('add')
 const menuFormRef = ref()
+const tableRef = ref()
+const isExpanded = ref(true)
+const expandedKeys = ref<(string | number)[]>([])
 
 // 对话框标题
 const dialogTitle = computed(() => {
   return dialogType.value === 'add' ? '添加菜单' : '编辑菜单'
 })
+
+// 处理行展开/折叠事件
+const handleExpandChange = (row: MenuItem, expanded: boolean) => {
+  if (row.id !== undefined) {
+    if (expanded) {
+      // 如果是展开，添加到expandedKeys
+      if (!expandedKeys.value.includes(row.id)) {
+        expandedKeys.value.push(row.id)
+      }
+    } else {
+      // 如果是折叠，从expandedKeys中移除
+      expandedKeys.value = expandedKeys.value.filter(key => key !== row.id)
+    }
+  }
+}
+
+// 获取所有菜单的 ID
+const getAllMenuIds = (menus: MenuItem[]): (string | number)[] => {
+  const ids: (string | number)[] = []
+  const getIds = (items: MenuItem[]) => {
+    items.forEach(item => {
+      if (item.id !== undefined) {
+        ids.push(item.id)
+      }
+      if (item.children && item.children.length > 0) {
+        getIds(item.children)
+      }
+    })
+  }
+  getIds(menus)
+  return ids
+}
+
+// 切换展开/折叠状态
+const toggleExpand = () => {
+  isExpanded.value = !isExpanded.value
+  if (isExpanded.value) {
+    expandedKeys.value = getAllMenuIds(menuList.value)
+  } else {
+    expandedKeys.value = []
+  }
+  
+  // 强制更新表格
+  if (tableRef.value) {
+    tableRef.value.doLayout()
+    
+    // 手动触发展开/折叠
+    const expandBtns = document.querySelectorAll('.el-table__expand-icon')
+    expandBtns.forEach((btn: any) => {
+      if (isExpanded.value) {
+        if (!btn.classList.contains('el-table__expand-icon--expanded')) {
+          btn.click()
+        }
+      } else {
+        if (btn.classList.contains('el-table__expand-icon--expanded')) {
+          btn.click()
+        }
+      }
+    })
+  }
+}
 
 // 查询菜单列表
 const getList = async () => {
@@ -153,6 +207,22 @@ const getList = async () => {
     const res = await getMenuTree()
     if (res.code === 200) {
       menuList.value = res.data
+      // 初始化时展开所有节点
+      if (isExpanded.value) {
+        expandedKeys.value = getAllMenuIds(res.data)
+        // 确保在下一个渲染周期更新展开状态
+        if (tableRef.value) {
+          tableRef.value.doLayout()
+          
+          // 手动触发展开
+          const expandBtns = document.querySelectorAll('.el-table__expand-icon')
+          expandBtns.forEach((btn: any) => {
+            if (!btn.classList.contains('el-table__expand-icon--expanded')) {
+              btn.click()
+            }
+          })
+        }
+      }
     } else {
       ElMessage.error(res.message || '获取菜单列表失败')
     }
@@ -199,6 +269,21 @@ const getList = async () => {
         parentId: undefined
       }
     ]
+    if (isExpanded.value) {
+      expandedKeys.value = getAllMenuIds(menuList.value)
+      // 确保在下一个渲染周期更新展开状态
+      if (tableRef.value) {
+        tableRef.value.doLayout()
+        
+        // 手动触发展开
+        const expandBtns = document.querySelectorAll('.el-table__expand-icon')
+        expandBtns.forEach((btn: any) => {
+          if (!btn.classList.contains('el-table__expand-icon--expanded')) {
+            btn.click()
+          }
+        })
+      }
+    }
   } finally {
     loading.value = false
   }
@@ -249,11 +334,11 @@ const resetQuery = () => {
 const handleAdd = (row?: MenuItem) => {
   dialogType.value = 'add'
   resetForm()
-  
+
   if (row && row.id) {
     menuForm.parentId = row.id
   }
-  
+
   dialogVisible.value = true
 }
 
@@ -261,7 +346,7 @@ const handleAdd = (row?: MenuItem) => {
 const handleEdit = (row: MenuItem) => {
   dialogType.value = 'edit'
   resetForm()
-  
+
   Object.assign(menuForm, row)
   dialogVisible.value = true
 }
@@ -272,7 +357,7 @@ const handleDelete = (row: MenuItem) => {
     ElMessage.warning('该菜单下存在子菜单，不能删除')
     return
   }
-  
+
   ElMessageBox.confirm('确定要删除该菜单吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
@@ -283,7 +368,7 @@ const handleDelete = (row: MenuItem) => {
         ElMessage.error('菜单ID不存在')
         return
       }
-      
+
       const res = await deleteMenu(row.id)
       if (res.code === 200) {
         ElMessage.success('删除成功')
@@ -296,19 +381,19 @@ const handleDelete = (row: MenuItem) => {
       ElMessage.success('删除成功（模拟）')
       getList()
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 重置表单
 const resetForm = () => {
-  menuForm.id = undefined
+  menuForm.id = undefined as unknown as number
   menuForm.name = ''
   menuForm.path = ''
-  menuForm.parentId = undefined
+  menuForm.parentId = undefined as unknown as number
   menuForm.icon = ''
   menuForm.sort = 0
   menuForm.isHidden = false
-  
+
   if (menuFormRef.value) {
     menuFormRef.value.resetFields()
   }
@@ -317,14 +402,14 @@ const resetForm = () => {
 // 提交表单
 const submitForm = async () => {
   if (!menuFormRef.value) return
-  
+
   await menuFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return
-    
+
     try {
       const api = dialogType.value === 'add' ? addMenu : updateMenu
       const res = await api(menuForm)
-      
+
       if (res.code === 200) {
         ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
         dialogVisible.value = false
@@ -349,21 +434,79 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .menu-container {
-  padding: 20px;
+  padding: 15px;
   background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-  
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
   .search-bar {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
   }
-  
+
   .toolbar {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+    display: flex;
+    gap: 10px;
+  }
+
+  .table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+
+    /* 确保表格占满容器宽度和高度 */
+    :deep(.el-table) {
+      width: 100% !important;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* 调整表格滚动区域 */
+    :deep(.el-table__body-wrapper) {
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
+    }
+    
+    /* 确保表格头部固定 */
+    :deep(.el-table__header-wrapper) {
+      flex-shrink: 0;
+    }
+  }
+}
+
+/* 调整表格列宽度 */
+:deep(.el-table) {
+  .el-table__header,
+  .el-table__body {
+    width: 100% !important;
+  }
+
+  /* 让操作列自适应 */
+  .el-table__row .cell {
+    white-space: nowrap;
   }
   
-  .table-container {
-    margin-top: 20px;
+  /* 移除表格底部可能的间隙 */
+  .el-table__footer-wrapper, 
+  .el-table__append-wrapper {
+    display: none;
+  }
+  
+  /* 确保表格内容垂直居中 */
+  .cell {
+    display: flex;
+    align-items: center;
   }
 }
 </style>

@@ -8,6 +8,8 @@ export interface MenuItem {
   icon?: string;
   parentId?: number;
   children?: MenuItem[];
+  sort?: number;
+  isHidden?: boolean;
 }
 
 // API响应接口
