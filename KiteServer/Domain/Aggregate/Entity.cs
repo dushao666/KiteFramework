@@ -7,17 +7,11 @@ namespace Domain.Aggregate;
 /// </summary>
 public abstract class Entity : IDeleted
 {
-    private long _id;
-
     /// <summary>
     /// 主键
     /// </summary>
-    [Key]
-    public long Id
-    {
-        get => _id;
-        protected set => _id = value;
-    }
+    [SugarColumn(IsPrimaryKey = true, IsIdentity = true, ColumnName = "id")]
+    public long Id { get; set; }
 
     /// <summary>
     /// 创建时间
