@@ -7,16 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="接口调用">
-      <change afterPath="$PROJECT_DIR$/Api/Controllers/System/SeedDataController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Repository/Services/SeedDataService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/ProgramExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/ProgramExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/CommandHandler/Menu/CreateMenuCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/CommandHandler/Menu/CreateMenuCommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/Queries/Menu/Handler/GetMenuTreeQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Queries/Menu/Handler/GetMenuTreeQueryHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/api/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/api/menu.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/components.d.ts" afterDir="false" />
-    </list>
+    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="最新" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -30,6 +21,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Api/ProgramExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Application/Queries/IFolderQueries.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Infrastructure/Utility/AjaxResponse.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
@@ -55,6 +47,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "D:\\DevelopmentTools\\JetBrains Rider 2024.1\\plugins\\javascript-impl\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
@@ -95,7 +88,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1741780029941</updated>
-      <workItem from="1741780030156" duration="6908000" />
+      <workItem from="1741780030156" duration="7218000" />
     </task>
     <task id="LOCAL-00001" summary="接口调用">
       <option name="closed" value="true" />
@@ -105,7 +98,23 @@
       <option name="project" value="LOCAL" />
       <updated>1741781954975</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="生成菜单">
+      <option name="closed" value="true" />
+      <created>1741790379481</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741790379481</updated>
+    </task>
+    <task id="LOCAL-00003" summary="最新">
+      <option name="closed" value="true" />
+      <created>1741790509722</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1741790509722</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,6 +137,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="接口调用" />
-    <option name="LAST_COMMIT_MESSAGE" value="接口调用" />
+    <MESSAGE value="生成菜单" />
+    <MESSAGE value="最新" />
+    <option name="LAST_COMMIT_MESSAGE" value="最新" />
   </component>
 </project>
