@@ -1,7 +1,7 @@
 using Application.Command.FileAndFolder;
 using DomainShared.Dto.FileAndFolderInfo;
 
-namespace Api.Controller
+namespace Api.Controllers
 {
     /// <summary>
     /// 文件夹

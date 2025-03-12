@@ -1,6 +1,6 @@
 using Application.Command.FileAndFolder;
 
-namespace Api.Controller
+namespace Api.Controllers
 {
     /// <summary>
     /// 文件管理

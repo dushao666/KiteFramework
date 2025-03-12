@@ -1,0 +1,79 @@
+using Application.Command.Menu;
+using Application.Dtos;
+using Application.Queries.Menu;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Api.Controllers.System
+{
+    /// <summary>
+    /// 菜单管理
+    /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
+    public class MenuController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public MenuController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        /// <summary>
+        /// 获取菜单树
+        /// </summary>
+        [HttpGet("tree")]
+        [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMenuTree([FromQuery] GetMenuTreeQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return new JsonResult(new AjaxResponse<List<MenuDto>>(result));
+        }
+
+        /// <summary>
+        /// 获取菜单列表
+        /// </summary>
+        [HttpGet("list")]
+        [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetMenuList([FromQuery] GetMenuListQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return new JsonResult(new AjaxResponse<List<MenuDto>>(result));
+        }
+
+        /// <summary>
+        /// 创建菜单
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateMenu([FromBody] CreateMenuCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return new JsonResult(new AjaxResponse<bool>(result));
+        }
+
+        /// <summary>
+        /// 更新菜单
+        /// </summary>
+        [HttpPut("{id}")]
+        [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateMenu(long id, [FromBody] UpdateMenuCommand command)
+        {
+            command.Id = id;
+            var result = await _mediator.Send(command);
+            return new JsonResult(new AjaxResponse<bool>(result));
+        }
+
+        /// <summary>
+        /// 删除菜单
+        /// </summary>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteMenu(long id)
+        {
+            var result = await _mediator.Send(new DeleteMenuCommand { Id = id });
+            return new JsonResult(new AjaxResponse<bool>(result));
+        }
+    }
+} 

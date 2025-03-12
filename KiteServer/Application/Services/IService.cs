@@ -1,7 +1,7 @@
-ï»¿namespace Application.Services;
+namespace Application.Services;
 
 /// <summary>
-/// è·¨æœåŠ¡æŸ¥è¯¢å…¬å…±æ¥å£
+/// ¿ç·şÎñ²éÑ¯¹«¹²½Ó¿Ú
 /// </summary>
 public interface IService
 {

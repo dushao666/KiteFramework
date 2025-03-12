@@ -1,11 +1,11 @@
-ï»¿namespace Application.Services;
+namespace Application.Services;
 /// <summary>
-/// é’‰é’‰æ¥å£æœåŠ¡
+/// ¶¤¶¤½Ó¿Ú·şÎñ
 /// </summary>
 public interface IDingTalkService
 {
     /// <summary>
-    /// é€šè¿‡å…ç™»æˆæƒç è·å–ç”¨æˆ·ä¿¡æ¯
+    /// Í¨¹ıÃâµÇÊÚÈ¨Âë»ñÈ¡ÓÃ»§ĞÅÏ¢
     /// </summary>
     [Get("/api/openapi/dingtalk/getuserinfo")]
     Task<DingTalkResult<GetUserInfoResult?>> GetUserInfo([AliasAs("agent_id")] string agentId, [AliasAs("code")] string authCode);
