@@ -45,10 +45,27 @@
         </el-table-column>
         <el-table-column label="操作" width="200" align="center">
           <template #default="scope">
-            <el-button type="text" @click="handleEdit(scope.row)">{{ NAMES.BUTTONS.EDIT }}</el-button>
-            <el-button type="text" @click="handleAdd(scope.row)">添加子菜单</el-button>
-            <el-button type="text" @click="handleDelete(scope.row)"
-              :disabled="scope.row.children && scope.row.children.length > 0">{{ NAMES.BUTTONS.DELETE }}</el-button>
+            <div class="operation-buttons">
+              <el-button type="primary" size="small" @click="handleEdit(scope.row)">
+                <el-icon>
+                  <Edit />
+                </el-icon>
+                <span>编辑</span>
+              </el-button>
+              <el-button type="success" size="small" @click="handleAdd(scope.row)">
+                <el-icon>
+                  <Plus />
+                </el-icon>
+                <span>添加</span>
+              </el-button>
+              <el-button type="danger" size="small" @click="handleDelete(scope.row)"
+                :disabled="scope.row.children && scope.row.children.length > 0">
+                <el-icon>
+                  <Delete />
+                </el-icon>
+                <span>删除</span>
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -92,7 +109,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getMenuTree, addMenu, updateMenu, deleteMenu, MenuItem } from '../../../api/menu'
 import { NAMES } from '../../../constants'
-import { Folder, FolderOpened } from '@element-plus/icons-vue'
+import { Folder, FolderOpened, Edit, Plus, Delete } from '@element-plus/icons-vue'
 
 // 查询参数
 const queryParams = reactive({
@@ -419,59 +436,61 @@ onMounted(() => {
       .el-table__body-wrapper {
         height: 100% !important;
       }
-    }
 
-    :deep(.el-table__body) {
-      width: 100% !important;
+      .el-table__header,
+      .el-table__body {
+        width: 100% !important;
+      }
+
+      /* 让操作列自适应 */
+      .el-table__row .cell {
+        white-space: nowrap;
+      }
+
+      /* 移除表格底部可能的间隙 */
+      .el-table__footer-wrapper,
+      .el-table__append-wrapper {
+        display: none;
+      }
+
+      /* 确保表格内容垂直居中 */
+      .cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* 确保表头居中 */
+      th .cell {
+        justify-content: center;
+      }
+
+      /* 修改菜单名称列为左对齐 - 使用更精确的选择器 */
+      th:first-child .cell,
+      td:first-child .cell {
+        justify-content: flex-start;
+      }
+
+      /* 确保操作列有足够宽度 */
+      .el-table-column--operation .cell {
+        min-width: 240px;
+      }
     }
   }
 }
 
-/* 调整表格列宽度 */
-:deep(.el-table) {
+/* 操作按钮样式 */
+.operation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 
-  .el-table__header,
-  .el-table__body {
-    width: 100% !important;
-  }
-
-  /* 让操作列自适应 */
-  .el-table__row .cell {
-    white-space: nowrap;
-  }
-
-  /* 移除表格底部可能的间隙 */
-  .el-table__footer-wrapper,
-  .el-table__append-wrapper {
-    display: none;
-  }
-
-  /* 确保表格内容垂直居中 */
-  .cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* 确保表头居中 */
-  th .cell {
-    justify-content: center;
-  }
-  
-  /* 确保操作按钮居中 */
   .el-button {
-    margin: 0 5px;
-  }
-  
-  /* 确保图标居中 */
-  .el-table-column--icon .cell {
-    justify-content: center;
-  }
-  
-  /* 修改菜单名称列为左对齐 - 使用更精确的选择器 */
-  th:first-child .cell,
-  td:first-child .cell {
-    justify-content: flex-start;
+    padding: 4px 8px;
+
+    .el-icon {
+      margin-right: 4px;
+    }
   }
 }
 </style>
