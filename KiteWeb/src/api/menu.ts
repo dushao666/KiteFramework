@@ -126,7 +126,7 @@ export async function getMenuTree(): Promise<ApiResponse<MenuItem[]>> {
 // 获取菜单列表
 export function getMenuList(params?: any): Promise<ApiResponse<MenuItem[]>> {
   return request({
-    url: '/system/menu/list',
+    url: '/menu/list',
     method: 'GET',
     params
   });
@@ -135,7 +135,7 @@ export function getMenuList(params?: any): Promise<ApiResponse<MenuItem[]>> {
 // 添加菜单
 export function addMenu(data: MenuItem): Promise<ApiResponse<any>> {
   return request({
-    url: '/system/menu',
+    url: '/menu/addMenu',
     method: 'POST',
     data
   });
@@ -144,7 +144,7 @@ export function addMenu(data: MenuItem): Promise<ApiResponse<any>> {
 // 更新菜单
 export function updateMenu(data: MenuItem): Promise<ApiResponse<any>> {
   return request({
-    url: `/system/menu/${data.id}`,
+    url: `/menu/${data.id}`,
     method: 'PUT',
     data
   });
@@ -153,7 +153,7 @@ export function updateMenu(data: MenuItem): Promise<ApiResponse<any>> {
 // 删除菜单
 export function deleteMenu(id: number): Promise<ApiResponse<any>> {
   return request({
-    url: `/system/menu/${id}`,
+    url: `/menu/${id}`,
     method: 'DELETE'
   });
 }

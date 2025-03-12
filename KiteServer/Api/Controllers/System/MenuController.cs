@@ -45,7 +45,7 @@ namespace Api.Controllers.System
         /// <summary>
         /// 创建菜单
         /// </summary>
-        [HttpPost]
+        [HttpPost("addMenu")]
         [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateMenu([FromBody] CreateMenuCommand command)
         {

@@ -199,20 +199,7 @@ const getMenuOptions = async () => {
     }
   } catch (error) {
     console.error('获取菜单选项失败:', error)
-    // 如果后端API还未实现，使用模拟数据
-    menuOptions.value = [
-      { id: 0, name: '顶级菜单', path: '' },
-      {
-        id: 1,
-        name: '系统管理',
-        path: '/system',
-        children: [
-          { id: 2, name: '菜单管理', path: '/system/menu' },
-          { id: 3, name: '用户管理', path: '/system/user' }
-        ]
-      },
-      { id: 4, name: '仪表盘', path: '/dashboard' }
-    ]
+    ElMessage.error('获取菜单选项失败')
   }
 }
 
@@ -228,47 +215,7 @@ const getList = async () => {
     }
   } catch (error) {
     console.error('获取菜单列表失败:', error)
-    // 如果后端API还未实现，使用模拟数据
-    menuList.value = [
-      {
-        id: 1,
-        name: '系统管理',
-        path: '/system',
-        icon: 'el-icon-s-tools',
-        sort: 1,
-        isHidden: false,
-        parentId: undefined,
-        children: [
-          {
-            id: 2,
-            name: '菜单管理',
-            path: '/system/menu',
-            icon: 'el-icon-menu',
-            sort: 1,
-            isHidden: false,
-            parentId: 1
-          },
-          {
-            id: 3,
-            name: '用户管理',
-            path: '/system/user',
-            icon: 'el-icon-user',
-            sort: 2,
-            isHidden: false,
-            parentId: 1
-          }
-        ]
-      },
-      {
-        id: 4,
-        name: '仪表盘',
-        path: '/dashboard',
-        icon: 'el-icon-s-home',
-        sort: 0,
-        isHidden: false,
-        parentId: undefined
-      }
-    ]
+    ElMessage.error('获取菜单列表失败')
   } finally {
     loading.value = false
   }
@@ -335,8 +282,7 @@ const handleDelete = (row: MenuItem) => {
       }
     } catch (error) {
       console.error('删除菜单失败:', error)
-      ElMessage.success('删除成功（模拟）')
-      getList()
+      ElMessage.error('删除失败')
     }
   }).catch(() => { })
 }
@@ -376,9 +322,7 @@ const submitForm = async () => {
       }
     } catch (error) {
       console.error(dialogType.value === 'add' ? '添加菜单失败:' : '更新菜单失败:', error)
-      ElMessage.success(dialogType.value === 'add' ? '添加成功（模拟）' : '更新成功（模拟）')
-      dialogVisible.value = false
-      getList()
+      ElMessage.error(dialogType.value === 'add' ? '添加失败' : '更新失败')
     }
   })
 }

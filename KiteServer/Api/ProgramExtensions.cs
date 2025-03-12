@@ -12,6 +12,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Infrastructure.Services;
+using Mapster;
+using MapsterMapper;
 using Repository.Repositories;
 using Repository.Services;
 
@@ -165,6 +167,10 @@ public static class ProgramExtensions
 
         //Mapster配置
         Mapster.TypeAdapterConfig.GlobalSettings.Scan(typeof(MapsterConfiguration).Assembly);
+        // 注册 Mapster 的 IMapper
+        var config = TypeAdapterConfig.GlobalSettings;
+        builder.Services.AddSingleton(config);
+        builder.Services.AddScoped<IMapper>(sp => new Mapper(sp.GetRequiredService<TypeAdapterConfig>()));
 
         builder.AddConfiguraMvcSetting(builder.Environment);
         builder.AddHttpContextAccessor();

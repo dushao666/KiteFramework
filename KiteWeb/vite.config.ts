@@ -37,8 +37,8 @@ export default defineConfig(({ mode }) => {
           ws: true,
           configure: (proxy, options) => {
             proxy.on('proxyReq', (proxyReq, req, res) => {
-              // console.log('代理请求:', req.method, req.url, '->',
-              //   options.target + proxyReq.path)
+              console.log('代理请求:', req.method, req.url, '->',
+                options.target + proxyReq.path)
             })
           }
         }

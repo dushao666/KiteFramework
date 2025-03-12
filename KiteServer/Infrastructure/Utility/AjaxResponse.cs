@@ -28,7 +28,7 @@ public class AjaxResponse
 
     public static AjaxResponse Successed()
     {
-        return Result(isSuccess: true, 0, "请求成功");
+        return Result(isSuccess: true, 200, "请求成功");
     }
 
     public static AjaxResponse Failed(int code, string message = "请求失败")
