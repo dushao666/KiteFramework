@@ -7,10 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="">
+    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="接口调用">
+      <change afterPath="$PROJECT_DIR$/Api/Controllers/System/SeedDataController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Repository/Services/SeedDataService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/Controllers/System/MenuController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Controllers/System/MenuController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Api/ProgramExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/ProgramExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/CommandHandler/Menu/CreateMenuCommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/CommandHandler/Menu/CreateMenuCommandHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Queries/Menu/Handler/GetMenuTreeQueryHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Queries/Menu/Handler/GetMenuTreeQueryHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/api/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/api/menu.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/components.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/components.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +28,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Api/ProgramExtensions.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Infrastructure/Utility/AjaxResponse.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 8
@@ -30,6 +39,7 @@
   <component name="ProjectId" id="2uDPAapPMBag9sgzl2pxED4d1SG" />
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -38,6 +48,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     ".NET Launch Settings Profile.Api.executor": "Debug",
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
@@ -84,8 +95,17 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1741780029941</updated>
-      <workItem from="1741780030156" duration="1676000" />
+      <workItem from="1741780030156" duration="6908000" />
     </task>
+    <task id="LOCAL-00001" summary="接口调用">
+      <option name="closed" value="true" />
+      <created>1741781954975</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1741781954975</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,25 +125,9 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Api/Controllers/System/MenuController.cs</url>
-          <line>50</line>
-          <properties documentPath="D:\Code\GitHubCode\kiteFramework\KiteServer\Api\Controllers\System\MenuController.cs" containingFunctionPresentation="Method 'CreateMenu'">
-            <startOffsets>
-              <option value="1599" />
-            </startOffsets>
-            <endOffsets>
-              <option value="1600" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="接口调用" />
+    <option name="LAST_COMMIT_MESSAGE" value="接口调用" />
   </component>
 </project>

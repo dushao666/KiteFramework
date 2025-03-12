@@ -1,7 +1,9 @@
 using Application.Dtos;
+using Domain.System;
 using MapsterMapper;
 using MediatR;
 using Repository.Repositories;
+using SqlSugar;
 
 namespace Application.Queries.Menu.Handler
 {
@@ -20,30 +22,34 @@ namespace Application.Queries.Menu.Handler
         {
             using (var context = _unitOfWork.CreateContext())
             {
-                var query = context.Menus.AsQueryable();
-                
-                if (!request.IncludeHidden)
-                    query = query.Where(x => !x.IsHidden);
-
-                var menus = await query
+                // 获取菜单数据
+                var db = context.Menus.Context;
+                var menus = await db.Queryable<Domain.System.Menu>()
+                    .WhereIF(!request.IncludeHidden, x => !x.IsHidden)
                     .OrderBy(x => x.Sort)
                     .ToListAsync();
 
+                // 转换为DTO
                 var menuDtos = _mapper.Map<List<MenuDto>>(menus);
-                return BuildMenuTree(menuDtos);
+
+                // 构建树形结构，从根节点（ParentId = 0）开始
+                return BuildMenuTree(menuDtos, 0);
             }
         }
 
-        private List<MenuDto> BuildMenuTree(List<MenuDto> menus, long? parentId = null)
+        private List<MenuDto> BuildMenuTree(List<MenuDto> menus, long parentId)
         {
-            return menus
+            var children = menus
                 .Where(m => m.ParentId == parentId)
-                .Select(m => {
-                    m.Children = BuildMenuTree(menus, m.Id);
-                    return m;
-                })
                 .OrderBy(m => m.Sort)
                 .ToList();
+
+            foreach (var child in children)
+            {
+                child.Children = BuildMenuTree(menus, child.Id);
+            }
+
+            return children;
         }
     }
-} 
+}
