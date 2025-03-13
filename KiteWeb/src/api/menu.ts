@@ -22,17 +22,20 @@ export interface ApiResponse<T> {
 // 获取菜单树
 export async function getMenuTree(): Promise<ApiResponse<MenuItem[]>> {
   return request({
-    url: '/menu/tree',
+    url: '/menu/menuTree',
     method: 'GET'
   });
 }
 
 // 获取菜单列表
-export function getMenuList(params?: any): Promise<ApiResponse<MenuItem[]>> {
+export function getMenuList(params = {}): Promise<ApiResponse<MenuItem[]>> {
+  // 确保 params 是一个对象
+  const safeParams = params || {};
+  
   return request({
-    url: '/menu/list',
+    url: '/menu/menuList',
     method: 'GET',
-    params
+    params: safeParams
   });
 }
 

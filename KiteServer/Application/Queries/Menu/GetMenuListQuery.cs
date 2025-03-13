@@ -13,6 +13,6 @@ namespace Application.Queries.Menu
         /// <summary>
         /// 关键字搜索
         /// </summary>
-        public string Keyword { get; set; }
+        public string? Keyword { get; set; }
     }
 } 

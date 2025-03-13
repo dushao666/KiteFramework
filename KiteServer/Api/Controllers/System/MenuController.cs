@@ -21,7 +21,7 @@ namespace Api.Controllers.System
         /// <summary>
         /// 获取菜单树
         /// </summary>
-        [HttpGet("tree")]
+        [HttpGet("menuTree")]
         [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMenuTree([FromQuery] GetMenuTreeQuery query)
         {
@@ -32,7 +32,7 @@ namespace Api.Controllers.System
         /// <summary>
         /// 获取菜单列表
         /// </summary>
-        [HttpGet("list")]
+        [HttpGet("menuList")]
         [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetMenuList([FromQuery] GetMenuListQuery query)
         {

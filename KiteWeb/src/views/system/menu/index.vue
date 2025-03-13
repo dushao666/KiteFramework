@@ -2,11 +2,11 @@
   <div class="menu-container">
     <div class="search-bar">
       <el-form :inline="true" :model="queryParams" class="demo-form-inline">
-        <el-form-item label="菜单名称">
-          <el-input v-model="queryParams.name" placeholder="请输入菜单名称" clearable />
+        <el-form-item label="关键字">
+          <el-input v-model="queryParams.keyword" placeholder="请输入菜单名称或路径" clearable />
         </el-form-item>
-        <el-form-item label="路径">
-          <el-input v-model="queryParams.path" placeholder="请输入路径" clearable />
+        <el-form-item label="包含隐藏">
+          <el-switch v-model="queryParams.includeHidden" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery">{{ NAMES.BUTTONS.SEARCH }}</el-button>
@@ -107,16 +107,14 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getMenuTree, addMenu, updateMenu, deleteMenu, MenuItem } from '../../../api/menu'
+import { getMenuTree, addMenu, updateMenu, deleteMenu, MenuItem, getMenuList } from '../../../api/menu'
 import { NAMES } from '../../../constants'
 import { Folder, FolderOpened, Edit, Plus, Delete } from '@element-plus/icons-vue'
 
 // 查询参数
 const queryParams = reactive({
-  name: '',
-  path: '',
-  pageNum: 1,
-  pageSize: 10
+  keyword: '',
+  includeHidden: false
 })
 
 // 菜单表单
@@ -207,11 +205,27 @@ const getMenuOptions = async () => {
 const getList = async () => {
   loading.value = true
   try {
-    const res = await getMenuTree()
-    if (res.code === 200) {
-      menuList.value = res.data
+    // 如果有搜索条件，使用 getMenuList
+    if (queryParams.keyword || queryParams.includeHidden) {
+      const res = await getMenuList({
+        keyword: queryParams.keyword,
+        includeHidden: queryParams.includeHidden
+      })
+      
+      if (res.code === 200) {
+        menuList.value = res.data
+      } else {
+        ElMessage.error(res.message || '获取菜单列表失败')
+      }
     } else {
-      ElMessage.error(res.message || '获取菜单列表失败')
+      // 没有搜索条件，使用 getMenuTree
+      const res = await getMenuTree()
+      
+      if (res.code === 200) {
+        menuList.value = res.data
+      } else {
+        ElMessage.error(res.message || '获取菜单列表失败')
+      }
     }
   } catch (error) {
     console.error('获取菜单列表失败:', error)
@@ -223,15 +237,14 @@ const getList = async () => {
 
 // 查询按钮点击事件
 const handleQuery = () => {
-  queryParams.pageNum = 1
   getList()
 }
 
 // 重置查询条件
 const resetQuery = () => {
-  queryParams.name = ''
-  queryParams.path = ''
-  handleQuery()
+  queryParams.keyword = ''
+  queryParams.includeHidden = false
+  getList()
 }
 
 // 添加菜单
