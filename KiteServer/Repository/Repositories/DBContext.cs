@@ -8,12 +8,19 @@ namespace Repository.Repositories;
 public class DBContext : SugarUnitOfWork
 {
     /// <summary>
-    /// 用户
+    /// 用户表
     /// </summary>
     public DbSet<UserInfo> Users { get; set; }
-    
+
+    /// <summary>
+    /// 菜单表
+    /// </summary>
     public DbSet<Menu> Menus { get; set; }
-    
+
+    /// <summary>
+    /// 岗位表
+    /// </summary>
+    public DbSet<Post> Posts { get; set; }
 }
 
 public class DbSet<T> : SimpleClient<T> where T : class, IDeleted, new()
