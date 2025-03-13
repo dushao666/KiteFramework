@@ -1,4 +1,4 @@
-﻿global using Application.Command;
+﻿global using Application.Commands;
 global using Autofac;
 global using Domain;
 global using DomainShared.Dto;

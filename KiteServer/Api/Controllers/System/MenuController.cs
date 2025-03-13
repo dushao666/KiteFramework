@@ -1,4 +1,4 @@
-using Application.Command.Menu;
+using Application.Commands.Menu;
 using Application.Queries.Menu;
 using DomainShared.Dto.System;
 

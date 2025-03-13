@@ -1,4 +1,4 @@
-using Application.Command.Menu;
+using Application.Commands.Menu;
 using Repository.Repositories;
 
 namespace Application.CommandHandlers.Menu

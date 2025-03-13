@@ -1,4 +1,6 @@
-﻿namespace Application.Validations;
+﻿using Application.Commands.User;
+
+namespace Application.Validations;
 
 /// <summary>
 /// 登录参数校验器

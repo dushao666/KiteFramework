@@ -1,11 +1,8 @@
-using Application.Command.Menu;
-using Infrastructure.Exceptions;
-using Infrastructure.Extension;
+using Application.Commands.Menu;
 using MapsterMapper;
-using MediatR;
 using Repository.Repositories;
 
-namespace Application.CommandHandler.Menu
+namespace Application.CommandHandlers.Menu
 {
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, bool>
     {

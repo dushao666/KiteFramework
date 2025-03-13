@@ -1,4 +1,4 @@
-﻿namespace Application.Command;
+﻿namespace Application.Commands.User;
 
 public class SignInCommand : IRequest<LoginUserDto>
 {

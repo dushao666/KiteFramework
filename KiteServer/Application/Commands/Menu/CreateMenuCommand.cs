@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Application.Command.Menu
+namespace Application.Commands.Menu
 {
     public class CreateMenuCommand : IRequest<bool>
     {

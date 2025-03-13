@@ -1,4 +1,6 @@
-﻿namespace Application.DependencyInjection;
+﻿using Application.Commands.User;
+
+namespace Application.DependencyInjection;
 
 public class MediatorModule : Autofac.Module
 {
