@@ -1,7 +1,7 @@
-using Application.Commands.Menu;
+using Application.Commands.System.Menu;
 using Repository.Repositories;
 
-namespace Application.CommandHandlers.Menu
+namespace Application.CommandHandlers.System.Menu
 {
     public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, bool>
     {

@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Application.Commands.Menu
+namespace Application.Commands.System.Menu
 {
     public class DeleteMenuCommand : IRequest<bool>
     {

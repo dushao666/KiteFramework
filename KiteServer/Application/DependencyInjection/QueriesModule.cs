@@ -1,4 +1,4 @@
-﻿using Application.Queries.Menu;
+﻿using Application.Queries.System.Menu;
 
 namespace Application.DependencyInjection;
 

@@ -1,6 +1,6 @@
 using DomainShared.Dto.System;
 
-namespace Application.Queries.Menu
+namespace Application.Queries.System.Menu
 {
     /// <summary>
     /// 菜单查询接口

@@ -2,7 +2,7 @@ using DomainShared.Dto.System;
 using MapsterMapper;
 using Repository.Repositories;
 
-namespace Application.Queries.Menu
+namespace Application.Queries.System.Menu
 {
     /// <summary>
     /// 菜单查询实现

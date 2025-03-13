@@ -1,14 +1,9 @@
 using MediatR;
 
-namespace Application.Commands.Menu
+namespace Application.Commands.System.Menu
 {
-    public class UpdateMenuCommand : IRequest<bool>
+    public class CreateMenuCommand : IRequest<bool>
     {
-        /// <summary>
-        /// 菜单ID
-        /// </summary>
-        public long Id { get; set; }
-
         /// <summary>
         /// 菜单名称
         /// </summary>

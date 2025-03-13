@@ -1,7 +1,7 @@
 ﻿using Api.Middleware;
 using EasyCaching.Core;
 using System.Security.Claims;
-using Application.Commands.User;
+using Application.Commands.System.User;
 
 namespace Api.Controllers.System;
 

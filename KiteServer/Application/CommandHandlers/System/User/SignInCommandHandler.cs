@@ -1,9 +1,9 @@
-﻿using Application.Commands.User;
+﻿using Application.Commands.System.User;
 using Application.Services;
 using Domain.UserInfo;
 using Repository.Repositories;
 
-namespace Application.CommandHandler;
+namespace Application.CommandHandlers.System.User;
 
 public class SignInCommandHandler : IRequestHandler<SignInCommand, LoginUserDto>
 {

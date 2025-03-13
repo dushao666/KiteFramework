@@ -64,6 +64,15 @@ const routes: Array<RouteRecordRaw> = [
           title: '菜单管理',
           requiresAuth: true
         }
+      },
+      {
+        path: 'post',
+        name: 'Post',
+        component: () => import('../views/system/post/index.vue'),
+        meta: {
+          title: '岗位管理',
+          requiresAuth: true
+        }
       }
     ]
   }

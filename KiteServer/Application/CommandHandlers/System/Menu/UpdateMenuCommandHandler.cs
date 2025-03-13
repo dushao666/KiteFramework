@@ -1,8 +1,8 @@
-using Application.Commands.Menu;
+using Application.Commands.System.Menu;
 using MapsterMapper;
 using Repository.Repositories;
 
-namespace Application.CommandHandlers.Menu
+namespace Application.CommandHandlers.System.Menu
 {
     public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand, bool>
     {

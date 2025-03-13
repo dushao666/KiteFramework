@@ -1,5 +1,5 @@
-using Application.Commands.Menu;
-using Application.Queries.Menu;
+using Application.Commands.System.Menu;
+using Application.Queries.System.Menu;
 using DomainShared.Dto.System;
 
 namespace Api.Controllers.System
