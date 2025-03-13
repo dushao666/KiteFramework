@@ -6,7 +6,7 @@
           <el-input v-model="queryParams.keyword" placeholder="请输入菜单名称或路径" clearable />
         </el-form-item>
         <el-form-item label="包含隐藏">
-          <el-switch v-model="queryParams.includeHidden" />
+          <el-switch v-model="queryParams.includeHidden" @change="handleQuery" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleQuery">{{ NAMES.BUTTONS.SEARCH }}</el-button>
@@ -18,7 +18,7 @@
     <div class="table-container">
       <div class="toolbar">
         <el-button type="primary" @click="() => handleAdd()">{{ NAMES.BUTTONS.ADD }}</el-button>
-        <el-button @click="toggleExpand">
+        <el-button @click="toggleExpand" type="warning">
           {{ isExpanded ? '折叠所有' : '展开所有' }}
           <el-icon class="el-icon--right">
             <component :is="isExpanded ? FolderOpened : Folder" />
@@ -28,22 +28,22 @@
 
       <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :default-expand-all="isExpanded"
         :tree-props="{ children: 'children' }">
-        <el-table-column prop="name" label="菜单名称" width="180" align="left" />
-        <el-table-column prop="path" label="路径" width="180" align="center" />
-        <el-table-column prop="icon" label="图标" width="100" align="center">
+        <el-table-column prop="name" label="菜单名称"  align="left" />
+        <el-table-column prop="path" label="路径"  align="center" />
+        <el-table-column prop="icon" label="图标"  align="center">
           <template #default="scope">
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="sort" label="排序" width="80" align="center" />
-        <el-table-column prop="isHidden" label="是否隐藏" width="100" align="center">
+        <el-table-column prop="sort" label="排序"  align="center" />
+        <el-table-column prop="isHidden" label="是否隐藏"  align="center">
           <template #default="scope">
             <el-tag :type="scope.row.isHidden ? 'danger' : 'success'">
               {{ scope.row.isHidden ? '是' : '否' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" align="center">
+        <el-table-column label="操作" width="300" align="center">
           <template #default="scope">
             <div class="operation-buttons">
               <el-button type="primary" size="small" @click="handleEdit(scope.row)">
@@ -59,7 +59,7 @@
                 <span>添加</span>
               </el-button>
               <el-button type="danger" size="small" @click="handleDelete(scope.row)"
-                :disabled="scope.row.children && scope.row.children.length > 0">
+                :disabled="scope.row.children?.length > 0 || scope.row.path === '/home'">
                 <el-icon>
                   <Delete />
                 </el-icon>
@@ -211,7 +211,7 @@ const getList = async () => {
         keyword: queryParams.keyword,
         includeHidden: queryParams.includeHidden
       })
-      
+
       if (res.code === 200) {
         menuList.value = res.data
       } else {
@@ -220,7 +220,7 @@ const getList = async () => {
     } else {
       // 没有搜索条件，使用 getMenuTree
       const res = await getMenuTree()
-      
+
       if (res.code === 200) {
         menuList.value = res.data
       } else {
