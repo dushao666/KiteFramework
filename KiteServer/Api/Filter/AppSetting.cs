@@ -1,4 +1,4 @@
-﻿namespace Api;
+﻿namespace Api.Filter;
 
 /// <summary>
 /// 公共配置信息
