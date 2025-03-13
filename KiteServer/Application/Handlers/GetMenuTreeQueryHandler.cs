@@ -2,33 +2,40 @@ using Application.Dtos;
 using Application.Queries.Menu;
 using Domain.System;
 using MapsterMapper;
+using MediatR;
+using Repository.Repositories;
+using SqlSugar;
 
 namespace Application.Handlers
 {
     public class GetMenuTreeQueryHandler : IRequestHandler<GetMenuTreeQuery, List<MenuDto>>
     {
-        private readonly ISqlSugarClient _db;
+        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
         private readonly IMapper _mapper;
 
-        public GetMenuTreeQueryHandler(ISqlSugarClient db, IMapper mapper)
+        public GetMenuTreeQueryHandler(ISugarUnitOfWork<DBContext> unitOfWork, IMapper mapper)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         public async Task<List<MenuDto>> Handle(GetMenuTreeQuery request, CancellationToken cancellationToken)
         {
-            var query = _db.Queryable<Menu>();
-            
-            if (!request.IncludeHidden)
-                query = query.Where(x => !x.IsHidden);
+            using (var context = _unitOfWork.CreateContext())
+            {
+                var db = context.Menus.Context;
+                var query = db.Queryable<Menu>();
+                
+                if (!request.IncludeHidden)
+                    query = query.Where(x => !x.IsHidden);
 
-            var menus = await query
-                .OrderBy(x => x.Sort)
-                .ToListAsync();
+                var menus = await query
+                    .OrderBy(x => x.Sort)
+                    .ToListAsync();
 
-            var menuDtos = _mapper.Map<List<MenuDto>>(menus);
-            return BuildMenuTree(menuDtos);
+                var menuDtos = _mapper.Map<List<MenuDto>>(menus);
+                return BuildMenuTree(menuDtos, 0);
+            }
         }
 
         private List<MenuDto> BuildMenuTree(List<MenuDto> menus, long? parentId = null)

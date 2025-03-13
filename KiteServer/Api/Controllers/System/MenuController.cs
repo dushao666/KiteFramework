@@ -39,7 +39,7 @@ namespace Api.Controllers.System
         public async Task<IActionResult> GetMenuList([FromQuery] GetMenuListQuery query)
         {
             var result = await _mediator.Send(query);
-            return new JsonResult(new AjaxResponse<List<MenuDto>>(result));
+            return new JsonResult(result);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Api.Controllers.System
         public async Task<IActionResult> CreateMenu([FromBody] CreateMenuCommand command)
         {
             var result = await _mediator.Send(command);
-            return new JsonResult(new AjaxResponse<bool>(result));
+            return new JsonResult(result);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Api.Controllers.System
         {
             command.Id = id;
             var result = await _mediator.Send(command);
-            return new JsonResult(new AjaxResponse<bool>(result));
+            return new JsonResult(result);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Api.Controllers.System
         public async Task<IActionResult> DeleteMenu(long id)
         {
             var result = await _mediator.Send(new DeleteMenuCommand { Id = id });
-            return new JsonResult(new AjaxResponse<bool>(result));
+            return new JsonResult(result);
         }
     }
 } 

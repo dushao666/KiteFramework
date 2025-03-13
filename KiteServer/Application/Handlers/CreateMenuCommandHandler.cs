@@ -1,49 +1,61 @@
 using Application.Commands;
-
 using Domain.System;
 using Infrastructure.Exceptions;
 using MapsterMapper;
 using MediatR;
-using SqlSugar;
+using Repository.Repositories;
 
 namespace Application.Handlers
 {
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, bool>
     {
-        private readonly ISqlSugarClient _db;
+        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ICurrentUser _currentUser;
 
-        public CreateMenuCommandHandler(ISqlSugarClient db, IMapper mapper)
+        public CreateMenuCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, IMapper mapper, ICurrentUser currentUser)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _currentUser = currentUser;
         }
 
         public async Task<bool> Handle(CreateMenuCommand request, CancellationToken cancellationToken)
         {
-            await ValidateMenuAsync(request);
-            var menu = _mapper.Map<Menu>(request);
-            return await _db.Insertable(menu).ExecuteCommandAsync() > 0;
+            using (var context = _unitOfWork.CreateContext())
+            {
+                var db = context.Menus.Context;
+                await ValidateMenuAsync(db, request);
+
+                var menu = _mapper.Map<Menu>(request);
+                menu.CreateBy = _currentUser.LoginName ?? "system";
+                menu.UpdateBy = _currentUser.LoginName ?? "system";
+                
+                await context.Menus.InsertAsync(menu);
+                context.Commit();
+
+                return true;
+            }
         }
 
-        private async Task ValidateMenuAsync(CreateMenuCommand request)
+        private async Task ValidateMenuAsync(ISqlSugarClient db, CreateMenuCommand request)
         {
             if (string.IsNullOrEmpty(request.Name))
                 throw new UserFriendlyException("菜单名称不能为空");
 
-            if (request.ParentId.HasValue)
+            if (request.ParentId.HasValue && request.ParentId.Value != 0)
             {
-                var parentExists = await _db.Queryable<Menu>()
-                    .AnyAsync(x => x.Id == request.ParentId.Value);
+                var parent = await db.Queryable<Menu>()
+                    .FirstAsync(x => x.Id == request.ParentId.Value);
 
-                if (!parentExists)
+                if (parent == null)
                     throw new UserFriendlyException("父菜单不存在");
             }
 
-            var nameExists = await _db.Queryable<Menu>()
-                .AnyAsync(x => x.Name == request.Name && x.ParentId == request.ParentId);
+            var existingMenu = await db.Queryable<Menu>()
+                .FirstAsync(x => x.Name == request.Name && x.ParentId == request.ParentId);
 
-            if (nameExists)
+            if (existingMenu != null)
                 throw new UserFriendlyException("同级菜单下已存在相同名称的菜单");
         }
     }
