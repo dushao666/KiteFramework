@@ -12,10 +12,12 @@ namespace Api.Controllers.System
     public class MenuController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMenuQueries _menuQueries;
 
-        public MenuController(IMediator mediator)
+        public MenuController(IMediator mediator, IMenuQueries menuQueries)
         {
             _mediator = mediator;
+            _menuQueries = menuQueries;
         }
 
         /// <summary>
@@ -23,9 +25,9 @@ namespace Api.Controllers.System
         /// </summary>
         [HttpGet("menuTree")]
         [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMenuTree([FromQuery] GetMenuTreeQuery query)
+        public async Task<IActionResult> GetMenuTree([FromQuery] bool includeHidden = false)
         {
-            var result = await _mediator.Send(query);
+            var result = await _menuQueries.GetMenuTreeAsync(includeHidden);
             return new JsonResult(result);
         }
 
@@ -34,9 +36,9 @@ namespace Api.Controllers.System
         /// </summary>
         [HttpGet("menuList")]
         [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMenuList([FromQuery] GetMenuListQuery query)
+        public async Task<IActionResult> GetMenuList([FromQuery] string keyword = null, [FromQuery] bool includeHidden = false)
         {
-            var result = await _mediator.Send(query);
+            var result = await _menuQueries.GetMenuListAsync(keyword, includeHidden);
             return new JsonResult(result);
         }
 

@@ -2,7 +2,7 @@
 using EasyCaching.Core;
 using System.Security.Claims;
 
-namespace Api.Controllers;
+namespace Api.Controllers.System;
 
 /// <summary>
 /// 登录接口

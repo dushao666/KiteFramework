@@ -1,4 +1,4 @@
-﻿using Application.Queries;
+﻿using Application.Queries.Menu;
 
 namespace Application.DependencyInjection;
 
@@ -13,8 +13,6 @@ public class QueriesModule : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        builder.Register(c => new FolderQueries(_serviceProvider)).As<IFolderQueries>().InstancePerLifetimeScope();
-        
-        
+        builder.Register(c => new MenuQueries(_serviceProvider)).As<IMenuQueries>().InstancePerLifetimeScope();
     }
 }

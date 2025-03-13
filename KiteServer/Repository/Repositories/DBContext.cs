@@ -1,7 +1,5 @@
 ﻿using Domain.Aggregate;
 using System.Linq.Expressions;
-using Domain.FileAndFolderInfo;
-using Domain.FileInfo;
 using Domain.System;
 using Domain.UserInfo;
 
@@ -13,10 +11,8 @@ public class DBContext : SugarUnitOfWork
     /// 用户
     /// </summary>
     public DbSet<UserInfo> Users { get; set; }
-
-    public DbSet<FileInfos> Files { get; set; }
+    
     public DbSet<Menu> Menus { get; set; }
-    public DbSet<FolderInfos> Folders { get; set; }
     
 }
 
