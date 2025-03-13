@@ -8,4 +8,8 @@
     <DocumentationFile>..\Api\SwaggerXml\domainshared.xml</DocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Constant\" />
+  </ItemGroup>
+
 </Project>

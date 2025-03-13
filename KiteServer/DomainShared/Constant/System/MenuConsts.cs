@@ -1,4 +1,4 @@
-namespace DomainShared.System
+namespace DomainShared.Constant.System
 {
     public class MenuConsts
     {

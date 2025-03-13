@@ -1,8 +1,6 @@
 using Application.Command.Menu;
-using Application.Dtos;
 using Application.Queries.Menu;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using DomainShared.Dto.System;
 
 namespace Api.Controllers.System
 {

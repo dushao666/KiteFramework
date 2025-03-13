@@ -1,5 +1,5 @@
-using Application.Dtos;
-using MediatR;
+using DomainShared.Dto.System;
+
 
 namespace Application.Queries.Menu
 {

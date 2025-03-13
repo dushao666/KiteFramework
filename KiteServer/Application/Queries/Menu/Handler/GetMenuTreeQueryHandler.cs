@@ -1,9 +1,6 @@
-using Application.Dtos;
-using Domain.System;
+using DomainShared.Dto.System;
 using MapsterMapper;
-using MediatR;
 using Repository.Repositories;
-using SqlSugar;
 
 namespace Application.Queries.Menu.Handler
 {

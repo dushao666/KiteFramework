@@ -1,4 +1,4 @@
-using DomainShared.System;
+using DomainShared.Constant.System;
 using SqlSugar;
 
 namespace Domain.System

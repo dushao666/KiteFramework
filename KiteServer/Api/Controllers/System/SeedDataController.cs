@@ -1,5 +1,3 @@
-using Application.Dtos;
-using Microsoft.AspNetCore.Mvc;
 using Repository.Services;
 
 namespace Api.Controllers.System

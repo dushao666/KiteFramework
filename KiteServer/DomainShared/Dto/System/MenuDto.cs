@@ -1,4 +1,4 @@
-namespace Application.Dtos
+namespace DomainShared.Dto.System
 {
     /// <summary>
     /// 菜单数据传输对象
