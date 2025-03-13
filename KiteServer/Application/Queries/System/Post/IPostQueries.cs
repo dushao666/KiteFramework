@@ -13,7 +13,7 @@ namespace Application.Queries.System.Post
         /// <param name="keyword">关键字搜索</param>
         /// <param name="status">状态过滤</param>
         /// <returns>岗位列表</returns>
-        Task<List<PostDto>> GetPostListAsync(string keyword = null, int? status = null);
+        Task<List<PostDto>> GetPostListAsync(string? keyword = null, int? status = null);
         
         /// <summary>
         /// 获取岗位详情

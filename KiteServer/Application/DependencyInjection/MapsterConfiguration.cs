@@ -1,4 +1,6 @@
-﻿namespace Application.DependencyInjection;
+﻿using Application.DependencyInjection.Mapster;
+
+namespace Application.DependencyInjection;
 
 /// <summary>
 /// Mapster配置
@@ -10,6 +12,15 @@ public class MapsterConfiguration : IRegister
     /// </summary>
     public void Register(TypeAdapterConfig config)
     {
-        // config.ForType<VoiceFile, VoiceFilePageListDto>().Map(dest => dest.Size, source => (source.Size / 1024).ToString("F2"));
+        // 自动获取所有映射配置
+        var registers = typeof(MapsterConfiguration).Assembly
+            .GetTypes()
+            .Where(t => !t.IsInterface && !t.IsAbstract && typeof(IMapsterConfigurationRegister).IsAssignableFrom(t))
+            .Select(t => (IMapsterConfigurationRegister)Activator.CreateInstance(t))
+            .ToList();
+
+        // 注册所有映射配置
+        registers.ForEach(register => register.Register(config));
+        
     }
 }
