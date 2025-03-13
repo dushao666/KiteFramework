@@ -1,4 +1,4 @@
-﻿namespace DomainShared.Enum;
+﻿namespace DomainShared.Enum.User;
 
 public enum LoginType
 {

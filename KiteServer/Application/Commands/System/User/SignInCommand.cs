@@ -1,4 +1,6 @@
-﻿namespace Application.Commands.System.User;
+﻿using DomainShared.Enum.User;
+
+namespace Application.Commands.System.User;
 
 public class SignInCommand : IRequest<LoginUserDto>
 {

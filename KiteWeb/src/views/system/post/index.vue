@@ -9,7 +9,8 @@
                     <el-input v-model="queryParams.name" placeholder="请输入岗位名称" clearable />
                 </el-form-item>
                 <el-form-item label="状态">
-                    <el-select v-model="queryParams.status" placeholder="岗位状态" clearable>
+                    <el-select v-model="queryParams.status" placeholder="岗位状态" clearable style="width: 120px"
+                        @change="handleQuery">
                         <el-option label="正常" :value="1" />
                         <el-option label="停用" :value="0" />
                     </el-select>
@@ -109,7 +110,7 @@ import { Edit, Delete } from '@element-plus/icons-vue'
 const queryParams = reactive({
     code: '',
     name: '',
-    status: undefined as number | undefined,
+    status: 1,
     pageNum: 1,
     pageSize: 10
 })
@@ -180,7 +181,7 @@ const handleQuery = () => {
 const resetQuery = () => {
     queryParams.code = ''
     queryParams.name = ''
-    queryParams.status = undefined
+    queryParams.status = 1
     queryParams.pageNum = 1
     getList()
 }

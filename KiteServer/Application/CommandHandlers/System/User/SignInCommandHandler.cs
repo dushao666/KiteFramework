@@ -1,6 +1,7 @@
 ﻿using Application.Commands.System.User;
 using Application.Services;
 using Domain.UserInfo;
+using DomainShared.Enum.User;
 using Repository.Repositories;
 
 namespace Application.CommandHandlers.System.User;

@@ -1,4 +1,5 @@
 ﻿using Application.Commands.System.User;
+using DomainShared.Enum.User;
 
 namespace Application.Validations;
 

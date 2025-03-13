@@ -1,7 +1,6 @@
  using Application.Commands.System.Post;
 using Application.Queries.System.Post;
 using DomainShared.Dto.System;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.System
 {
@@ -26,9 +25,9 @@ namespace Api.Controllers.System
         /// </summary>
         [HttpGet("list")]
         [ProducesResponseType(typeof(List<PostDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPostList([FromQuery] string keyword = null, [FromQuery] int? status = null)
+        public async Task<IActionResult> GetPostList([FromQuery] PostDto model)
         {
-            var result = await _postQueries.GetPostListAsync(keyword, status);
+            var result = await _postQueries.GetPostListAsync(model);
             return new JsonResult(result);
         }
 

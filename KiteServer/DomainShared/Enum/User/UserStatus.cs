@@ -1,4 +1,4 @@
-﻿namespace DomainShared.Enum;
+﻿namespace DomainShared.Enum.User;
 /// <summary>
 /// 用户状态
 /// </summary>

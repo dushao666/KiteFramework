@@ -10,11 +10,10 @@ namespace Application.Queries.System.Post
         /// <summary>
         /// 获取岗位列表
         /// </summary>
-        /// <param name="keyword">关键字搜索</param>
-        /// <param name="status">状态过滤</param>
-        /// <returns>岗位列表</returns>
-        Task<List<PostDto>> GetPostListAsync(string? keyword = null, int? status = null);
-        
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<List<PostDto>> GetPostListAsync(PostDto model);
+
         /// <summary>
         /// 获取岗位详情
         /// </summary>
@@ -22,4 +21,4 @@ namespace Application.Queries.System.Post
         /// <returns>岗位详情</returns>
         Task<PostDto> GetPostDetailAsync(long id);
     }
-} 
+}

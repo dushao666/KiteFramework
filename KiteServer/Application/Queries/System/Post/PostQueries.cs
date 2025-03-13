@@ -20,7 +20,7 @@ namespace Application.Queries.System.Post
         /// <summary>
         /// 获取岗位列表
         /// </summary>
-        public async Task<List<PostDto>> GetPostListAsync(string keyword = null, int? status = null)
+        public async Task<List<PostDto>> GetPostListAsync(PostDto model)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
@@ -34,15 +34,15 @@ namespace Application.Queries.System.Post
                     var query = db.Queryable<Domain.System.Post>()
                         .Where(x => !x.IsDeleted);
                     
-                    if (!string.IsNullOrEmpty(keyword))
+                    if (!string.IsNullOrEmpty(model.Name))
                     {
-                        query = query.Where(x => x.Name.Contains(keyword) || x.Code.Contains(keyword));
+                        query = query.Where(x => x.Name.Contains(model.Name));
                     }
                     
-                    if (status.HasValue)
-                    {
-                        query = query.Where(x => x.Status == status.Value);
-                    }
+                    // if (model.Status)
+                    // {
+                    //     query = query.Where(x => x.Status == status.Value);
+                    // }
                     
                     var posts = await query
                         .OrderBy(x => x.Sort)
