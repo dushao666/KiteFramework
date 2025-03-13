@@ -26,7 +26,7 @@ namespace Api.Controllers.System
         public async Task<IActionResult> GetMenuTree([FromQuery] GetMenuTreeQuery query)
         {
             var result = await _mediator.Send(query);
-            return new JsonResult(new AjaxResponse<List<MenuDto>>(result));
+            return new JsonResult(result);
         }
 
         /// <summary>
