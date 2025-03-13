@@ -8,11 +8,11 @@ namespace Application.CommandHandlers.System.Post
 {
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICurrentUser _currentUser;
 
-        public CreatePostCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, IMapper mapper, ICurrentUser currentUser)
+        public CreatePostCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, IMapper mapper, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

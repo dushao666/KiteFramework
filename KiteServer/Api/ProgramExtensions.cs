@@ -133,7 +133,7 @@ public static class ProgramExtensions
             });
 
         // 初始化表结构
-        ISugarUnitOfWork<DBContext> context = new SugarUnitOfWork<DBContext>(sqlSugar);
+        ISugarUnitOfWork<DbContext> context = new SugarUnitOfWork<DbContext>(sqlSugar);
         builder.Services.AddSingleton(context);
 
         // 注册自动建表服务

@@ -5,9 +5,9 @@ namespace Repository.Services.Seeds
 {
     public class MenuSeedData : ISeedData
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
 
-        public MenuSeedData(ISugarUnitOfWork<DBContext> unitOfWork)
+        public MenuSeedData(ISugarUnitOfWork<DbContext> unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

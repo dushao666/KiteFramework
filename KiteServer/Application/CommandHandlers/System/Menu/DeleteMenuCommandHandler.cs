@@ -5,10 +5,10 @@ namespace Application.CommandHandlers.System.Menu
 {
     public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly ICurrentUser _currentUser;
 
-        public DeleteMenuCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, ICurrentUser currentUser)
+        public DeleteMenuCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
             _currentUser = currentUser;
@@ -38,7 +38,7 @@ namespace Application.CommandHandlers.System.Menu
             }
         }
 
-        private async Task ValidateMenuAsync(DBContext context, long menuId)
+        private async Task ValidateMenuAsync(DbContext context, long menuId)
         {
             var menu = await context.Menus
                 .GetFirstAsync(x => x.Id == menuId && !x.IsDeleted)

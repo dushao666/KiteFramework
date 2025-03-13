@@ -5,7 +5,7 @@ using Domain.UserInfo;
 
 namespace Repository.Repositories;
 
-public class DBContext : SugarUnitOfWork
+public class DbContext : SugarUnitOfWork
 {
     /// <summary>
     /// 用户表

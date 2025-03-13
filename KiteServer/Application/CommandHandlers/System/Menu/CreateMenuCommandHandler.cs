@@ -6,11 +6,11 @@ namespace Application.CommandHandlers.System.Menu
 {
     public class CreateMenuCommandHandler : IRequestHandler<CreateMenuCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICurrentUser _currentUser;
 
-        public CreateMenuCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, IMapper mapper, ICurrentUser currentUser)
+        public CreateMenuCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, IMapper mapper, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -36,7 +36,7 @@ namespace Application.CommandHandlers.System.Menu
             }
         }
 
-        private async Task ValidateMenuAsync(DBContext context, CreateMenuCommand request)
+        private async Task ValidateMenuAsync(DbContext context, CreateMenuCommand request)
         {
             if (string.IsNullOrEmpty(request.Name))
                 throw new UserFriendlyException("菜单名称不能为空");

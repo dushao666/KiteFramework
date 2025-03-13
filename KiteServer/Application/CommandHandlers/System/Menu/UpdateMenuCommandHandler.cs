@@ -6,10 +6,10 @@ namespace Application.CommandHandlers.System.Menu
 {
     public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UpdateMenuCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, IMapper mapper)
+        public UpdateMenuCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -32,7 +32,7 @@ namespace Application.CommandHandlers.System.Menu
             }
         }
 
-        private async Task ValidateMenuAsync(DBContext context, UpdateMenuCommand request)
+        private async Task ValidateMenuAsync(DbContext context, UpdateMenuCommand request)
         {
             var menu = await context.Menus
                 .GetFirstAsync(x => x.Id == request.Id)

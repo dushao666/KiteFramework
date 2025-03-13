@@ -5,9 +5,9 @@ namespace Repository.Services.Seeds
 {
     public class PostSeedData : ISeedData
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
 
-        public PostSeedData(ISugarUnitOfWork<DBContext> unitOfWork)
+        public PostSeedData(ISugarUnitOfWork<DbContext> unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }

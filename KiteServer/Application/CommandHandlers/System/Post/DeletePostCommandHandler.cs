@@ -7,10 +7,10 @@ namespace Application.CommandHandlers.System.Post
 {
     public class DeletePostCommandHandler : IRequestHandler<DeletePostCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly ICurrentUser _currentUser;
 
-        public DeletePostCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, ICurrentUser currentUser)
+        public DeletePostCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
             _currentUser = currentUser;

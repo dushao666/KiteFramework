@@ -7,10 +7,10 @@ namespace Application.CommandHandlers.System.Post
 {
     public class UpdatePostStatusCommandHandler : IRequestHandler<UpdatePostStatusCommand, bool>
     {
-        private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+        private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
         private readonly ICurrentUser _currentUser;
 
-        public UpdatePostStatusCommandHandler(ISugarUnitOfWork<DBContext> unitOfWork, ICurrentUser currentUser)
+        public UpdatePostStatusCommandHandler(ISugarUnitOfWork<DbContext> unitOfWork, ICurrentUser currentUser)
         {
             _unitOfWork = unitOfWork;
             _currentUser = currentUser;

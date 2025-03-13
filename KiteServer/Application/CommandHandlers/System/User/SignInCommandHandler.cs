@@ -10,10 +10,10 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, LoginUserDto>
 {
     private readonly IConfiguration _configuration;
     private readonly IDingTalkService _companyService;
-    private readonly ISugarUnitOfWork<DBContext> _unitOfWork;
+    private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
 
     public SignInCommandHandler(IConfiguration configuration, IDingTalkService companyService,
-        ISugarUnitOfWork<DBContext> unitOfWork)
+        ISugarUnitOfWork<DbContext> unitOfWork)
     {
         _configuration = configuration;
         _companyService = companyService;

@@ -23,7 +23,7 @@ namespace Application.Queries.System.Menu
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DBContext>>();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
                 var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                 
                 using (var context = unitOfWork.CreateContext())
@@ -52,7 +52,7 @@ namespace Application.Queries.System.Menu
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DBContext>>();
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
                 var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
                 
                 using (var context = unitOfWork.CreateContext())
