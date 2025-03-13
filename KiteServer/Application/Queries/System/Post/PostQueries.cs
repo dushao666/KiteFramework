@@ -11,7 +11,7 @@ namespace Application.Queries.System.Post
     public class PostQueries : IPostQueries
     {
         private readonly IServiceProvider _serviceProvider;
-        
+
         public PostQueries(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -26,28 +26,29 @@ namespace Application.Queries.System.Post
             {
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
                 var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                
+
                 using (var context = unitOfWork.CreateContext())
                 {
                     var db = context.Posts.Context;
-                    
+
                     var query = db.Queryable<Domain.System.Post>()
                         .Where(x => !x.IsDeleted);
-                    
+
                     if (!string.IsNullOrEmpty(model.Name))
                     {
                         query = query.Where(x => x.Name.Contains(model.Name));
                     }
-                    
-                    // if (model.Status)
-                    // {
-                    //     query = query.Where(x => x.Status == status.Value);
-                    // }
-                    
+
+                    if (model.Status.HasValue)
+                    {
+                        query = query.Where(x => x.Status == model.Status.Value);
+                    }
+
+
                     var posts = await query
                         .OrderBy(x => x.Sort)
                         .ToListAsync();
-                    
+
                     return mapper.Map<List<PostDto>>(posts);
                 }
             }
@@ -62,18 +63,18 @@ namespace Application.Queries.System.Post
             {
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
                 var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
-                
+
                 using (var context = unitOfWork.CreateContext())
                 {
                     var post = await context.Posts
                         .GetFirstAsync(x => x.Id == id && !x.IsDeleted);
-                    
+
                     if (post == null)
                         return null;
-                    
+
                     return mapper.Map<PostDto>(post);
                 }
             }
         }
     }
-} 
+}

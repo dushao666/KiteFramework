@@ -11,8 +11,8 @@
                 <el-form-item label="状态">
                     <el-select v-model="queryParams.status" placeholder="岗位状态" clearable style="width: 120px"
                         @change="handleQuery">
-                        <el-option label="正常" :value="1" />
-                        <el-option label="停用" :value="0" />
+                        <el-option label="正常" :value="0" />
+                        <el-option label="停用" :value="1" />
                     </el-select>
                 </el-form-item>
                 <el-form-item>
@@ -28,18 +28,20 @@
             </div>
 
             <el-table v-loading="loading" :data="postList" border>
-                <el-table-column type="index" width="50" align="center" label="#" />
+                <el-table-column prop="id" width="50" align="center" label="Id" />
                 <el-table-column prop="code" label="岗位编码" align="center" />
                 <el-table-column prop="name" label="岗位名称" align="center" />
                 <el-table-column prop="sort" label="排序" align="center" width="80" />
-                <el-table-column prop="status" label="状态" align="center" width="100">
+                <el-table-column prop="status" label="状态" align="center" width="180">
                     <template #default="scope">
-                        <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
-                            @change="handleStatusChange(scope.row)" />
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <el-switch v-model="scope.row.status" :active-value="0" :inactive-value="1"
+                                @change="handleStatusChange(scope.row)" />
+                        </div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="remark" label="备注" align="center" show-overflow-tooltip />
-                <el-table-column prop="createTime" label="创建时间" align="center" width="160" />
+                <el-table-column prop="createTime" label="创建时间" align="center" width="230" />
                 <el-table-column label="操作" width="200" align="center">
                     <template #default="scope">
                         <div class="operation-buttons">
@@ -63,7 +65,7 @@
             <div class="pagination-container">
                 <el-pagination v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize"
                     :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
-                    @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+                    v-if="total > 0" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
             </div>
         </div>
 
@@ -81,8 +83,8 @@
                 </el-form-item>
                 <el-form-item label="岗位状态" prop="status">
                     <el-radio-group v-model="postForm.status">
-                        <el-radio :label="1">正常</el-radio>
-                        <el-radio :label="0">停用</el-radio>
+                        <el-radio :label="0">正常</el-radio>
+                        <el-radio :label="1">停用</el-radio>
                     </el-radio-group>
                 </el-form-item>
                 <el-form-item label="备注" prop="remark">
@@ -110,7 +112,7 @@ import { Edit, Delete } from '@element-plus/icons-vue'
 const queryParams = reactive({
     code: '',
     name: '',
-    status: 1,
+    status: 0,
     pageNum: 1,
     pageSize: 10
 })
@@ -181,7 +183,7 @@ const handleQuery = () => {
 const resetQuery = () => {
     queryParams.code = ''
     queryParams.name = ''
-    queryParams.status = 1
+    queryParams.status = 0
     queryParams.pageNum = 1
     getList()
 }
@@ -238,20 +240,26 @@ const handleDelete = (row: PostItem) => {
 
 // 处理状态变更
 const handleStatusChange = async (row: PostItem) => {
+    const newStatus = row.status // switch 已经改变了状态值
+    const statusText = newStatus === 0 ? '启用' : '停用'
+    const originalStatus = newStatus === 0 ? 1 : 0 // 保存原始状态用于恢复
+
     try {
-        const res = await updatePostStatus(row.id, row.status)
+        const res = await updatePostStatus(row.id, newStatus)
         if (res.code === 200) {
-            ElMessage.success('状态更新成功')
+            ElMessage.success(`${statusText}成功`)
+            // 刷新列表
+            getList()
         } else {
-            ElMessage.error(res.message || '状态更新失败')
+            ElMessage.error(res.message || `${statusText}失败`)
             // 恢复原状态
-            row.status = row.status === 1 ? 0 : 1
+            row.status = originalStatus
         }
     } catch (error) {
         console.error('更新岗位状态失败:', error)
-        ElMessage.error('状态更新失败')
+        ElMessage.error(`${statusText}失败`)
         // 恢复原状态
-        row.status = row.status === 1 ? 0 : 1
+        row.status = originalStatus
     }
 }
 
@@ -261,7 +269,7 @@ const resetForm = () => {
     postForm.code = ''
     postForm.name = ''
     postForm.sort = 0
-    postForm.status = 1
+    postForm.status = 0
     postForm.remark = ''
 
     if (postFormRef.value) {
