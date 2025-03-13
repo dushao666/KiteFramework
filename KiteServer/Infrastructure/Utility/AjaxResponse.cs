@@ -7,7 +7,7 @@ public class AjaxResponse
     [JsonPropertyName("code")]
     public int Code { get; set; }
 
-    [JsonPropertyName("msg")]
+    [JsonPropertyName("message")]
     public string Messages { get; set; }
 
     [JsonPropertyName("result")]

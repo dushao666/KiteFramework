@@ -10,6 +10,7 @@ using SqlSugar;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Infrastructure.Services;
 using Mapster;
@@ -165,7 +166,10 @@ public static class ProgramExtensions
             options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
             options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
             options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-            options.JsonSerializerOptions.PropertyNamingPolicy = null;
+            // 使用驼峰命名法（首字母小写）
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            // 可选：忽略空值
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         });
 
         //Mapster配置
