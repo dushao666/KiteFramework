@@ -27,6 +27,7 @@ namespace Infrastructure.Services
 
         public async Task UploadFileAsync(string localPath, string remotePath)
         {
+            await Task.Delay(1);
             var config = _configuration.GetSection("Upload:RemoteServer");
             if (!config.GetValue<bool>("Enabled"))
             {
