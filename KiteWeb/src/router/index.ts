@@ -66,6 +66,15 @@ const routes: Array<RouteRecordRaw> = [
         }
       },
       {
+        path: 'role',
+        name: 'Role',
+        component: () => import('../views/system/role/index.vue'),
+        meta: {
+          title: '角色管理',
+          requiresAuth: true
+        }
+      },
+      {
         path: 'post',
         name: 'Post',
         component: () => import('../views/system/post/index.vue'),

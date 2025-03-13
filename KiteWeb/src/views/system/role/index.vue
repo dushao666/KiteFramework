@@ -30,12 +30,8 @@
         <el-table-column prop="description" label="描述" align="center" show-overflow-tooltip />
         <el-table-column prop="status" label="状态" align="center">
           <template #default="scope">
-            <el-switch
-              v-model="scope.row.status"
-              :active-value="1"
-              :inactive-value="0"
-              @change="handleStatusChange(scope.row)"
-            />
+            <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+              @change="handleStatusChange(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" align="center" />
@@ -66,15 +62,9 @@
       </el-table>
 
       <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="queryParams.pageNum"
-          v-model:page-size="queryParams.pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize"
+          :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
+          @size-change="handleSizeChange" @current-change="handleCurrentChange" />
       </div>
     </div>
 
@@ -109,14 +99,8 @@
           <span>{{ currentRole?.name }}</span>
         </el-form-item>
         <el-form-item label="菜单权限">
-          <el-tree
-            ref="menuTreeRef"
-            :data="menuOptions"
-            show-checkbox
-            node-key="id"
-            :props="{ label: 'name', children: 'children' }"
-            default-expand-all
-          />
+          <el-tree ref="menuTreeRef" :data="menuOptions" show-checkbox node-key="id"
+            :props="{ label: 'name', children: 'children' }" default-expand-all />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -134,13 +118,13 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Edit, Delete, Setting } from '@element-plus/icons-vue'
 import { NAMES } from '../../../constants'
-import { 
-  getRoleList, 
-  addRole, 
-  updateRole, 
-  deleteRole, 
-  updateRoleStatus, 
-  getRoleMenus, 
+import {
+  getRoleList,
+  addRole,
+  updateRole,
+  deleteRole,
+  updateRoleStatus,
+  getRoleMenus,
   assignRoleMenus,
   RoleItem,
   RoleQuery
@@ -271,7 +255,7 @@ const handleDelete = (row: RoleItem) => {
       console.error('删除角色失败:', error)
       ElMessage.error('删除失败')
     }
-  }).catch(() => {})
+  }).catch(() => { })
 }
 
 // 处理状态变更
@@ -337,7 +321,7 @@ const submitForm = async () => {
 }
 
 // 获取菜单树
-const getMenuTree = async () => {
+const getMenuOptions = async () => {
   try {
     const res = await getMenuTree()
     if (res.code === 200) {
@@ -362,7 +346,7 @@ const handlePermission = async (row: RoleItem) => {
   permissionDialogVisible.value = true
 
   // 获取菜单树
-  await getMenuTree()
+  await getMenuOptions()
 
   // 获取角色已有权限
   try {
@@ -473,4 +457,4 @@ onMounted(() => {
     }
   }
 }
-</style> 
+</style>

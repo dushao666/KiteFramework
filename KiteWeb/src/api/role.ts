@@ -25,7 +25,7 @@ export interface RolePermission {
 // 获取角色列表
 export function getRoleList(params: RoleQuery) {
   return request({
-    url: '/system/role/list',
+    url: '/role/list',
     method: 'get',
     params
   })
@@ -34,7 +34,7 @@ export function getRoleList(params: RoleQuery) {
 // 获取角色详情
 export function getRoleDetail(id: number) {
   return request({
-    url: `/system/role/${id}`,
+    url: `/role/${id}`,
     method: 'get'
   })
 }
@@ -42,7 +42,7 @@ export function getRoleDetail(id: number) {
 // 添加角色
 export function addRole(data: RoleItem) {
   return request({
-    url: '/system/role',
+    url: '/role',
     method: 'post',
     data
   })
@@ -51,7 +51,7 @@ export function addRole(data: RoleItem) {
 // 更新角色
 export function updateRole(data: RoleItem) {
   return request({
-    url: '/system/role',
+    url: '/role',
     method: 'put',
     data
   })
@@ -60,7 +60,7 @@ export function updateRole(data: RoleItem) {
 // 删除角色
 export function deleteRole(id: number) {
   return request({
-    url: `/system/role/${id}`,
+    url: `/role/${id}`,
     method: 'delete'
   })
 }
@@ -68,7 +68,7 @@ export function deleteRole(id: number) {
 // 更新角色状态
 export function updateRoleStatus(id: number, status: number) {
   return request({
-    url: `/system/role/status`,
+    url: `/role/status`,
     method: 'put',
     data: { id, status }
   })
@@ -77,7 +77,7 @@ export function updateRoleStatus(id: number, status: number) {
 // 获取角色的权限菜单
 export function getRoleMenus(roleId: number) {
   return request({
-    url: `/system/role/menus/${roleId}`,
+    url: `/role/menus/${roleId}`,
     method: 'get'
   })
 }
@@ -85,7 +85,7 @@ export function getRoleMenus(roleId: number) {
 // 分配角色权限
 export function assignRoleMenus(data: RolePermission) {
   return request({
-    url: '/system/role/menus',
+    url: '/role/menus',
     method: 'put',
     data
   })

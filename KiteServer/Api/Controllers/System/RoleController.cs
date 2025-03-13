@@ -13,28 +13,28 @@ namespace Api.Controllers.System;
 /// 角色管理接口
 /// </summary>
 [ApiController]
-[Route("api/system/role")]
+[Route("api/[controller]")]
 public class RoleController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
+    private readonly IRoleQueries _roleQueries;
 
-    public RoleController(IMediator mediator, IMapper mapper)
+    public RoleController(IMediator mediator, IMapper mapper, IRoleQueries roleQueries)
     {
         _mediator = mediator;
         _mapper = mapper;
+        _roleQueries = roleQueries;
     }
 
     /// <summary>
     /// 获取角色列表
     /// </summary>
     [HttpGet("list")]
-    [ProducesResponseType(typeof(AjaxResponse<PagedList<RoleDto>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetRoleList([FromQuery] RoleDto queryDto)
+    [ProducesResponseType(typeof(AjaxResponse<List<RoleDto>>), StatusCodes.Status200OK)]
+    public async Task<AjaxResponse<List<RoleDto>>> GetRoleList([FromQuery] RoleDto queryDto)
     {
-        var query = new GetRoleListQuery { QueryDto = queryDto };
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        return await _roleQueries.GetRoleListAsync(queryDto);
     }
 
     /// <summary>
@@ -42,11 +42,9 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<RoleDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetRoleDetail(long id)
+    public async Task<AjaxResponse<RoleDto>> GetRoleDetail(long id)
     {
-        var query = new GetRoleDetailQuery { Id = id };
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        return await _roleQueries.GetRoleDetailAsync(id);
     }
 
     /// <summary>
@@ -54,21 +52,22 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(AjaxResponse<long>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AddRole([FromBody] AddRoleCommand command)
+    public async Task<AjaxResponse<long>> AddRole([FromBody] AddRoleCommand command)
     {
         var result = await _mediator.Send(command);
-        return Ok(result);
+        return new AjaxResponse<long>(result);
     }
 
     /// <summary>
     /// 更新角色
     /// </summary>
-    [HttpPut]
+    [HttpPut("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleCommand command)
+    public async Task<AjaxResponse<bool>> UpdateRole(long id, [FromBody] UpdateRoleCommand command)
     {
+        command.Id = id;
         var result = await _mediator.Send(command);
-        return Ok(result);
+        return new AjaxResponse<bool>(result);
     }
 
     /// <summary>
@@ -76,11 +75,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> DeleteRole(long id)
+    public async Task<AjaxResponse<bool>> DeleteRole(long id)
     {
-        var command = new DeleteRoleCommand { Id = id };
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        var result = await _mediator.Send(new DeleteRoleCommand { Id = id });
+        return new AjaxResponse<bool>(result);
     }
 
     /// <summary>
@@ -88,10 +86,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("status")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> UpdateRoleStatus([FromBody] UpdateRoleStatusCommand command)
+    public async Task<AjaxResponse<bool>> UpdateRoleStatus([FromBody] UpdateRoleStatusCommand command)
     {
         var result = await _mediator.Send(command);
-        return Ok(result);
+        return new AjaxResponse<bool>(result);
     }
 
     /// <summary>
@@ -99,11 +97,9 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpGet("menus/{roleId}")]
     [ProducesResponseType(typeof(AjaxResponse<List<long>>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetRoleMenus(long roleId)
+    public async Task<AjaxResponse<List<long>>> GetRoleMenus(long roleId)
     {
-        var query = new GetRoleMenusQuery { RoleId = roleId };
-        var result = await _mediator.Send(query);
-        return Ok(result);
+        return await _roleQueries.GetRoleMenusAsync(roleId);
     }
 
     /// <summary>
@@ -111,9 +107,9 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("menus")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> AssignRoleMenus([FromBody] AssignRoleMenusCommand command)
+    public async Task<AjaxResponse<bool>> AssignRoleMenus([FromBody] AssignRoleMenusCommand command)
     {
         var result = await _mediator.Send(command);
-        return Ok(result);
+        return new AjaxResponse<bool>(result);
     }
-} 
+}

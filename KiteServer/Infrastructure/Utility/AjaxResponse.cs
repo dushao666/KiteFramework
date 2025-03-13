@@ -4,17 +4,13 @@ namespace Infrastructure.Utility;
 
 public class AjaxResponse
 {
-    [JsonPropertyName("code")]
-    public int Code { get; set; }
+    [JsonPropertyName("code")] public int Code { get; set; }
 
-    [JsonPropertyName("message")]
-    public string Messages { get; set; }
+    [JsonPropertyName("message")] public string Messages { get; set; }
+    [JsonPropertyName("total")] public int Total { get; set; }
+    [JsonPropertyName("result")] public bool Results { get; set; }
 
-    [JsonPropertyName("result")]
-    public bool Results { get; set; }
-
-    [JsonPropertyName("success")]
-    public bool Success { get; set; }
+    [JsonPropertyName("success")] public bool Success { get; set; }
 
     public AjaxResponse()
     {
@@ -46,10 +42,10 @@ public class AjaxResponse
         };
     }
 }
+
 public class AjaxResponse<TData> : AjaxResponse
 {
-    [JsonPropertyName("data")]
-    public TData Data { get; set; }
+    [JsonPropertyName("data")] public TData Data { get; set; }
 
     public AjaxResponse()
     {

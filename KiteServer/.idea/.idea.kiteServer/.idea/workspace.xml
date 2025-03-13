@@ -7,34 +7,28 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="解决警告">
-      <change afterPath="$PROJECT_DIR$/Api/Controllers/System/RoleController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/AddRoleCommandHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/AssignRoleMenusCommandHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/DeleteRoleCommandHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleDetailQueryHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleListQueryHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleMenusQueryHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/UpdateRoleCommandHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/UpdateRoleStatusCommandHandler.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Commands/System/Role/AddRoleCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Commands/System/Role/AssignRoleMenusCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Commands/System/Role/DeleteRoleCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Commands/System/Role/UpdateRoleCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Commands/System/Role/UpdateRoleStatusCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/DependencyInjection/MapsterConfig.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleDetailQuery.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleListQuery.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleMenusQuery.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Domain/System/Role.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Domain/System/RoleMenu.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DomainShared/Dto/System/RoleDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/vcs.xml" beforeDir="false" />
+    <list default="true" id="d9534fa7-5ed1-4ea0-a4a9-8169d7d086e2" name="Changes" comment="1">
+      <change afterPath="$PROJECT_DIR$/Application/Queries/System/Role/IRoleQueries.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Application/Queries/System/Role/RoleQueries.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Domain/System/UserRole.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Repository/Services/Seeds/RoleSeedData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Repository/Services/Seeds/UserSeedData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.kiteServer/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/Controllers/System/RoleController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Controllers/System/RoleController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleDetailQueryHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleListQueryHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/CommandHandlers/System/Role/GetRoleMenusQueryHandler.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/DependencyInjection/QueriesModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/DependencyInjection/QueriesModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleDetailQuery.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleListQuery.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Queries/System/Role/GetRoleMenusQuery.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Domain/UserInfo/UserInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Domain/UserInfo/UserInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DomainShared/Dto/PagedList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Utility/AjaxResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Utility/AjaxResponse.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Repository/Repositories/DbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Repository/Repositories/DbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/views/importDetail/index.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/api/role.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/api/role.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/router/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/router/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../KiteWeb/src/views/system/role/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/../KiteWeb/src/views/system/role/index.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +42,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/DomainShared/Dto/User/LoginUserDto.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Code/GitHubCode/kiteFramework/KiteServer/Infrastructure/Services/SftpService.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="false" />
@@ -148,7 +143,31 @@
       <option name="project" value="LOCAL" />
       <updated>1741865372671</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="角色基础搭建">
+      <option name="closed" value="true" />
+      <created>1741873638794</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1741873638794</updated>
+    </task>
+    <task id="LOCAL-00006" summary="1">
+      <option name="closed" value="true" />
+      <created>1741873673692</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1741873673692</updated>
+    </task>
+    <task id="LOCAL-00007" summary="1">
+      <option name="closed" value="true" />
+      <created>1741873762693</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1741873762693</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +193,8 @@
     <MESSAGE value="生成菜单" />
     <MESSAGE value="最新" />
     <MESSAGE value="解决警告" />
-    <option name="LAST_COMMIT_MESSAGE" value="解决警告" />
+    <MESSAGE value="角色基础搭建" />
+    <MESSAGE value="1" />
+    <option name="LAST_COMMIT_MESSAGE" value="1" />
   </component>
 </project>

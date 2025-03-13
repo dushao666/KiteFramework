@@ -34,7 +34,7 @@
         /// 状态(0正常，1禁用)
         /// </summary>
         [SugarColumn(ColumnName = "status", Length = 2)]
-        public string? Status { get; private set; }
+        public string? Status { get;  set; }
 
         public UserInfo()
         {
