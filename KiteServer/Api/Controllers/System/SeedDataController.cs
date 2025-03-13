@@ -26,7 +26,7 @@ namespace Api.Controllers.System
             try
             {
                 _seedDataService.InitSeedData();
-                return new JsonResult(new AjaxResponse<bool>(true));
+                return new JsonResult(true);
             }
             catch (Exception ex)
             {

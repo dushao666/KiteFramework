@@ -152,9 +152,20 @@ namespace Repository.Services
                         {
                             Name = "部门管理",
                             Path = "/system/dept",
-                            Icon = "Office",
+                            Icon = "Notebook",
                             ParentId = system.Id,
                             Sort = 4,
+                            IsHidden = false,
+                            CreateBy = "system",
+                            UpdateBy = "system"
+                        },
+                        new Menu
+                        {
+                            Name = "岗位管理",
+                            Path = "/system/post",
+                            Icon = "Memo",
+                            ParentId = system.Id,
+                            Sort = 5,
                             IsHidden = false,
                             CreateBy = "system",
                             UpdateBy = "system"
