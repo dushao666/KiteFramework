@@ -22,6 +22,7 @@ namespace Application.Queries.Menu.Handler
                 // 获取菜单数据
                 var db = context.Menus.Context;
                 var menus = await db.Queryable<Domain.System.Menu>()
+                    .Where(x => !x.IsDeleted)
                     .WhereIF(!request.IncludeHidden, x => !x.IsHidden)
                     .OrderBy(x => x.Sort)
                     .ToListAsync();
