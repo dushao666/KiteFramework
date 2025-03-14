@@ -16,7 +16,7 @@ namespace Repository.Services.Seeds
         {
             using (var context = _unitOfWork.CreateContext())
             {
-                // ¼ì²é½ÇÉ«±íÊÇ·ñÓĞÊı¾İ
+                // æ£€æŸ¥è§’è‰²è¡¨æ˜¯å¦æœ‰æ•°æ®
                 var roleCount = context.Roles.AsQueryable().Count();
                 if (roleCount > 0)
                 {
@@ -25,58 +25,77 @@ namespace Repository.Services.Seeds
 
                 try
                 {
-                    // ´´½¨Ä¬ÈÏ½ÇÉ«
-                    var adminRole = new Role
+                    // åˆ›å»ºé»˜è®¤è§’è‰²
+                    var roles = new List<Role>
                     {
-                        Name = "³¬¼¶¹ÜÀíÔ±",
-                        Code = "admin",
-                        Description = "ÏµÍ³³¬¼¶¹ÜÀíÔ±£¬ÓµÓĞËùÓĞÈ¨ÏŞ",
-                        Status = 0,
-                        CreateBy = "system",
-                        UpdateBy = "system"
-                    };
-
-                    var operatorRole = new Role
-                    {
-                        Name = "ÆÕÍ¨ÓÃ»§",
-                        Code = "user",
-                        Description = "ÆÕÍ¨ÓÃ»§£¬ÓµÓĞ»ù±¾È¨ÏŞ",
-                        Status = 0,
-                        CreateBy = "system",
-                        UpdateBy = "system"
-                    };
-
-                    // ²åÈë½ÇÉ«Êı¾İ
-                    context.Roles.Insert(adminRole);
-                    context.Roles.Insert(operatorRole);
-                    context.Commit();
-                    
-                    // »ñÈ¡ËùÓĞ²Ëµ¥ID
-                    var menuIds = context.Menus.AsQueryable()
-                        .Where(m => !m.IsDeleted)
-                        .Select(m => m.Id)
-                        .ToList();
-                    
-                    // Îª¹ÜÀíÔ±½ÇÉ«·ÖÅäËùÓĞ²Ëµ¥È¨ÏŞ
-                    if (menuIds.Any())
-                    {
-                        var adminRoleMenus = menuIds.Select(menuId => new RoleMenu
+                        new Role
                         {
-                            RoleId = adminRole.Id,
-                            MenuId = menuId,
+                            Name = "è¶…çº§ç®¡ç†å‘˜",
+                            Code = "admin",
+                            Status = 0,
                             CreateBy = "system",
-                            UpdateBy = "system"
-                        }).ToList();
-                        
-                        context.RoleMenus.InsertRange(adminRoleMenus);
-                        context.Commit();
+                            UpdateBy = "system",
+                            Description = "è¶…çº§ç®¡ç†å‘˜ï¼Œæ‹¥æœ‰æ‰€æœ‰æƒé™"
+                        },
+                        new Role
+                        {
+                            Name = "æ™®é€šç”¨æˆ·",
+                            Code = "user",
+                            Status = 0,
+                            CreateBy = "system",
+                            UpdateBy = "system",
+                            Description = "æ™®é€šç”¨æˆ·ï¼Œæ‹¥æœ‰åŸºæœ¬æƒé™"
+                        }
+                    };
+
+                    // é€ä¸ªæ’å…¥è§’è‰²å¹¶è·å–ID
+                    foreach (var role in roles)
+                    {
+                        var roleId = context.Roles.Context.Insertable(role).ExecuteReturnBigIdentity();
+                        role.Id = roleId;
+                        Console.WriteLine($"åˆ›å»ºè§’è‰²: {role.Name}, ID: {role.Id}");
                     }
                     
-                    Console.WriteLine("½ÇÉ«ÖÖ×ÓÊı¾İ³õÊ¼»¯³É¹¦");
+                    context.Commit();
+
+                    // è·å–ç®¡ç†å‘˜è§’è‰²
+                    var adminRole = roles.First(r => r.Code == "admin");
+
+                    // è·å–æ‰€æœ‰èœå•
+                    var allMenus = context.Menus.GetList(m => !m.IsDeleted);
+                    if (allMenus.Any())
+                    {
+                        // ä¸ºç®¡ç†å‘˜è§’è‰²åˆ†é…æ‰€æœ‰èœå•æƒé™
+                        var roleMenus = new List<RoleMenu>();
+                        foreach (var menu in allMenus)
+                        {
+                            roleMenus.Add(new RoleMenu
+                            {
+                                RoleId = adminRole.Id,
+                                MenuId = menu.Id,
+                                CreateBy = "system",
+                                UpdateBy = "system"
+                            });
+                        }
+
+                        // æ‰¹é‡æ’å…¥è§’è‰²èœå•å…³è”
+                        if (roleMenus.Any())
+                        {
+                            context.RoleMenus.InsertRange(roleMenus);
+                            context.Commit();
+                            Console.WriteLine($"ä¸ºè§’è‰² {adminRole.Name} (ID: {adminRole.Id}) åˆ†é…äº† {roleMenus.Count} ä¸ªèœå•æƒé™");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("æ²¡æœ‰æ‰¾åˆ°èœå•æ•°æ®ï¼Œè·³è¿‡è§’è‰²èœå•å…³è”");
+                    }
+
+                    Console.WriteLine("è§’è‰²ç§å­æ•°æ®åˆå§‹åŒ–æˆåŠŸ");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"½ÇÉ«ÖÖ×ÓÊı¾İ³õÊ¼»¯Ê§°Ü: {ex.Message}");
+                    Console.WriteLine($"è§’è‰²ç§å­æ•°æ®åˆå§‹åŒ–å¤±è´¥: {ex.Message}");
                     throw;
                 }
             }
