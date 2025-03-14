@@ -16,19 +16,34 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="handleQuery">{{ NAMES.BUTTONS.SEARCH }}</el-button>
-                    <el-button @click="resetQuery">{{ NAMES.BUTTONS.RESET }}</el-button>
+                    <el-button type="primary" @click="handleQuery">
+                        <el-icon>
+                            <Search />
+                        </el-icon>
+                        <span>{{ NAMES.BUTTONS.SEARCH }}</span>
+                    </el-button>
+                    <el-button @click="resetQuery">
+                        <el-icon>
+                            <Refresh />
+                        </el-icon>
+                        <span>{{ NAMES.BUTTONS.RESET }}</span>
+                    </el-button>
                 </el-form-item>
             </el-form>
         </div>
 
         <div class="table-container">
             <div class="toolbar">
-                <el-button type="primary" @click="handleAdd">{{ NAMES.BUTTONS.ADD }}</el-button>
+                <el-button type="primary" @click="handleAdd">
+                    <el-icon>
+                        <Plus />
+                    </el-icon>
+                    <span>{{ NAMES.BUTTONS.ADD }}</span>
+                </el-button>
             </div>
 
             <el-table v-loading="loading" :data="postList" border>
-                <el-table-column prop="id" width="50" align="center" label="Id" />
+                <el-table-column prop="id" width="50" align="center" label="ID" />
                 <el-table-column prop="code" label="岗位编码" align="center" />
                 <el-table-column prop="name" label="岗位名称" align="center" />
                 <el-table-column prop="sort" label="排序" align="center" width="80" />
@@ -106,7 +121,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPostList, addPost, updatePost, deletePost, updatePostStatus, PostItem } from '../../../api/post'
 import { NAMES } from '../../../constants'
-import { Edit, Delete } from '@element-plus/icons-vue'
+import { Edit, Delete, Plus, Search, Refresh } from '@element-plus/icons-vue'
 
 // 查询参数
 const queryParams = reactive({
@@ -128,7 +143,7 @@ const postForm = reactive<PostFormData>({
     code: '',
     name: '',
     sort: 0,
-    status: 1,
+    status: 0,
     remark: ''
 })
 
@@ -161,7 +176,7 @@ const getList = async () => {
 
         if (res.code === 200) {
             postList.value = res.data
-            total.value = res.data.length // 如果后端返回总数，应该使用后端返回的总数
+            total.value = res.total || res.data.length // 如果后端返回总数，应该使用后端返回的总数
         } else {
             ElMessage.error(res.message || '获取岗位列表失败')
         }
@@ -321,6 +336,9 @@ onMounted(() => {
     .search-bar {
         margin-bottom: 15px;
         flex-shrink: 0;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
     }
 
     .toolbar {
@@ -340,6 +358,20 @@ onMounted(() => {
         :deep(.el-table) {
             flex: 1;
             overflow: hidden;
+
+            .el-table__header th {
+                background-color: #f5f7fa;
+                color: #606266;
+                font-weight: bold;
+            }
+
+            .el-table__row {
+                transition: background-color 0.3s;
+
+                &:hover {
+                    background-color: #f0f9eb;
+                }
+            }
         }
     }
 
@@ -347,6 +379,8 @@ onMounted(() => {
         margin-top: 15px;
         display: flex;
         justify-content: flex-end;
+        padding: 10px 0;
+        background-color: #fff;
     }
 }
 
@@ -355,9 +389,11 @@ onMounted(() => {
     display: flex;
     justify-content: center;
     gap: 8px;
+    flex-wrap: wrap;
 
     .el-button {
         padding: 4px 8px;
+        margin: 2px 0;
 
         .el-icon {
             margin-right: 4px;

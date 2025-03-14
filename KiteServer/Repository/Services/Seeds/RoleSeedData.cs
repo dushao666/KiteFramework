@@ -20,11 +20,14 @@ namespace Repository.Services.Seeds
                 var roleCount = context.Roles.AsQueryable().Count();
                 if (roleCount > 0)
                 {
+                    Console.WriteLine("角色数据已存在，跳过初始化");
                     return;
                 }
 
                 try
                 {
+                    Console.WriteLine("开始初始化角色数据...");
+                    
                     // 创建默认角色
                     var roles = new List<Role>
                     {
@@ -65,25 +68,36 @@ namespace Repository.Services.Seeds
                     var allMenus = context.Menus.GetList(m => !m.IsDeleted);
                     if (allMenus.Any())
                     {
-                        // 为管理员角色分配所有菜单权限
-                        var roleMenus = new List<RoleMenu>();
-                        foreach (var menu in allMenus)
+                        Console.WriteLine($"找到 {allMenus.Count} 个菜单");
+                        
+                        // 检查是否已存在角色菜单关联
+                        var existingRoleMenus = context.RoleMenus.GetList(rm => rm.RoleId == adminRole.Id);
+                        if (existingRoleMenus.Any())
                         {
-                            roleMenus.Add(new RoleMenu
-                            {
-                                RoleId = adminRole.Id,
-                                MenuId = menu.Id,
-                                CreateBy = "system",
-                                UpdateBy = "system"
-                            });
+                            Console.WriteLine($"角色 {adminRole.Name} 已有 {existingRoleMenus.Count} 个菜单关联，跳过分配");
                         }
-
-                        // 批量插入角色菜单关联
-                        if (roleMenus.Any())
+                        else
                         {
-                            context.RoleMenus.InsertRange(roleMenus);
-                            context.Commit();
-                            Console.WriteLine($"为角色 {adminRole.Name} (ID: {adminRole.Id}) 分配了 {roleMenus.Count} 个菜单权限");
+                            // 为管理员角色分配所有菜单权限
+                            var roleMenus = new List<RoleMenu>();
+                            foreach (var menu in allMenus)
+                            {
+                                roleMenus.Add(new RoleMenu
+                                {
+                                    RoleId = adminRole.Id,
+                                    MenuId = menu.Id,
+                                    CreateBy = "system",
+                                    UpdateBy = "system"
+                                });
+                            }
+
+                            // 批量插入角色菜单关联
+                            if (roleMenus.Any())
+                            {
+                                context.RoleMenus.InsertRange(roleMenus);
+                                context.Commit();
+                                Console.WriteLine($"为角色 {adminRole.Name} (ID: {adminRole.Id}) 分配了 {roleMenus.Count} 个菜单权限");
+                            }
                         }
                     }
                     else
@@ -96,6 +110,7 @@ namespace Repository.Services.Seeds
                 catch (Exception ex)
                 {
                     Console.WriteLine($"角色种子数据初始化失败: {ex.Message}");
+                    Console.WriteLine(ex.StackTrace);
                     throw;
                 }
             }

@@ -1,3 +1,4 @@
+using Domain.System;
 using DomainShared.Dto;
 using DomainShared.Dto.System;
 using Infrastructure.Exceptions;
@@ -129,6 +130,34 @@ namespace Application.Queries.System.Role
                         .ToListAsync();
 
                     return new AjaxResponse<List<long>>(menuIds);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取角色权限（菜单ID列表）
+        /// </summary>
+        public async Task<List<long>> GetRolePermissionsAsync(long roleId)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
+
+                using (var context = unitOfWork.CreateContext())
+                {
+                    // 检查角色是否存在
+                    var role = await context.Roles.GetFirstAsync(r => r.Id == roleId && !r.IsDeleted);
+                    if (role == null)
+                        return new List<long>();
+
+                    // 获取角色菜单关联
+                    var menuIds = await context.RoleMenus.Context
+                        .Queryable<RoleMenu>()
+                        .Where(rm => rm.RoleId == roleId && !rm.IsDeleted)
+                        .Select(rm => rm.MenuId)
+                        .ToListAsync();
+
+                    return menuIds;
                 }
             }
         }

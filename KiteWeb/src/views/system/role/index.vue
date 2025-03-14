@@ -2,40 +2,59 @@
   <div class="role-container">
     <div class="search-bar">
       <el-form :inline="true" :model="queryParams" class="demo-form-inline">
-        <el-form-item label="关键字">
-          <el-input v-model="queryParams.keyword" placeholder="请输入角色名称或编码" clearable />
+        <el-form-item label="角色名称">
+          <el-input v-model="queryParams.name" placeholder="请输入角色名称" clearable />
+        </el-form-item>
+        <el-form-item label="角色编码">
+          <el-input v-model="queryParams.code" placeholder="请输入角色编码" clearable />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="queryParams.status" placeholder="请选择状态" clearable>
-            <el-option :value="1" label="启用" />
-            <el-option :value="0" label="禁用" />
+          <el-select v-model="queryParams.status" placeholder="角色状态" clearable style="width: 120px"
+            @change="handleQuery">
+            <el-option label="正常" :value="0" />
+            <el-option label="停用" :value="1" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">{{ NAMES.BUTTONS.SEARCH }}</el-button>
-          <el-button @click="resetQuery">{{ NAMES.BUTTONS.RESET }}</el-button>
+          <el-button type="primary" @click="handleQuery">
+            <el-icon>
+              <Search />
+            </el-icon>
+            <span>{{ NAMES.BUTTONS.SEARCH }}</span>
+          </el-button>
+          <el-button @click="resetQuery">
+            <el-icon>
+              <Refresh />
+            </el-icon>
+            <span>{{ NAMES.BUTTONS.RESET }}</span>
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <div class="table-container">
       <div class="toolbar">
-        <el-button type="primary" @click="handleAdd">{{ NAMES.BUTTONS.ADD }}</el-button>
+        <el-button type="primary" @click="handleAdd">
+          <el-icon>
+            <Plus />
+          </el-icon>
+          <span>{{ NAMES.BUTTONS.ADD }}</span>
+        </el-button>
       </div>
 
       <el-table v-loading="loading" :data="roleList" border>
-        <el-table-column type="index" label="#" width="50" align="center" />
-        <el-table-column prop="name" label="角色名称" align="center" />
-        <el-table-column prop="code" label="角色编码" align="center" />
-        <el-table-column prop="description" label="描述" align="center" show-overflow-tooltip />
-        <el-table-column prop="status" label="状态" align="center">
+        <el-table-column prop="id" width="80" align="center" label="ID" />
+        <el-table-column prop="name" label="角色名称" align="center" min-width="120" />
+        <el-table-column prop="code" label="角色编码" align="center" min-width="120" />
+        <el-table-column prop="description" label="描述" align="center" show-overflow-tooltip min-width="180" />
+        <el-table-column prop="status" label="状态" align="center" width="100">
           <template #default="scope">
-            <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"
+            <el-switch v-model="scope.row.status" :active-value="0" :inactive-value="1"
               @change="handleStatusChange(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" align="center" />
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column prop="createTime" label="创建时间" align="center" width="180" show-overflow-tooltip />
+        <el-table-column label="操作" width="220" align="center" fixed="right">
           <template #default="scope">
             <div class="operation-buttons">
               <el-button type="primary" size="small" @click="handleEdit(scope.row)">
@@ -50,7 +69,8 @@
                 </el-icon>
                 <span>权限</span>
               </el-button>
-              <el-button type="danger" size="small" @click="handleDelete(scope.row)">
+              <el-button type="danger" size="small" @click="handleDelete(scope.row)"
+                :disabled="scope.row.code === 'admin'">
                 <el-icon>
                   <Delete />
                 </el-icon>
@@ -61,7 +81,7 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination-container">
+      <div class="pagination-container" v-if="total > 0">
         <el-pagination v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize"
           :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
           @size-change="handleSizeChange" @current-change="handleCurrentChange" />
@@ -69,44 +89,44 @@
     </div>
 
     <!-- 添加/编辑角色对话框 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" append-to-body>
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" append-to-body destroy-on-close>
       <el-form ref="roleFormRef" :model="roleForm" :rules="rules" label-width="100px">
         <el-form-item label="角色名称" prop="name">
           <el-input v-model="roleForm.name" placeholder="请输入角色名称" />
         </el-form-item>
         <el-form-item label="角色编码" prop="code">
-          <el-input v-model="roleForm.code" placeholder="请输入角色编码" />
+          <el-input v-model="roleForm.code" placeholder="请输入角色编码" :disabled="dialogType === 'edit'" />
         </el-form-item>
-        <el-form-item label="角色描述">
-          <el-input v-model="roleForm.description" type="textarea" placeholder="请输入角色描述" />
+        <el-form-item label="角色状态" prop="status">
+          <el-radio-group v-model="roleForm.status">
+            <el-radio :label="0">正常</el-radio>
+            <el-radio :label="1">停用</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-switch v-model="roleForm.status" :active-value="1" :inactive-value="0" />
+        <el-form-item label="角色描述" prop="description">
+          <el-input v-model="roleForm.description" type="textarea" :rows="3" placeholder="请输入角色描述" />
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
-          <el-button type="primary" @click="submitForm">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
+          <el-button type="primary" @click="submitForm" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
         </div>
       </template>
     </el-dialog>
 
     <!-- 分配权限对话框 -->
-    <el-dialog title="分配权限" v-model="permissionDialogVisible" width="500px" append-to-body>
-      <el-form label-width="100px">
-        <el-form-item label="角色名称">
-          <span>{{ currentRole?.name }}</span>
-        </el-form-item>
-        <el-form-item label="菜单权限">
-          <el-tree ref="menuTreeRef" :data="menuOptions" show-checkbox node-key="id"
-            :props="{ label: 'name', children: 'children' }" default-expand-all />
-        </el-form-item>
-      </el-form>
+    <el-dialog title="分配权限" v-model="permissionDialogVisible" width="600px" append-to-body destroy-on-close>
+      <div v-if="currentRole">
+        <p class="permission-title">为角色 <strong>{{ currentRole.name }}</strong> 分配权限</p>
+        <el-tree ref="permissionTreeRef" :data="permissionTree" show-checkbox node-key="id"
+          :props="{ label: 'name', children: 'children' }" default-expand-all />
+      </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="permissionDialogVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
-          <el-button type="primary" @click="submitPermission">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
+          <el-button type="primary" @click="savePermissions" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM
+            }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -116,68 +136,77 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Edit, Delete, Setting } from '@element-plus/icons-vue'
-import { NAMES } from '../../../constants'
-import {
-  getRoleList,
-  addRole,
-  updateRole,
-  deleteRole,
-  updateRoleStatus,
-  getRoleMenus,
-  assignRoleMenus,
-  RoleItem,
-  RoleQuery
-} from '../../../api/role'
+import { getRoleList, addRole, updateRole, deleteRole, updateRoleStatus, getRolePermissions, saveRolePermissions } from '../../../api/role'
 import { getMenuTree } from '../../../api/menu'
+import { NAMES } from '../../../constants'
+import { Edit, Delete, Plus, Search, Refresh, Setting } from '@element-plus/icons-vue'
 
 // 查询参数
-const queryParams = reactive<RoleQuery>({
-  keyword: '',
-  status: undefined,
+const queryParams = reactive({
+  name: '',
+  code: '',
+  status: undefined as number | undefined,
   pageNum: 1,
   pageSize: 10
 })
 
 // 角色表单
-const roleForm = reactive<RoleItem>({
-  id: undefined,
+interface RoleFormData {
+  id?: string | number;
+  name: string;
+  code: string;
+  description: string;
+  status: number;
+}
+
+const roleForm = reactive<RoleFormData>({
+  id: '',
   name: '',
   code: '',
   description: '',
-  status: 1
+  status: 0
 })
 
 // 表单校验规则
 const rules = {
-  name: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
-  code: [{ required: true, message: '角色编码不能为空', trigger: 'blur' }]
+  name: [
+    { required: true, message: '角色名称不能为空', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ],
+  code: [
+    { required: true, message: '角色编码不能为空', trigger: 'blur' },
+    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+  ]
 }
 
 const loading = ref(false)
-const roleList = ref<RoleItem[]>([])
+const submitLoading = ref(false)
+const roleList = ref<any[]>([])
 const total = ref(0)
 const dialogVisible = ref(false)
 const dialogType = ref('add')
 const roleFormRef = ref()
 const permissionDialogVisible = ref(false)
-const currentRole = ref<RoleItem | null>(null)
-const menuOptions = ref<any[]>([])
-const menuTreeRef = ref()
+const permissionTreeRef = ref()
+const permissionTree = ref<any[]>([])
+const currentRole = ref<any>(null)
 
 // 对话框标题
 const dialogTitle = computed(() => {
   return dialogType.value === 'add' ? '添加角色' : '编辑角色'
 })
 
-// 获取角色列表
+// 查询角色列表
 const getList = async () => {
   loading.value = true
   try {
-    const res = await getRoleList(queryParams)
+    const res = await getRoleList({
+      ...queryParams
+    })
+
     if (res.code === 200) {
-      roleList.value = res.data.list
-      total.value = res.data.total
+      roleList.value = res.data
+      total.value = res.total || res.data.length
     } else {
       ElMessage.error(res.message || '获取角色列表失败')
     }
@@ -197,7 +226,8 @@ const handleQuery = () => {
 
 // 重置查询条件
 const resetQuery = () => {
-  queryParams.keyword = ''
+  queryParams.name = ''
+  queryParams.code = ''
   queryParams.status = undefined
   queryParams.pageNum = 1
   getList()
@@ -224,7 +254,7 @@ const handleAdd = () => {
 }
 
 // 编辑角色
-const handleEdit = (row: RoleItem) => {
+const handleEdit = (row: any) => {
   dialogType.value = 'edit'
   resetForm()
   Object.assign(roleForm, row)
@@ -232,18 +262,18 @@ const handleEdit = (row: RoleItem) => {
 }
 
 // 删除角色
-const handleDelete = (row: RoleItem) => {
+const handleDelete = (row: any) => {
+  if (row.code === 'admin') {
+    ElMessage.warning('超级管理员角色不能删除')
+    return
+  }
+
   ElMessageBox.confirm('确定要删除该角色吗?', '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning'
   }).then(async () => {
     try {
-      if (!row.id) {
-        ElMessage.error('角色ID不存在')
-        return
-      }
-
       const res = await deleteRole(row.id)
       if (res.code === 200) {
         ElMessage.success('删除成功')
@@ -259,36 +289,93 @@ const handleDelete = (row: RoleItem) => {
 }
 
 // 处理状态变更
-const handleStatusChange = async (row: RoleItem) => {
-  try {
-    if (!row.id) {
-      ElMessage.error('角色ID不存在')
-      return
-    }
+const handleStatusChange = async (row: any) => {
+  if (row.code === 'admin' && row.status === 1) {
+    ElMessage.warning('超级管理员角色不能停用')
+    row.status = 0
+    return
+  }
 
-    const res = await updateRoleStatus(row.id, row.status)
+  const newStatus = row.status // switch 已经改变了状态值
+  const statusText = newStatus === 0 ? '启用' : '停用'
+  const originalStatus = newStatus === 0 ? 1 : 0 // 保存原始状态用于恢复
+
+  try {
+    const res = await updateRoleStatus(row.id, newStatus)
     if (res.code === 200) {
-      ElMessage.success('状态更新成功')
+      ElMessage.success(`${statusText}成功`)
+      // 刷新列表
+      getList()
     } else {
-      ElMessage.error(res.message || '状态更新失败')
+      ElMessage.error(res.message || `${statusText}失败`)
       // 恢复原状态
-      row.status = row.status === 1 ? 0 : 1
+      row.status = originalStatus
     }
   } catch (error) {
     console.error('更新角色状态失败:', error)
-    ElMessage.error('状态更新失败')
+    ElMessage.error(`${statusText}失败`)
     // 恢复原状态
-    row.status = row.status === 1 ? 0 : 1
+    row.status = originalStatus
+  }
+}
+
+// 处理权限分配
+const handlePermission = async (row: any) => {
+  currentRole.value = row
+  permissionDialogVisible.value = true
+
+  try {
+    // 获取菜单树
+    const menuRes = await getMenuTree()
+    if (menuRes.code === 200) {
+      permissionTree.value = menuRes.data
+
+      // 获取角色已有权限
+      const permRes = await getRolePermissions(row.id)
+      if (permRes.code === 200 && permissionTreeRef.value) {
+        // 设置选中的节点
+        permissionTreeRef.value.setCheckedKeys(permRes.data)
+      }
+    }
+  } catch (error) {
+    console.error('获取权限数据失败:', error)
+    ElMessage.error('获取权限数据失败')
+  }
+}
+
+// 保存权限设置
+const savePermissions = async () => {
+  if (!currentRole.value || !permissionTreeRef.value) return
+
+  submitLoading.value = true
+  try {
+    // 获取选中的节点ID
+    const checkedKeys = permissionTreeRef.value.getCheckedKeys()
+    const halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys()
+    const allKeys = [...checkedKeys, ...halfCheckedKeys]
+
+    const res = await saveRolePermissions(currentRole.value.id, allKeys)
+    if (res.code === 200) {
+      ElMessage.success('权限分配成功')
+      permissionDialogVisible.value = false
+    } else {
+      ElMessage.error(res.message || '权限分配失败')
+    }
+  } catch (error) {
+    console.error('保存权限失败:', error)
+    ElMessage.error('权限分配失败')
+  } finally {
+    submitLoading.value = false
   }
 }
 
 // 重置表单
 const resetForm = () => {
-  roleForm.id = undefined
+  roleForm.id = ''
   roleForm.name = ''
   roleForm.code = ''
   roleForm.description = ''
-  roleForm.status = 1
+  roleForm.status = 0
 
   if (roleFormRef.value) {
     roleFormRef.value.resetFields()
@@ -302,6 +389,7 @@ const submitForm = async () => {
   await roleFormRef.value.validate(async (valid: boolean) => {
     if (!valid) return
 
+    submitLoading.value = true
     try {
       const api = dialogType.value === 'add' ? addRole : updateRole
       const res = await api(roleForm)
@@ -316,88 +404,10 @@ const submitForm = async () => {
     } catch (error) {
       console.error(dialogType.value === 'add' ? '添加角色失败:' : '更新角色失败:', error)
       ElMessage.error(dialogType.value === 'add' ? '添加失败' : '更新失败')
+    } finally {
+      submitLoading.value = false
     }
   })
-}
-
-// 获取菜单树
-const getMenuOptions = async () => {
-  try {
-    const res = await getMenuTree()
-    if (res.code === 200) {
-      menuOptions.value = res.data
-    } else {
-      ElMessage.error(res.message || '获取菜单树失败')
-    }
-  } catch (error) {
-    console.error('获取菜单树失败:', error)
-    ElMessage.error('获取菜单树失败')
-  }
-}
-
-// 处理权限分配
-const handlePermission = async (row: RoleItem) => {
-  if (!row.id) {
-    ElMessage.error('角色ID不存在')
-    return
-  }
-
-  currentRole.value = row
-  permissionDialogVisible.value = true
-
-  // 获取菜单树
-  await getMenuOptions()
-
-  // 获取角色已有权限
-  try {
-    const res = await getRoleMenus(row.id)
-    if (res.code === 200) {
-      // 设置选中的节点
-      if (menuTreeRef.value) {
-        menuTreeRef.value.setCheckedKeys(res.data)
-      }
-    } else {
-      ElMessage.error(res.message || '获取角色权限失败')
-    }
-  } catch (error) {
-    console.error('获取角色权限失败:', error)
-    ElMessage.error('获取角色权限失败')
-  }
-}
-
-// 提交权限
-const submitPermission = async () => {
-  if (!currentRole.value || !currentRole.value.id) {
-    ElMessage.error('角色信息不完整')
-    return
-  }
-
-  if (!menuTreeRef.value) {
-    ElMessage.error('菜单树未加载')
-    return
-  }
-
-  try {
-    // 获取选中的节点和半选中的节点
-    const checkedKeys = menuTreeRef.value.getCheckedKeys()
-    const halfCheckedKeys = menuTreeRef.value.getHalfCheckedKeys()
-    const menuIds = [...checkedKeys, ...halfCheckedKeys]
-
-    const res = await assignRoleMenus({
-      roleId: currentRole.value.id,
-      menuIds
-    })
-
-    if (res.code === 200) {
-      ElMessage.success('权限分配成功')
-      permissionDialogVisible.value = false
-    } else {
-      ElMessage.error(res.message || '权限分配失败')
-    }
-  } catch (error) {
-    console.error('分配权限失败:', error)
-    ElMessage.error('权限分配失败')
-  }
 }
 
 onMounted(() => {
@@ -419,6 +429,9 @@ onMounted(() => {
   .search-bar {
     margin-bottom: 15px;
     flex-shrink: 0;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
   }
 
   .toolbar {
@@ -434,12 +447,33 @@ onMounted(() => {
     flex-direction: column;
     overflow: hidden;
     min-height: 0;
+
+    :deep(.el-table) {
+      flex: 1;
+      overflow: hidden;
+
+      .el-table__header th {
+        background-color: #f5f7fa;
+        color: #606266;
+        font-weight: bold;
+      }
+
+      .el-table__row {
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #f0f9eb;
+        }
+      }
+    }
   }
 
   .pagination-container {
     margin-top: 15px;
     display: flex;
     justify-content: flex-end;
+    padding: 10px 0;
+    background-color: #fff;
   }
 }
 
@@ -448,13 +482,21 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   gap: 8px;
+  flex-wrap: wrap;
 
   .el-button {
     padding: 4px 8px;
+    margin: 2px 0;
 
     .el-icon {
       margin-right: 4px;
     }
   }
+}
+
+.permission-title {
+  margin-bottom: 15px;
+  font-size: 16px;
+  color: #606266;
 }
 </style>

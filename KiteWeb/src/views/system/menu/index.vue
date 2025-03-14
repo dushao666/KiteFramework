@@ -9,34 +9,49 @@
           <el-switch v-model="queryParams.includeHidden" @change="handleQuery" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleQuery">{{ NAMES.BUTTONS.SEARCH }}</el-button>
-          <el-button @click="resetQuery">{{ NAMES.BUTTONS.RESET }}</el-button>
+          <el-button type="primary" @click="handleQuery">
+            <el-icon>
+              <Search />
+            </el-icon>
+            <span>{{ NAMES.BUTTONS.SEARCH }}</span>
+          </el-button>
+          <el-button @click="resetQuery">
+            <el-icon>
+              <Refresh />
+            </el-icon>
+            <span>{{ NAMES.BUTTONS.RESET }}</span>
+          </el-button>
         </el-form-item>
       </el-form>
     </div>
 
     <div class="table-container">
       <div class="toolbar">
-        <el-button type="primary" @click="() => handleAdd()">{{ NAMES.BUTTONS.ADD }}</el-button>
+        <el-button type="primary" @click="() => handleAdd()">
+          <el-icon>
+            <Plus />
+          </el-icon>
+          <span>{{ NAMES.BUTTONS.ADD }}</span>
+        </el-button>
         <el-button @click="toggleExpand" type="warning">
-          {{ isExpanded ? '折叠所有' : '展开所有' }}
-          <el-icon class="el-icon--right">
+          <el-icon>
             <component :is="isExpanded ? FolderOpened : Folder" />
           </el-icon>
+          <span>{{ isExpanded ? '折叠所有' : '展开所有' }}</span>
         </el-button>
       </div>
 
       <el-table ref="tableRef" v-loading="loading" :data="menuList" row-key="id" border :default-expand-all="isExpanded"
         :tree-props="{ children: 'children' }">
-        <el-table-column prop="name" label="菜单名称"  align="left" />
-        <el-table-column prop="path" label="路径"  align="center" />
-        <el-table-column prop="icon" label="图标"  align="center">
+        <el-table-column prop="name" label="菜单名称" align="left" />
+        <el-table-column prop="path" label="路径" align="center" />
+        <el-table-column prop="icon" label="图标" align="center">
           <template #default="scope">
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
-        <el-table-column prop="sort" label="排序"  align="center" />
-        <el-table-column prop="isHidden" label="是否隐藏"  align="center">
+        <el-table-column prop="sort" label="排序" align="center" />
+        <el-table-column prop="isHidden" label="是否隐藏" align="center">
           <template #default="scope">
             <el-tag :type="scope.row.isHidden ? 'danger' : 'success'">
               {{ scope.row.isHidden ? '是' : '否' }}
@@ -109,7 +124,7 @@ import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getMenuTree, addMenu, updateMenu, deleteMenu, MenuItem, getMenuList } from '../../../api/menu'
 import { NAMES } from '../../../constants'
-import { Folder, FolderOpened, Edit, Plus, Delete } from '@element-plus/icons-vue'
+import { Folder, FolderOpened, Edit, Plus, Delete, Search, Refresh } from '@element-plus/icons-vue'
 
 // 查询参数
 const queryParams = reactive({
@@ -156,34 +171,6 @@ const dialogTitle = computed(() => {
 // 切换展开/折叠状态
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
-
-  // 强制表格重新渲染
-  if (tableRef.value) {
-    // 获取表格的所有行数据
-    const rows = tableRef.value.data || []
-
-    // 递归处理所有行及其子行
-    const processRows = (items: MenuItem[]) => {
-      items.forEach(row => {
-        // 根据当前状态展开或折叠行
-        if (isExpanded.value) {
-          // 展开行
-          tableRef.value.toggleRowExpansion(row, true)
-        } else {
-          // 折叠行
-          tableRef.value.toggleRowExpansion(row, false)
-        }
-
-        // 处理子行
-        if (row.children && row.children.length > 0) {
-          processRows(row.children)
-        }
-      })
-    }
-
-    // 处理所有行
-    processRows(rows)
-  }
 }
 
 // 获取菜单选项（用于上级菜单选择）
@@ -191,9 +178,11 @@ const getMenuOptions = async () => {
   try {
     const res = await getMenuTree()
     if (res.code === 200) {
-      // 添加一个"顶级菜单"选项
-      const topMenu = { id: 0, name: '顶级菜单', path: '' };
-      menuOptions.value = [topMenu, ...res.data];
+      // 添加顶级菜单选项
+      const topMenu = { id: 0, name: '顶级菜单', path: '' }
+      menuOptions.value = [topMenu, ...res.data]
+    } else {
+      ElMessage.error(res.message || '获取菜单选项失败')
     }
   } catch (error) {
     console.error('获取菜单选项失败:', error)
@@ -270,6 +259,13 @@ const handleEdit = (row: MenuItem) => {
 
 // 删除菜单
 const handleDelete = (row: MenuItem) => {
+  // 检查是否是首页菜单
+  if (row.path === '/home') {
+    ElMessage.warning('首页菜单不能删除')
+    return
+  }
+
+  // 检查是否有子菜单
   if (row.children && row.children.length > 0) {
     ElMessage.warning('该菜单下存在子菜单，不能删除')
     return
@@ -360,6 +356,9 @@ onMounted(() => {
   .search-bar {
     margin-bottom: 15px;
     flex-shrink: 0;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
   }
 
   .toolbar {
@@ -376,61 +375,22 @@ onMounted(() => {
     overflow: hidden;
     min-height: 0;
 
-    :deep(.el-scrollbar) {
-      height: 100% !important;
-      flex: 1;
-    }
-
-    :deep(.el-scrollbar__wrap) {
-      height: 100% !important;
-    }
-
     :deep(.el-table) {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
 
-      .el-table__body-wrapper {
-        height: 100% !important;
+      .el-table__header th {
+        background-color: #f5f7fa;
+        color: #606266;
+        font-weight: bold;
       }
 
-      .el-table__header,
-      .el-table__body {
-        width: 100% !important;
-      }
+      .el-table__row {
+        transition: background-color 0.3s;
 
-      /* 让操作列自适应 */
-      .el-table__row .cell {
-        white-space: nowrap;
-      }
-
-      /* 移除表格底部可能的间隙 */
-      .el-table__footer-wrapper,
-      .el-table__append-wrapper {
-        display: none;
-      }
-
-      /* 确保表格内容垂直居中 */
-      .cell {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      /* 确保表头居中 */
-      th .cell {
-        justify-content: center;
-      }
-
-      /* 修改菜单名称列为左对齐 - 使用更精确的选择器 */
-      th:first-child .cell,
-      td:first-child .cell {
-        justify-content: flex-start;
-      }
-
-      /* 确保操作列有足够宽度 */
-      .el-table-column--operation .cell {
-        min-width: 240px;
+        &:hover {
+          background-color: #f0f9eb;
+        }
       }
     }
   }
@@ -441,9 +401,11 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   gap: 8px;
+  flex-wrap: wrap;
 
   .el-button {
     padding: 4px 8px;
+    margin: 2px 0;
 
     .el-icon {
       margin-right: 4px;

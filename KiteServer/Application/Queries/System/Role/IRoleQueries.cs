@@ -29,5 +29,12 @@ namespace Application.Queries.System.Role
         /// <param name="roleId">角色ID</param>
         /// <returns>菜单ID列表</returns>
         Task<AjaxResponse<List<long>>> GetRoleMenusAsync(long roleId);
+
+        /// <summary>
+        /// 获取角色权限（菜单ID列表）
+        /// </summary>
+        /// <param name="roleId">角色ID</param>
+        /// <returns>菜单ID列表</returns>
+        Task<List<long>> GetRolePermissionsAsync(long roleId);
     }
 } 

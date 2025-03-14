@@ -112,4 +112,15 @@ public class RoleController : ControllerBase
         var result = await _mediator.Send(command);
         return new AjaxResponse<bool>(result);
     }
+
+    /// <summary>
+    /// 获取角色权限
+    /// </summary>
+    [HttpGet("permissions/{roleId}")]
+    [ProducesResponseType(typeof(AjaxResponse<List<long>>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRolePermissions(long roleId)
+    {
+        var result = await _roleQueries.GetRolePermissionsAsync(roleId);
+        return new JsonResult(result);
+    }
 }

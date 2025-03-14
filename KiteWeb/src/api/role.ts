@@ -1,10 +1,10 @@
 import request from '../utils/request'
 
 export interface RoleItem {
-  id?: number;
+  id: string | number;
   name: string;
   code: string;
-  description?: string;
+  description: string;
   status: number;
   createTime?: string;
   updateTime?: string;
@@ -22,56 +22,81 @@ export interface RolePermission {
   menuIds: number[];
 }
 
+// API响应接口
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+  total?: number;
+}
+
 // 获取角色列表
-export function getRoleList(params: RoleQuery) {
+export function getRoleList(params = {}): Promise<ApiResponse<RoleItem[]>> {
   return request({
     url: '/role/list',
-    method: 'get',
+    method: 'GET',
     params
-  })
+  });
 }
 
 // 获取角色详情
-export function getRoleDetail(id: number) {
+export function getRoleDetail(id: string | number): Promise<ApiResponse<RoleItem>> {
   return request({
     url: `/role/${id}`,
-    method: 'get'
-  })
+    method: 'GET'
+  });
 }
 
 // 添加角色
-export function addRole(data: RoleItem) {
+export function addRole(data: RoleItem): Promise<ApiResponse<any>> {
   return request({
     url: '/role',
-    method: 'post',
+    method: 'POST',
     data
-  })
+  });
 }
 
 // 更新角色
-export function updateRole(data: RoleItem) {
+export function updateRole(data: RoleItem): Promise<ApiResponse<any>> {
   return request({
-    url: '/role',
-    method: 'put',
+    url: `/role/${data.id}`,
+    method: 'PUT',
     data
-  })
+  });
 }
 
 // 删除角色
-export function deleteRole(id: number) {
+export function deleteRole(id: string | number): Promise<ApiResponse<any>> {
   return request({
     url: `/role/${id}`,
-    method: 'delete'
-  })
+    method: 'DELETE'
+  });
 }
 
 // 更新角色状态
-export function updateRoleStatus(id: number, status: number) {
+export function updateRoleStatus(id: string | number, status: number): Promise<ApiResponse<any>> {
   return request({
     url: `/role/status`,
-    method: 'put',
+    method: 'PUT',
     data: { id, status }
-  })
+  });
+}
+
+// 获取角色权限
+export function getRolePermissions(roleId: string | number): Promise<ApiResponse<number[]>> {
+  return request({
+    url: `/role/permissions/${roleId}`,
+    method: 'GET'
+  });
+}
+
+// 保存角色权限
+export function saveRolePermissions(roleId: string | number, menuIds: number[]): Promise<ApiResponse<any>> {
+  return request({
+    url: `/role/permissions/${roleId}`,
+    method: 'PUT',
+    data: { menuIds }
+  });
 }
 
 // 获取角色的权限菜单
