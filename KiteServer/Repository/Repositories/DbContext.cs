@@ -1,7 +1,6 @@
 ﻿using Domain.Aggregate;
 using System.Linq.Expressions;
 using Domain.System;
-using Domain.UserInfo;
 
 namespace Repository.Repositories;
 
@@ -10,7 +9,7 @@ public class DbContext : SugarUnitOfWork
     /// <summary>
     /// 用户表
     /// </summary>
-    public DbSet<UserInfo> Users { get; set; }
+    public DbSet<User> Users { get; set; }
 
     /// <summary>
     /// 菜单表

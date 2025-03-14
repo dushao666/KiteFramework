@@ -1,6 +1,5 @@
 ﻿using Application.Commands.System.User;
 using Application.Services;
-using Domain.UserInfo;
 using DomainShared.Enum.User;
 using Repository.Repositories;
 
@@ -54,7 +53,7 @@ public class SignInCommandHandler : IRequestHandler<SignInCommand, LoginUserDto>
                     }
                     else
                     {
-                        userInfo = new UserInfo(authResponse.Result.UserName, authResponse.Result.UserName, "",
+                        userInfo = new Domain.System.User(authResponse.Result.UserName, authResponse.Result.UserName, "",
                             authResponse.Result.OpenId);
                         await context.Users.InsertAsync(userInfo);
                         model.UserId = userInfo.DingUserId;
