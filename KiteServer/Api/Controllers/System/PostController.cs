@@ -5,7 +5,7 @@ using DomainShared.Dto.System;
 namespace Api.Controllers.System
 {
     /// <summary>
-    /// ¸ÚÎ»¹ÜÀí
+    /// å²—ä½ç®¡ç†
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
@@ -21,7 +21,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// »ñÈ¡¸ÚÎ»ÁĞ±í
+        /// è·å–å²—ä½åˆ—è¡¨
         /// </summary>
         [HttpGet("list")]
         [ProducesResponseType(typeof(List<PostDto>), StatusCodes.Status200OK)]
@@ -32,7 +32,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// »ñÈ¡¸ÚÎ»ÏêÇé
+        /// è·å–å²—ä½è¯¦æƒ…
         /// </summary>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(PostDto), StatusCodes.Status200OK)]
@@ -46,7 +46,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// Ìí¼Ó¸ÚÎ»
+        /// æ·»åŠ å²—ä½
         /// </summary>
         [HttpPost]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
@@ -57,7 +57,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// ¸üĞÂ¸ÚÎ»
+        /// æ›´æ–°å²—ä½
         /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
@@ -69,7 +69,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// É¾³ı¸ÚÎ»
+        /// åˆ é™¤å²—ä½
         /// </summary>
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
@@ -80,7 +80,7 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
-        /// ¸üĞÂ¸ÚÎ»×´Ì¬
+        /// æ›´æ–°å²—ä½çŠ¶æ€
         /// </summary>
         [HttpPut("status")]
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]

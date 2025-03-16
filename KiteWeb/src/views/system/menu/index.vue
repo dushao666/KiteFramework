@@ -171,6 +171,14 @@ const dialogTitle = computed(() => {
 // 切换展开/折叠状态
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
+  
+  // 手动设置表格的展开状态
+  if (tableRef.value) {
+    const rows = tableRef.value.store.states.data.value
+    rows.forEach((row: any) => {
+      tableRef.value.toggleRowExpansion(row, isExpanded.value)
+    })
+  }
 }
 
 // 获取菜单选项（用于上级菜单选择）

@@ -1,4 +1,5 @@
 using Domain.System;
+using Microsoft.Extensions.Configuration;
 using Repository.Repositories;
 
 namespace Repository.Services.Seeds
@@ -6,25 +7,37 @@ namespace Repository.Services.Seeds
     public class MenuSeedData : ISeedData
     {
         private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
+        private readonly IConfiguration _configuration;
 
-        public MenuSeedData(ISugarUnitOfWork<DbContext> unitOfWork)
+        public MenuSeedData(ISugarUnitOfWork<DbContext> unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public void Initialize()
         {
             using (var context = _unitOfWork.CreateContext())
             {
-                // 检查菜单表是否有数据
-                var menuCount = context.Menus.AsQueryable().Count();
-                if (menuCount > 0)
+                // 检查是否需要重新创建数据库
+                bool recreateDatabase = _configuration.GetValue<bool>("SeedData:RecreateDatabase", false);
+                
+                // 如果不是重新创建数据库，则检查表中是否已有数据
+                if (!recreateDatabase)
                 {
-                    return;
+                    // 检查菜单表是否有数据
+                    var menuCount = context.Menus.AsQueryable().Count();
+                    if (menuCount > 0)
+                    {
+                        Console.WriteLine("菜单数据已存在，跳过初始化");
+                        return;
+                    }
                 }
 
                 try
                 {
+                    Console.WriteLine("开始初始化菜单数据...");
+                    
                     // 创建并插入顶级菜单
                     var homeMenu = new Menu
                     {
@@ -49,7 +62,7 @@ namespace Repository.Services.Seeds
                         CreateBy = "system",
                         UpdateBy = "system"
                     };
-
+                    
                     var monitorMenu = new Menu
                     {
                         Name = "监控管理",
@@ -74,20 +87,22 @@ namespace Repository.Services.Seeds
                         UpdateBy = "system"
                     };
 
-                    // 插入顶级菜单
-                    context.Menus.Insert(homeMenu);
-                    context.Menus.Insert(systemMenu);
-                    context.Menus.Insert(monitorMenu);
-                    context.Menus.Insert(toolMenu);
+                    // 插入顶级菜单并获取ID
+                    var homeId = context.Menus.Context.Insertable(homeMenu).ExecuteReturnBigIdentity();
+                    homeMenu.Id = homeId;
                     
-                    // 提交事务以获取自动生成的ID
+                    var systemId = context.Menus.Context.Insertable(systemMenu).ExecuteReturnBigIdentity();
+                    systemMenu.Id = systemId;
+                    
+                    var monitorId = context.Menus.Context.Insertable(monitorMenu).ExecuteReturnBigIdentity();
+                    monitorMenu.Id = monitorId;
+                    
+                    var toolId = context.Menus.Context.Insertable(toolMenu).ExecuteReturnBigIdentity();
+                    toolMenu.Id = toolId;
+                    
                     context.Commit();
                     
-                    // 查询插入的菜单ID
-                    var home = context.Menus.GetFirst(m => m.Name == "首页");
-                    var system = context.Menus.GetFirst(m => m.Name == "系统管理");
-                    var monitor = context.Menus.GetFirst(m => m.Name == "监控管理");
-                    var tool = context.Menus.GetFirst(m => m.Name == "系统工具");
+                    Console.WriteLine($"创建顶级菜单: 首页(ID: {homeId}), 系统管理(ID: {systemId}), 监控管理(ID: {monitorId}), 系统工具(ID: {toolId})");
 
                     // 创建系统管理子菜单
                     var systemChildren = new List<Menu>
@@ -97,9 +112,9 @@ namespace Repository.Services.Seeds
                             Name = "用户管理",
                             Path = "/system/user",
                             Icon = "User",
-                            ParentId = system.Id,
                             Sort = 1,
                             IsHidden = false,
+                            ParentId = systemId,
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -108,9 +123,9 @@ namespace Repository.Services.Seeds
                             Name = "角色管理",
                             Path = "/system/role",
                             Icon = "UserFilled",
-                            ParentId = system.Id,
                             Sort = 2,
                             IsHidden = false,
+                            ParentId = systemId,
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -119,9 +134,9 @@ namespace Repository.Services.Seeds
                             Name = "菜单管理",
                             Path = "/system/menu",
                             Icon = "Menu",
-                            ParentId = system.Id,
                             Sort = 3,
                             IsHidden = false,
+                            ParentId = systemId,
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -130,9 +145,9 @@ namespace Repository.Services.Seeds
                             Name = "部门管理",
                             Path = "/system/dept",
                             Icon = "Notebook",
-                            ParentId = system.Id,
                             Sort = 4,
                             IsHidden = false,
+                            ParentId = systemId,
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -141,9 +156,9 @@ namespace Repository.Services.Seeds
                             Name = "岗位管理",
                             Path = "/system/post",
                             Icon = "Memo",
-                            ParentId = system.Id,
                             Sort = 5,
                             IsHidden = false,
+                            ParentId = systemId,
                             CreateBy = "system",
                             UpdateBy = "system"
                         }
@@ -157,7 +172,7 @@ namespace Repository.Services.Seeds
                             Name = "在线用户",
                             Path = "/monitor/online",
                             Icon = "Connection",
-                            ParentId = monitor.Id,
+                            ParentId = monitorId,
                             Sort = 1,
                             IsHidden = false,
                             CreateBy = "system",
@@ -168,7 +183,7 @@ namespace Repository.Services.Seeds
                             Name = "操作日志",
                             Path = "/monitor/log",
                             Icon = "Document",
-                            ParentId = monitor.Id,
+                            ParentId = monitorId,
                             Sort = 2,
                             IsHidden = false,
                             CreateBy = "system",
@@ -179,7 +194,7 @@ namespace Repository.Services.Seeds
                             Name = "系统性能",
                             Path = "/monitor/server",
                             Icon = "Cpu",
-                            ParentId = monitor.Id,
+                            ParentId = monitorId,
                             Sort = 3,
                             IsHidden = false,
                             CreateBy = "system",
@@ -195,7 +210,7 @@ namespace Repository.Services.Seeds
                             Name = "代码生成",
                             Path = "/tool/gen",
                             Icon = "Edit",
-                            ParentId = tool.Id,
+                            ParentId = toolId,
                             Sort = 1,
                             IsHidden = false,
                             CreateBy = "system",
@@ -206,7 +221,7 @@ namespace Repository.Services.Seeds
                             Name = "系统接口",
                             Path = "/tool/swagger",
                             Icon = "Link",
-                            ParentId = tool.Id,
+                            ParentId = toolId,
                             Sort = 2,
                             IsHidden = false,
                             CreateBy = "system",
@@ -214,19 +229,20 @@ namespace Repository.Services.Seeds
                         }
                     };
 
-                    // 插入子菜单
+                    // 批量插入子菜单
                     context.Menus.InsertRange(systemChildren);
                     context.Menus.InsertRange(monitorChildren);
                     context.Menus.InsertRange(toolChildren);
-
-                    // 提交所有更改
                     context.Commit();
                     
-                    Console.WriteLine("菜单种子数据初始化成功");
+                    Console.WriteLine($"创建了 {systemChildren.Count} 个系统管理子菜单");
+                    Console.WriteLine($"创建了 {monitorChildren.Count} 个监控管理子菜单");
+                    Console.WriteLine($"创建了 {toolChildren.Count} 个系统工具子菜单");
+                    Console.WriteLine("菜单数据初始化成功");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"菜单种子数据初始化失败: {ex.Message}");
+                    Console.WriteLine($"菜单数据初始化失败: {ex.Message}");
                     throw;
                 }
             }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Repository.Services.Seeds;
 
 namespace Repository.Services
@@ -8,10 +9,12 @@ namespace Repository.Services
     public class SeedDataService
     {
         private readonly IEnumerable<ISeedData> _seedDataServices;
+        private readonly IConfiguration _configuration;
 
-        public SeedDataService(IEnumerable<ISeedData> seedDataServices)
+        public SeedDataService(IEnumerable<ISeedData> seedDataServices, IConfiguration configuration)
         {
             _seedDataServices = seedDataServices;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -19,6 +22,14 @@ namespace Repository.Services
         /// </summary>
         public void InitSeedData()
         {
+            // 检查是否启用种子数据生成
+            bool seedDataEnabled = _configuration.GetValue<bool>("SeedData:Enabled", false);
+            if (!seedDataEnabled)
+            {
+                Console.WriteLine("种子数据生成已禁用，跳过初始化");
+                return;
+            }
+            
             try
             {
                 Console.WriteLine("开始初始化种子数据...");

@@ -1,4 +1,5 @@
 using Domain.System;
+using Microsoft.Extensions.Configuration;
 using Repository.Repositories;
 
 namespace Repository.Services.Seeds
@@ -6,22 +7,31 @@ namespace Repository.Services.Seeds
     public class UserSeedData : ISeedData
     {
         private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
+        private readonly IConfiguration _configuration;
 
-        public UserSeedData(ISugarUnitOfWork<DbContext> unitOfWork)
+        public UserSeedData(ISugarUnitOfWork<DbContext> unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public void Initialize()
         {
             using (var context = _unitOfWork.CreateContext())
             {
-                // 检查用户表是否有数据
-                var userCount = context.Users.AsQueryable().Count();
-                if (userCount > 0)
+                // 检查是否需要重新创建数据库
+                bool recreateDatabase = _configuration.GetValue<bool>("SeedData:RecreateDatabase", false);
+                
+                // 如果不是重新创建数据库，则检查表中是否已有数据
+                if (!recreateDatabase)
                 {
-                    Console.WriteLine("用户数据已存在，跳过初始化");
-                    return;
+                    // 检查用户表是否有数据
+                    var userCount = context.Users.AsQueryable().Count();
+                    if (userCount > 0)
+                    {
+                        Console.WriteLine("用户数据已存在，跳过初始化");
+                        return;
+                    }
                 }
 
                 try
@@ -46,15 +56,15 @@ namespace Repository.Services.Seeds
                     context.Commit();
 
                     Console.WriteLine($"创建的管理员用户ID: {adminUser.Id}");
-
+                    
                     // 获取管理员角色
-                    var adminRole = context.Roles.GetFirst(r => r.Code == "admin");
+                    var adminRole = context.Roles.GetFirst(r => r.Code == "admin" && !r.IsDeleted);
                     if (adminRole == null)
                     {
                         Console.WriteLine("未找到管理员角色，跳过用户角色关联");
                         return;
                     }
-
+                    
                     Console.WriteLine($"找到管理员角色ID: {adminRole.Id}");
 
                     // 检查是否已存在用户角色关联
@@ -73,7 +83,7 @@ namespace Repository.Services.Seeds
                             CreateBy = "system",
                             UpdateBy = "system"
                         };
-
+                        
                         // 插入用户角色关联
                         context.UserRoles.Insert(userRole);
                         context.Commit();
@@ -120,7 +130,7 @@ namespace Repository.Services.Seeds
                         context.Commit();
                         Console.WriteLine($"为角色ID={adminRole.Id}分配了{roleMenus.Count}个菜单权限");
                     }
-
+                    
                     Console.WriteLine("用户种子数据初始化成功");
                 }
                 catch (Exception ex)

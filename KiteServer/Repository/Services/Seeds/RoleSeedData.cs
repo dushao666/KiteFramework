@@ -1,4 +1,5 @@
 using Domain.System;
+using Microsoft.Extensions.Configuration;
 using Repository.Repositories;
 
 namespace Repository.Services.Seeds
@@ -6,22 +7,31 @@ namespace Repository.Services.Seeds
     public class RoleSeedData : ISeedData
     {
         private readonly ISugarUnitOfWork<DbContext> _unitOfWork;
+        private readonly IConfiguration _configuration;
 
-        public RoleSeedData(ISugarUnitOfWork<DbContext> unitOfWork)
+        public RoleSeedData(ISugarUnitOfWork<DbContext> unitOfWork, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
+            _configuration = configuration;
         }
 
         public void Initialize()
         {
             using (var context = _unitOfWork.CreateContext())
             {
-                // 检查角色表是否有数据
-                var roleCount = context.Roles.AsQueryable().Count();
-                if (roleCount > 0)
+                // 检查是否需要重新创建数据库
+                bool recreateDatabase = _configuration.GetValue<bool>("SeedData:RecreateDatabase", false);
+                
+                // 如果不是重新创建数据库，则检查表中是否已有数据
+                if (!recreateDatabase)
                 {
-                    Console.WriteLine("角色数据已存在，跳过初始化");
-                    return;
+                    // 检查角色表是否有数据
+                    var roleCount = context.Roles.AsQueryable().Count();
+                    if (roleCount > 0)
+                    {
+                        Console.WriteLine("角色数据已存在，跳过初始化");
+                        return;
+                    }
                 }
 
                 try
@@ -60,7 +70,7 @@ namespace Repository.Services.Seeds
                     }
                     
                     context.Commit();
-
+                    
                     // 获取管理员角色
                     var adminRole = roles.First(r => r.Code == "admin");
 
@@ -105,11 +115,11 @@ namespace Repository.Services.Seeds
                         Console.WriteLine("没有找到菜单数据，跳过角色菜单关联");
                     }
 
-                    Console.WriteLine("角色种子数据初始化成功");
+                    Console.WriteLine("角色数据初始化成功");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"角色种子数据初始化失败: {ex.Message}");
+                    Console.WriteLine($"角色数据初始化失败: {ex.Message}");
                     Console.WriteLine(ex.StackTrace);
                     throw;
                 }
