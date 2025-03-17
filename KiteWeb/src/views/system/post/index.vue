@@ -181,7 +181,7 @@ const getList = async () => {
             ElMessage.error(res.message || '获取岗位列表失败')
         }
     } catch (error) {
-        console.error('获取岗位列表失败:', error)
+        // 获取岗位列表失败
         ElMessage.error('获取岗位列表失败')
     } finally {
         loading.value = false
@@ -247,8 +247,8 @@ const handleDelete = (row: PostItem) => {
                 ElMessage.error(res.message || '删除失败')
             }
         } catch (error) {
-            console.error('删除岗位失败:', error)
-            ElMessage.error('删除失败')
+            // 删除岗位失败
+            ElMessage.error('删除岗位失败')
         }
     }).catch(() => { })
 }
@@ -271,8 +271,8 @@ const handleStatusChange = async (row: PostItem) => {
             row.status = originalStatus
         }
     } catch (error) {
-        console.error('更新岗位状态失败:', error)
-        ElMessage.error(`${statusText}失败`)
+        // 更新岗位状态失败
+        ElMessage.error('更新岗位状态失败')
         // 恢复原状态
         row.status = originalStatus
     }
@@ -311,8 +311,8 @@ const submitForm = async () => {
                 ElMessage.error(res.message || (dialogType.value === 'add' ? '添加失败' : '更新失败'))
             }
         } catch (error) {
-            console.error(dialogType.value === 'add' ? '添加岗位失败:' : '更新岗位失败:', error)
-            ElMessage.error(dialogType.value === 'add' ? '添加失败' : '更新失败')
+            // 提交表单失败
+            ElMessage.error(dialogType.value === 'add' ? '添加岗位失败' : '更新岗位失败')
         }
     })
 }

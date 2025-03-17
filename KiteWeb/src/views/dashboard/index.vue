@@ -148,11 +148,11 @@ const visitChartRef = ref<HTMLElement | null>(null)
 const dataChartRef = ref<HTMLElement | null>(null)
 
 onMounted(() => {
-  console.log('仪表盘已加载')
+  // 仪表盘已加载
 })
 
 onUnmounted(() => {
-  console.log('仪表盘已卸载')
+  // 仪表盘已卸载
 })
 </script>
 

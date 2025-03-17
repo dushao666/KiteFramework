@@ -87,7 +87,7 @@ const toggleSidebar = () => {
 }
 
 // 获取菜单数据
-const getMenuData = async () => {
+const fetchMenuData = async () => {
     try {
         // 使用getUserMenus获取当前用户的菜单
         const res = await getUserMenus()
@@ -107,22 +107,14 @@ const getMenuData = async () => {
             ]
         }
     } catch (error) {
-        console.error('获取菜单数据失败:', error)
-        menuList.value = [
-            {
-                id: 1,
-                name: '首页',
-                path: '/home',
-                icon: 'HomeFilled',
-                children: []
-            }
-        ]
+        // 获取菜单数据失败
+        ElMessage.error('获取菜单数据失败')
     }
 }
 
 // 监听菜单刷新事件
 const handleRefreshMenu = () => {
-    getMenuData()
+    fetchMenuData()
 }
 
 // 跳转到个人信息页面
@@ -146,7 +138,7 @@ const handleLogout = () => {
 }
 
 onMounted(() => {
-    getMenuData()
+    fetchMenuData()
     // 添加菜单刷新事件监听
     window.addEventListener('refresh-menu', handleRefreshMenu)
 })

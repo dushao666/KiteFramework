@@ -40,7 +40,7 @@ service.interceptors.request.use(
     return config
   },
   error => {
-    console.error('请求错误:', error)
+    // 请求错误处理
     return Promise.reject(error)
   }
 )
@@ -55,8 +55,8 @@ service.interceptors.response.use(
     }
     return res
   },
-  async (error: AxiosError<ApiErrorResponse>) => {
-    console.error('响应错误:', error)
+  error => {
+    // 响应错误处理
     const userStore = useUserStore()
 
     if (error.code === 'ECONNABORTED') {
@@ -67,7 +67,7 @@ service.interceptors.response.use(
         case 401:
           ElMessage.error('登录已过期，请重新登录')
           userStore.logout()
-          await router.push('/login')
+          router.push('/login')
           break
         case 403:
           ElMessage.error('没有权限访问')

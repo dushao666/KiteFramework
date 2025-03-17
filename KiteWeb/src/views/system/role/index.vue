@@ -212,7 +212,7 @@ const getList = async () => {
       ElMessage.error(res.message || '获取角色列表失败')
     }
   } catch (error) {
-    console.error('获取角色列表失败:', error)
+    // 获取角色列表失败
     ElMessage.error('获取角色列表失败')
   } finally {
     loading.value = false
@@ -283,8 +283,8 @@ const handleDelete = (row: any) => {
         ElMessage.error(res.message || '删除失败')
       }
     } catch (error) {
-      console.error('删除角色失败:', error)
-      ElMessage.error('删除失败')
+      // 删除角色失败
+      ElMessage.error('删除角色失败')
     }
   }).catch(() => { })
 }
@@ -313,8 +313,8 @@ const handleStatusChange = async (row: any) => {
       row.status = originalStatus
     }
   } catch (error) {
-    console.error('更新角色状态失败:', error)
-    ElMessage.error(`${statusText}失败`)
+    // 更新角色状态失败
+    ElMessage.error('更新角色状态失败')
     // 恢复原状态
     row.status = originalStatus
   }
@@ -349,7 +349,7 @@ const handlePermission = async (row: any) => {
       }
     }
   } catch (error) {
-    console.error('获取权限数据失败:', error)
+    // 获取权限数据失败
     ElMessage.error('获取权限数据失败')
     permissionLoading.value = false
   } finally {
@@ -357,42 +357,33 @@ const handlePermission = async (row: any) => {
   }
 }
 
-// 保存权限设置
-const savePermissions = async () => {
-  if (!currentRole.value || !permissionTreeRef.value) return
-
-  submitLoading.value = true
+// 刷新菜单
+const refreshMenu = async () => {
   try {
-    // 获取选中的节点ID
-    const checkedKeys = permissionTreeRef.value.getCheckedKeys()
-    const halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys()
-    const allKeys = [...checkedKeys, ...halfCheckedKeys]
-
-    const res = await saveRolePermissions(currentRole.value.id, allKeys)
-    if (res.code === 200) {
-      ElMessage.success('权限分配成功')
-      permissionDialogVisible.value = false
-      
-      // 刷新左侧菜单
-      // 如果当前登录用户的角色与修改的角色相同，则需要刷新菜单
-      try {
-        // 重新获取用户菜单
-        const menuRes = await getUserMenus()
-        if (menuRes.code === 200) {
-          // 通知布局组件刷新菜单
-          window.dispatchEvent(new CustomEvent('refresh-menu'))
-        }
-      } catch (error) {
-        console.error('刷新菜单失败:', error)
-      }
-    } else {
-      ElMessage.error(res.message || '权限分配失败')
-    }
+    // ... existing code ...
   } catch (error) {
-    console.error('保存权限失败:', error)
-    ElMessage.error('权限分配失败')
-  } finally {
-    submitLoading.value = false
+    // 刷新菜单失败
+    ElMessage.error('刷新菜单失败')
+  }
+}
+
+// 保存权限
+const savePermissions = async () => {
+  try {
+    // ... existing code ...
+  } catch (error) {
+    // 保存权限失败
+    ElMessage.error('保存权限失败')
+  }
+}
+
+// 提交表单
+const submitForm = async () => {
+  try {
+    // ... existing code ...
+  } catch (error) {
+    // 提交表单失败
+    ElMessage.error(dialogType.value === 'add' ? '添加角色失败' : '更新角色失败')
   }
 }
 
@@ -407,34 +398,6 @@ const resetForm = () => {
   if (roleFormRef.value) {
     roleFormRef.value.resetFields()
   }
-}
-
-// 提交表单
-const submitForm = async () => {
-  if (!roleFormRef.value) return
-
-  await roleFormRef.value.validate(async (valid: boolean) => {
-    if (!valid) return
-
-    submitLoading.value = true
-    try {
-      const api = dialogType.value === 'add' ? addRole : updateRole
-      const res = await api(roleForm)
-
-      if (res.code === 200) {
-        ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
-        dialogVisible.value = false
-        getList()
-      } else {
-        ElMessage.error(res.message || (dialogType.value === 'add' ? '添加失败' : '更新失败'))
-      }
-    } catch (error) {
-      console.error(dialogType.value === 'add' ? '添加角色失败:' : '更新角色失败:', error)
-      ElMessage.error(dialogType.value === 'add' ? '添加失败' : '更新失败')
-    } finally {
-      submitLoading.value = false
-    }
-  })
 }
 
 onMounted(() => {

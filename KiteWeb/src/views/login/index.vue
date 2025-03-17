@@ -67,11 +67,11 @@ onMounted(() => {
 
   if (dd.env.platform !== 'notInDingTalk') {
     isDingTalk.value = true
-    console.log('当前是钉钉环境')
+    // 当前是钉钉环境
     formData.Type = 2
     handleDingtalkLogin()
   } else {
-    console.log('当前不是钉钉环境')
+    // 当前不是钉钉环境
     formData.Type = 1
   }
 })
@@ -89,25 +89,23 @@ const handleDingtalkLogin = () => {
       clientId: (import.meta.env as any).VITE_CLIENT_ID,
       onSuccess: function (result: any) {
         formData.DingTalkAuthCode = result.code
-        console.log('获取授权码成功result.code:', result.code)
+        // 获取授权码成功
         handleTokenLogin()
       },
       onFail: function (err: any) {
-        console.error('钉钉授权失败:', err)
-        ElMessage.error('钉钉授权失败')
         loading.value = false
+        ElMessage.error('钉钉授权失败')
       },
     })
   } else {
-    console.error('钉钉 SDK 未正确加载')
-    ElMessage.error('当前环境不支持钉钉登录')
+    ElMessage.error('钉钉 SDK 未正确加载')
   }
 }
 
 const handleTokenLogin = async () => {
   try {
     const res = await login(formData)
-    console.log('登录响应:', res)
+    // 登录响应处理
 
     if (res.code === 200) {
       await userStore.setUserInfo({
@@ -122,11 +120,9 @@ const handleTokenLogin = async () => {
     } else {
       ElMessage.error(res.message || '登录失败')
     }
-  } catch (error: any) {
-    console.error('登录错误:', error)
-    ElMessage.error(error.message || '登录失败')
-  } finally {
+  } catch (error) {
     loading.value = false
+    ElMessage.error('登录失败，请重试')
   }
 }
 
@@ -134,6 +130,70 @@ const handleLogin = async () => {
   loading.value = true
   formData.Type = 1
   handleTokenLogin()
+}
+
+// 检测是否在钉钉环境中
+const checkIsDingTalk = () => {
+  const userAgent = navigator.userAgent.toLowerCase()
+  if (userAgent.indexOf('dingtalk') > -1) {
+    // 当前是钉钉环境
+    return true
+  } else {
+    // 当前不是钉钉环境
+    return false
+  }
+}
+
+// 钉钉登录
+const handleDingLogin = async () => {
+  if (!window.dd) {
+    ElMessage.error('钉钉 SDK 未正确加载')
+    return
+  }
+  
+  try {
+    // 获取授权码
+    const result = await window.dd.runtime.permission.requestAuthCode({
+      corpId: import.meta.env.VITE_DINGTALK_CORPID
+    })
+    
+    // 获取授权码成功
+    
+    // 使用授权码登录
+    const res = await loginWithDingTalk({
+      code: result.code
+    })
+    
+    // 登录响应
+    
+    if (res.code === 200) {
+      await handleLoginSuccess(res.data)
+    } else {
+      ElMessage.error(res.message || '登录失败')
+    }
+  } catch (err) {
+    ElMessage.error('钉钉授权失败')
+  }
+}
+
+// 处理登录成功
+const handleLoginSuccess = async (data: any) => {
+  try {
+    // 保存用户信息到 store
+    await userStore.setUserInfo({
+      username: data.username,
+      userid: data.userid,
+      userInfo: data.userInfo,
+      accessToken: data.accessToken,
+      refreshToken: data.refreshToken
+    })
+    
+    // 跳转到首页
+    router.push('/')
+    ElMessage.success('登录成功')
+  } catch (error) {
+    ElMessage.error('登录失败，请重试')
+  }
 }
 </script>
 

@@ -226,7 +226,7 @@ const getMenuOptions = async () => {
       ElMessage.error(res.message || '获取菜单选项失败')
     }
   } catch (error) {
-    console.error('获取菜单选项失败:', error)
+    // 获取菜单选项失败
     ElMessage.error('获取菜单选项失败')
   }
 }
@@ -258,7 +258,7 @@ const getList = async () => {
       }
     }
   } catch (error) {
-    console.error('获取菜单列表失败:', error)
+    // 获取菜单列表失败
     ElMessage.error('获取菜单列表失败')
   } finally {
     loading.value = false
@@ -331,7 +331,7 @@ const handleDelete = (row: MenuItem) => {
         ElMessage.error(res.message || '删除失败')
       }
     } catch (error) {
-      console.error('删除菜单失败:', error)
+      // 删除菜单失败
       ElMessage.error('删除失败')
     }
   }).catch(() => { })
@@ -393,7 +393,7 @@ const submitForm = async () => {
         ElMessage.error(res.message || (dialogType.value === 'add' ? '添加失败' : '更新失败'))
       }
     } catch (error) {
-      console.error(dialogType.value === 'add' ? '添加菜单失败:' : '更新菜单失败:', error)
+      // 提交表单失败
       ElMessage.error(dialogType.value === 'add' ? '添加失败' : '更新失败')
     }
   })

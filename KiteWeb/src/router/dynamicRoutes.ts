@@ -37,8 +37,6 @@ export const inferComponentPath = (path: string): string => {
  * @returns 组件
  */
 export const loadComponent = (component: string) => {
-  console.log('Loading component:', component)
-  
   // 如果是Layout组件，直接返回
   if (component === 'Layout') {
     return Layout
@@ -46,7 +44,6 @@ export const loadComponent = (component: string) => {
   
   // 如果组件路径为空，返回404组件
   if (!component) {
-    console.warn('Empty component path, returning 404')
     return () => import('../views/error/404.vue')
   }
   
@@ -59,24 +56,18 @@ export const loadComponent = (component: string) => {
     path = path.substring(6)
   }
   
-  console.log('Processed component path:', path)
-  
   // 3. 动态导入组件，添加错误处理
   return () => {
     // 确保路径以 / 开头
     const importPath = `../views/${path}.vue`
-    console.log(`Importing component from: ${importPath}`)
     
     return import(importPath).catch(error => {
-      console.error(`Failed to load component: ${component}`, error)
       ElMessage.error(`加载组件失败: ${path}`)
       
       // 尝试使用备用路径
       const backupPath = `../views/${path}/index.vue`
-      console.log(`Trying backup path: ${backupPath}`)
       
       return import(backupPath).catch(backupError => {
-        console.error(`Failed to load backup component: ${backupPath}`, backupError)
         ElMessage.error(`加载组件失败，备用路径也无效: ${path}/index`)
         return import('../views/error/404.vue')
       })
@@ -123,7 +114,6 @@ export const generateRoutes = (menus: MenuItem[]): RouteRecordRaw[] => {
         componentPath = componentPath.substring(1)
       }
       
-      console.log(`Menu: ${menu.name}, Component Path: ${componentPath}`)
       route.component = loadComponent(componentPath)
     }
     
