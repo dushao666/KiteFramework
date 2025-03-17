@@ -114,6 +114,70 @@ namespace Application.Queries.System.Menu
                 }
             }
         }
+
+        /// <summary>
+        /// 获取当前用户的菜单
+        /// </summary>
+        public async Task<List<MenuDto>> GetUserMenusAsync()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var unitOfWork = scope.ServiceProvider.GetRequiredService<ISugarUnitOfWork<DbContext>>();
+                var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                var currentUser = scope.ServiceProvider.GetRequiredService<Infrastructure.Extension.ICurrentUser>();
+                
+                using (var context = unitOfWork.CreateContext())
+                {
+                    var db = context.Menus.Context;
+                    
+                    // 如果用户未登录，返回空列表
+                    if (!currentUser.IsAuthenticated || !currentUser.UserId.HasValue)
+                    {
+                        return new List<MenuDto>();
+                    }
+                    
+                    // 获取用户ID
+                    var userId = currentUser.UserId.Value;
+                    
+                    // 获取用户角色
+                    var userRoles = await db.Queryable<Domain.System.UserRole>()
+                        .Where(ur => ur.UserId == userId && !ur.IsDeleted)
+                        .Select(ur => ur.RoleId)
+                        .ToListAsync();
+                    
+                    // 如果用户没有角色，返回空列表
+                    if (!userRoles.Any())
+                    {
+                        return new List<MenuDto>();
+                    }
+                    
+                    // 获取角色菜单
+                    var menuIds = await db.Queryable<Domain.System.RoleMenu>()
+                        .Where(rm => userRoles.Contains(rm.RoleId) && !rm.IsDeleted)
+                        .Select(rm => rm.MenuId)
+                        .Distinct()
+                        .ToListAsync();
+                    
+                    // 如果没有菜单权限，返回空列表
+                    if (!menuIds.Any())
+                    {
+                        return new List<MenuDto>();
+                    }
+                    
+                    // 获取菜单数据
+                    var menus = await db.Queryable<Domain.System.Menu>()
+                        .Where(m => menuIds.Contains(m.Id) && !m.IsDeleted && !m.IsHidden)
+                        .OrderBy(m => m.Sort)
+                        .ToListAsync();
+                    
+                    // 转换为DTO
+                    var menuDtos = mapper.Map<List<MenuDto>>(menus);
+                    
+                    // 构建树形结构
+                    return BuildMenuTree(menuDtos, 0);
+                }
+            }
+        }
         
         private void AddChildMenuIds(List<MenuDto> allMenus, long parentId, HashSet<long> childIds)
         {

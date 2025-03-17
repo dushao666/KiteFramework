@@ -11,10 +11,10 @@ export interface ApiResponse<T> {
 
 // 登录响应数据类型
 export interface LoginResponseData {
-  UserName: string;
-  UserId: string;
-  BearerToken: string;
-  RefreshToken: string;
+  userName: string;
+  userId: string;
+  bearerToken: string;
+  refreshToken: string;
 }
 
 // 文件类型

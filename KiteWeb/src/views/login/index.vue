@@ -85,8 +85,8 @@ const handleDingtalkLogin = () => {
   if (dd && typeof dd.requestAuthCode === 'function') {
     loading.value = true
     dd.requestAuthCode({
-      corpId: import.meta.env.VITE_CORP_ID,
-      clientId: import.meta.env.VITE_CLIENT_ID,
+      corpId: (import.meta.env as any).VITE_CORP_ID,
+      clientId: (import.meta.env as any).VITE_CLIENT_ID,
       onSuccess: function (result: any) {
         formData.DingTalkAuthCode = result.code
         console.log('获取授权码成功result.code:', result.code)
@@ -111,11 +111,11 @@ const handleTokenLogin = async () => {
 
     if (res.code === 200) {
       await userStore.setUserInfo({
-        username: formData.Login,
-        userid: formData.Login,
+        username: res.data.userName,
+        userid: res.data.userId,
         userInfo: null,
-        accessToken: res.data.toString(),
-        refreshToken: ''
+        accessToken: res.data.bearerToken,
+        refreshToken: res.data.refreshToken
       })
       ElMessage.success('登录成功')
       router.push('/home')

@@ -54,6 +54,17 @@ namespace Api.Controllers.System
         }
 
         /// <summary>
+        /// 获取当前用户的菜单
+        /// </summary>
+        [HttpGet("userMenus")]
+        [ProducesResponseType(typeof(AjaxResponse<List<MenuDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUserMenus()
+        {
+            var result = await _menuQueries.GetUserMenusAsync();
+            return new JsonResult(result);
+        }
+
+        /// <summary>
         /// 更新菜单
         /// </summary>
         [HttpPut("{id}")]

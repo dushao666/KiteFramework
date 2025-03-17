@@ -1,5 +1,6 @@
 using Application.Commands.System.Role;
 using Application.Queries.System.Role;
+using Api.Models.System.Role;
 using DomainShared.Dto;
 using DomainShared.Dto.System;
 using Infrastructure.Utility;
@@ -122,5 +123,22 @@ public class RoleController : ControllerBase
     {
         var result = await _roleQueries.GetRolePermissionsAsync(roleId);
         return new JsonResult(result);
+    }
+
+    /// <summary>
+    /// 保存角色权限
+    /// </summary>
+    [HttpPut("permissions/{roleId}")]
+    [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<AjaxResponse<bool>> SaveRolePermissions(long roleId, [FromBody] SaveRolePermissionsRequest request)
+    {
+        var command = new AssignRoleMenusCommand
+        {
+            RoleId = roleId,
+            MenuIds = request.menuIds
+        };
+        
+        var result = await _mediator.Send(command);
+        return new AjaxResponse<bool>(result);
     }
 }

@@ -21,5 +21,11 @@ namespace Application.Queries.System.Menu
         /// <param name="includeHidden">是否包含隐藏菜单</param>
         /// <returns>菜单列表</returns>
         Task<List<MenuDto>> GetMenuListAsync(string keyword = null, bool includeHidden = false);
+        
+        /// <summary>
+        /// 获取当前用户的菜单
+        /// </summary>
+        /// <returns>当前用户有权限的菜单树</returns>
+        Task<List<MenuDto>> GetUserMenusAsync();
     }
 } 

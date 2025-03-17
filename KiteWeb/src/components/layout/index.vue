@@ -62,7 +62,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../../stores/userStore'
 import type { MenuItem } from '../../api/menu'
-import { getMenuTree } from '../../api/menu'
+import { getMenuTree, getUserMenus } from '../../api/menu'
 import { NAMES } from '../../constants'
 import Breadcrumb from './Breadcrumb.vue'
 import CustomMenu from './CustomMenu.vue'
@@ -89,7 +89,8 @@ const toggleSidebar = () => {
 // 获取菜单数据
 const getMenuData = async () => {
     try {
-        const res = await getMenuTree()
+        // 使用getUserMenus获取当前用户的菜单
+        const res = await getUserMenus()
         if (res.code === 200) {
             menuList.value = res.data
         } else {

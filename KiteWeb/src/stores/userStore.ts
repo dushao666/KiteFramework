@@ -18,8 +18,8 @@ export const useUserStore = defineStore('user', {
     isLoggedIn: false,
     username: '',
     userid: '',
-    jwtAccessToken: null as string | null,
-    jwtRefreshToken: null as string | null,
+    jwtAccessToken: '',
+    jwtRefreshToken: '',
     userInfo: null as any,
   }),
 
@@ -43,8 +43,8 @@ export const useUserStore = defineStore('user', {
       this.isLoggedIn = false
       this.username = ''
       this.userid = ''
-      this.jwtAccessToken = null
-      this.jwtRefreshToken = null
+      this.jwtAccessToken = ''
+      this.jwtRefreshToken = ''
       this.userInfo = null
       localStorage.removeItem('userState')
     },

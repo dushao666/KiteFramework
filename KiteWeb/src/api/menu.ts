@@ -27,6 +27,14 @@ export async function getMenuTree(): Promise<ApiResponse<MenuItem[]>> {
   });
 }
 
+// 获取当前用户的菜单
+export async function getUserMenus(): Promise<ApiResponse<MenuItem[]>> {
+  return request({
+    url: '/menu/userMenus',
+    method: 'GET'
+  });
+}
+
 // 获取菜单列表
 export function getMenuList(params = {}): Promise<ApiResponse<MenuItem[]>> {
   // 确保 params 是一个对象
