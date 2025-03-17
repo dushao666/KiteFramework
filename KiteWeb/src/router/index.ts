@@ -76,6 +76,61 @@ const router = createRouter({
 // 是否已经添加了动态路由
 let dynamicRoutesAdded = false
 
+// 设置动态路由状态
+export const setDynamicRoutesAdded = (value: boolean) => {
+  dynamicRoutesAdded = value
+}
+
+// 重置路由
+export const resetRouter = async () => {
+  // 重置路由
+  const newRouter = createRouter({
+    history: createWebHashHistory(),
+    routes: constantRoutes
+  })
+  
+  // @ts-ignore: 替换路由器的matcher
+  router.matcher = newRouter.matcher
+  
+  // 重置动态路由状态
+  dynamicRoutesAdded = false
+  
+  return true
+}
+
+// 加载动态路由
+export const loadDynamicRoutes = async () => {
+  try {
+    // 获取用户菜单
+    const res = await getUserMenus()
+    if (res.code === 200) {
+      // 生成动态路由
+      const accessRoutes = generateRoutes(res.data)
+      
+      // 添加动态路由
+      accessRoutes.forEach(route => {
+        router.addRoute(route)
+      })
+      
+      // 添加404路由（确保它是最后添加的）
+      router.addRoute({
+        path: '/:pathMatch(.*)*',
+        redirect: '/404'
+      })
+      
+      // 标记动态路由已添加
+      dynamicRoutesAdded = true
+      
+      return true
+    }
+    return false
+  } catch (error) {
+    // 加载动态路由失败
+    ElMessage.error('加载菜单失败，请刷新页面重试')
+    return false
+  }
+}
+
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
@@ -96,33 +151,11 @@ router.beforeEach(async (to, from, next) => {
   
   // 已登录但未加载动态路由
   if (!dynamicRoutesAdded) {
-    try {
-      // 获取用户菜单
-      const res = await getUserMenus()
-      if (res.code === 200) {
-        // 生成动态路由
-        const accessRoutes = generateRoutes(res.data)
-        
-        // 添加动态路由
-        accessRoutes.forEach(route => {
-          router.addRoute(route)
-        })
-        
-        // 添加404路由（确保它是最后添加的）
-        router.addRoute({
-          path: '/:pathMatch(.*)*',
-          redirect: '/404'
-        })
-        
-        // 标记动态路由已添加
-        dynamicRoutesAdded = true
-        
-        // 重定向到目标页面，确保动态路由已加载
-        return next({ ...to, replace: true })
-      }
-    } catch (error) {
-      // 加载动态路由失败
-      ElMessage.error('加载菜单失败，请刷新页面重试')
+    const success = await loadDynamicRoutes()
+    if (success) {
+      // 重定向到目标页面，确保动态路由已加载
+      return next({ ...to, replace: true })
+    } else {
       return next('/home')
     }
   }

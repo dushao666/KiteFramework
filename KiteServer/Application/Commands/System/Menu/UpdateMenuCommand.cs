@@ -8,22 +8,22 @@ namespace Application.Commands.System.Menu
         /// <summary>
         /// 菜单ID
         /// </summary>
-        public long Id { get; set; }
+        public long? Id { get; set; }
 
         /// <summary>
         /// 菜单名称
         /// </summary>
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// 路由地址
         /// </summary>
-        public string Path { get; set; }
+        public string? Path { get; set; }
 
         /// <summary>
         /// 菜单图标
         /// </summary>
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// 父菜单ID
@@ -33,21 +33,21 @@ namespace Application.Commands.System.Menu
         /// <summary>
         /// 显示顺序
         /// </summary>
-        public int Sort { get; set; }
+        public int? Sort { get; set; }
 
         /// <summary>
         /// 是否隐藏
         /// </summary>
-        public bool IsHidden { get; set; }
+        public bool? IsHidden { get; set; }
 
         /// <summary>
         /// 组件路径
         /// </summary>
-        public string Component { get; set; }
+        public string? Component { get; set; }
 
         /// <summary>
         /// 路由元数据
         /// </summary>
-        public MenuMetaDto Meta { get; set; }
+        public MenuMetaDto? Meta { get; set; }
     }
 } 

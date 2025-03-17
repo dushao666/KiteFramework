@@ -140,6 +140,8 @@ import { getRoleList, addRole, updateRole, deleteRole, updateRoleStatus, getRole
 import { getMenuTree, getUserMenus } from '../../../api/menu'
 import { NAMES } from '../../../constants'
 import { Edit, Delete, Plus, Search, Refresh, Setting } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+import { resetRouter, loadDynamicRoutes } from '../../../router'
 
 // 查询参数
 const queryParams = reactive({
@@ -360,31 +362,108 @@ const handlePermission = async (row: any) => {
 // 刷新菜单
 const refreshMenu = async () => {
   try {
-    // ... existing code ...
+    const router = useRouter()
+    
+    // 重置路由
+    await resetRouter()
+    
+    // 重新加载动态路由
+    const success = await loadDynamicRoutes()
+    
+    if (success) {
+      ElMessage.success('菜单刷新成功')
+      return true
+    } else {
+      ElMessage.error('菜单刷新失败')
+      return false
+    }
   } catch (error) {
     // 刷新菜单失败
     ElMessage.error('刷新菜单失败')
+    return false
   }
 }
 
 // 保存权限
 const savePermissions = async () => {
+  if (!currentRole.value || !permissionTreeRef.value) return
+
   try {
-    // ... existing code ...
+    submitLoading.value = true
+    
+    // 获取选中的节点ID
+    const checkedKeys = permissionTreeRef.value.getCheckedKeys()
+    const halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys()
+    const allCheckedKeys = [...checkedKeys, ...halfCheckedKeys]
+    
+    // 保存权限
+    const res = await saveRolePermissions(currentRole.value.id, allCheckedKeys)
+    
+    if (res.code === 200) {
+      ElMessage.success('权限分配成功')
+      permissionDialogVisible.value = false
+      
+      // 刷新菜单和路由
+      const success = await refreshMenu()
+      
+      // 刷新角色列表
+      getList()
+      
+      // 如果菜单刷新成功，提示用户刷新页面以查看最新权限
+      if (success) {
+        ElMessageBox.confirm(
+          '权限已更新，需要刷新页面以应用新的权限设置。是否立即刷新？',
+          '提示',
+          {
+            confirmButtonText: '立即刷新',
+            cancelButtonText: '稍后刷新',
+            type: 'info'
+          }
+        ).then(() => {
+          // 用户点击了立即刷新
+          window.location.reload()
+        }).catch(() => {
+          // 用户点击了稍后刷新，不做任何操作
+        })
+      }
+    } else {
+      ElMessage.error(res.message || '权限分配失败')
+    }
   } catch (error) {
     // 保存权限失败
     ElMessage.error('保存权限失败')
+  } finally {
+    submitLoading.value = false
   }
 }
 
 // 提交表单
 const submitForm = async () => {
-  try {
-    // ... existing code ...
-  } catch (error) {
-    // 提交表单失败
-    ElMessage.error(dialogType.value === 'add' ? '添加角色失败' : '更新角色失败')
-  }
+  if (!roleFormRef.value) return
+
+  await roleFormRef.value.validate(async (valid: boolean) => {
+    if (!valid) return
+
+    try {
+      submitLoading.value = true
+      
+      const api = dialogType.value === 'add' ? addRole : updateRole
+      const res = await api(roleForm)
+
+      if (res.code === 200) {
+        ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
+        dialogVisible.value = false
+        getList()
+      } else {
+        ElMessage.error(res.message || (dialogType.value === 'add' ? '添加失败' : '更新失败'))
+      }
+    } catch (error) {
+      // 提交表单失败
+      ElMessage.error(dialogType.value === 'add' ? '添加角色失败' : '更新角色失败')
+    } finally {
+      submitLoading.value = false
+    }
+  })
 }
 
 // 重置表单
