@@ -58,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../../stores/userStore'
 import type { MenuItem } from '../../api/menu'
@@ -120,6 +120,11 @@ const getMenuData = async () => {
     }
 }
 
+// 监听菜单刷新事件
+const handleRefreshMenu = () => {
+    getMenuData()
+}
+
 // 跳转到个人信息页面
 const goToProfile = () => {
     router.push('/profile')
@@ -142,6 +147,13 @@ const handleLogout = () => {
 
 onMounted(() => {
     getMenuData()
+    // 添加菜单刷新事件监听
+    window.addEventListener('refresh-menu', handleRefreshMenu)
+})
+
+onBeforeUnmount(() => {
+    // 移除事件监听器
+    window.removeEventListener('refresh-menu', handleRefreshMenu)
 })
 </script>
 

@@ -137,7 +137,7 @@
 import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getRoleList, addRole, updateRole, deleteRole, updateRoleStatus, getRolePermissions, saveRolePermissions } from '../../../api/role'
-import { getMenuTree } from '../../../api/menu'
+import { getMenuTree, getUserMenus } from '../../../api/menu'
 import { NAMES } from '../../../constants'
 import { Edit, Delete, Plus, Search, Refresh, Setting } from '@element-plus/icons-vue'
 
@@ -372,6 +372,19 @@ const savePermissions = async () => {
     if (res.code === 200) {
       ElMessage.success('权限分配成功')
       permissionDialogVisible.value = false
+      
+      // 刷新左侧菜单
+      // 如果当前登录用户的角色与修改的角色相同，则需要刷新菜单
+      try {
+        // 重新获取用户菜单
+        const menuRes = await getUserMenus()
+        if (menuRes.code === 200) {
+          // 通知布局组件刷新菜单
+          window.dispatchEvent(new CustomEvent('refresh-menu'))
+        }
+      } catch (error) {
+        console.error('刷新菜单失败:', error)
+      }
     } else {
       ElMessage.error(res.message || '权限分配失败')
     }
