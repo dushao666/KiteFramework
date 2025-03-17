@@ -1,20 +1,27 @@
 using Microsoft.AspNetCore.Http.Features;
+using Repository.Services;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
-// ÅäÖÃ Kestrel µÄ×î´óÇëÇóÌå´óĞ¡
+//  Kestrel Ğ¡
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestBodySize = 2L * 1024 * 1024 * 1024; // ÉèÖÃÎª 2GB
-    serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5); // ÉèÖÃÇëÇóÍ·³¬Ê±Ê±¼äÎª 5 ·ÖÖÓ
+    serverOptions.Limits.MaxRequestBodySize = 2L * 1024 * 1024 * 1024; // Îª 2GB
+    serverOptions.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(5); // Í·Ê±Ê±Îª 5 
 });
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024; // ÉèÖÃÎª 2GB
+    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024; // Îª 2GB
 });
 builder.AddCustomDatabase();
 builder.AddCustomService();
 
 var app = builder.Build();
+
+// åˆå§‹åŒ–ç§å­æ•°æ®
+Console.WriteLine("å¼€å§‹åˆå§‹åŒ–ç§å­æ•°æ®...");
+app.InitSeedData();
+Console.WriteLine("ç§å­æ•°æ®åˆå§‹åŒ–å®Œæˆ");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsEnvironment("test"))
@@ -32,10 +39,10 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
 app.MapControllers();
 app.UseCookiePolicy();
 app.UseCors("default");
-app.UseCustomMiddleware(); //×¢ÈëÖĞ¼ä¼ş
+app.UseCustomMiddleware(); //×¢ï¿½ï¿½ï¿½Ğ¼ï¿½ï¿½
 app.UseAuthentication();
 app.UseAuthorization();
-// ÆôÓÃ¾²Ì¬ÎÄ¼ş·şÎñ
+// ï¿½ï¿½ï¿½Ã¾ï¿½Ì¬ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
 app.UseStaticFiles();
 try
 {

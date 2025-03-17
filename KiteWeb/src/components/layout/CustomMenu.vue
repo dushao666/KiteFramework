@@ -102,6 +102,12 @@ const initOpenedMenus = () => {
 initOpenedMenus();
 </script>
 
+<script lang="ts">
+export default {
+    name: 'CustomMenu'
+}
+</script>
+
 <style scoped lang="scss">
 .custom-menu {
     width: 220px;

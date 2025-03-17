@@ -1,5 +1,6 @@
 using DomainShared.Constant.System;
 using SqlSugar;
+using System.Text.Json;
 
 namespace Domain.System
 {
@@ -45,5 +46,74 @@ namespace Domain.System
         /// </summary>
         [SugarColumn(ColumnName = "is_hidden", ColumnDescription = "是否隐藏")]
         public bool IsHidden { get; set; }
+
+        /// <summary>
+        /// 组件路径
+        /// </summary>
+        [SugarColumn(ColumnName = "component", ColumnDescription = "组件路径", Length = MenuConsts.MaxPathLength)]
+        public string Component { get; set; }
+
+        /// <summary>
+        /// 路由元数据（JSON格式）
+        /// </summary>
+        [SugarColumn(ColumnName = "meta", ColumnDescription = "路由元数据", Length = MenuConsts.MaxMetaLength)]
+        public string MetaJson { get; set; }
+
+        /// <summary>
+        /// 获取路由元数据
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public MenuMeta Meta
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(MetaJson))
+                    return new MenuMeta { Title = Name };
+                
+                try
+                {
+                    return JsonSerializer.Deserialize<MenuMeta>(MetaJson) ?? new MenuMeta { Title = Name };
+                }
+                catch
+                {
+                    return new MenuMeta { Title = Name };
+                }
+            }
+            set
+            {
+                MetaJson = JsonSerializer.Serialize(value);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 菜单元数据
+    /// </summary>
+    public class MenuMeta
+    {
+        /// <summary>
+        /// 页面标题
+        /// </summary>
+        public string Title { get; set; }
+
+        /// <summary>
+        /// 是否需要认证
+        /// </summary>
+        public bool RequiresAuth { get; set; } = true;
+
+        /// <summary>
+        /// 是否缓存组件
+        /// </summary>
+        public bool KeepAlive { get; set; } = false;
+
+        /// <summary>
+        /// 图标
+        /// </summary>
+        public string Icon { get; set; }
+
+        /// <summary>
+        /// 允许访问的角色
+        /// </summary>
+        public List<string> Roles { get; set; }
     }
 }

@@ -87,8 +87,8 @@
     </div>
 
     <!-- 添加/编辑菜单对话框 -->
-    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="500px" append-to-body>
-      <el-form ref="menuFormRef" :model="menuForm" :rules="rules" label-width="100px">
+    <el-dialog :title="dialogTitle" v-model="dialogVisible" width="600px" append-to-body>
+      <el-form ref="menuFormRef" :model="menuForm" :rules="rules" label-width="120px">
         <el-form-item label="上级菜单">
           <el-tree-select v-model="menuForm.parentId" :data="menuOptions" check-strictly default-expand-all
             node-key="id" :props="{ label: 'name', value: 'id' }" placeholder="请选择上级菜单" clearable />
@@ -97,7 +97,17 @@
           <el-input v-model="menuForm.name" placeholder="请输入菜单名称" />
         </el-form-item>
         <el-form-item label="菜单路径" prop="path">
-          <el-input v-model="menuForm.path" placeholder="请输入菜单路径" />
+          <el-input v-model="menuForm.path" placeholder="请输入菜单路径，如: /system/menu" />
+          <div class="form-tip">菜单路径必须以 / 开头，如: /system/menu</div>
+        </el-form-item>
+        <el-form-item label="组件路径" prop="component">
+          <el-input v-model="menuForm.component" placeholder="请输入组件路径，如: system/menu/index" />
+          <div class="form-tip">
+            <p>1. 顶级菜单可填写 Layout 或留空</p>
+            <p>2. 组件路径相对于 views 目录，无需添加开头的 /</p>
+            <p>3. 无需添加 .vue 后缀</p>
+            <p>4. 示例: system/menu/index</p>
+          </div>
         </el-form-item>
         <el-form-item label="菜单图标">
           <el-input v-model="menuForm.icon" placeholder="请输入菜单图标" />
@@ -107,6 +117,18 @@
         </el-form-item>
         <el-form-item label="是否隐藏">
           <el-switch v-model="menuForm.isHidden" />
+        </el-form-item>
+        
+        <el-divider content-position="center">路由元数据</el-divider>
+        
+        <el-form-item label="页面标题">
+          <el-input v-model="menuForm.meta.title" placeholder="请输入页面标题" />
+        </el-form-item>
+        <el-form-item label="是否需要认证">
+          <el-switch v-model="menuForm.meta.requiresAuth" />
+        </el-form-item>
+        <el-form-item label="是否缓存组件">
+          <el-switch v-model="menuForm.meta.keepAlive" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -136,6 +158,11 @@ const queryParams = reactive({
 interface MenuFormData extends MenuItem {
   sort: number;
   isHidden: boolean;
+  meta: {
+    title: string;
+    requiresAuth: boolean;
+    keepAlive: boolean;
+  };
 }
 
 const menuForm = reactive<MenuFormData>({
@@ -143,9 +170,15 @@ const menuForm = reactive<MenuFormData>({
   name: '',
   path: '',
   icon: '',
+  component: '',
   parentId: undefined as unknown as number,
   sort: 0,
-  isHidden: false
+  isHidden: false,
+  meta: {
+    title: '',
+    requiresAuth: true,
+    keepAlive: false
+  }
 })
 
 // 表单校验规则
@@ -309,10 +342,16 @@ const resetForm = () => {
   menuForm.id = undefined as unknown as number
   menuForm.name = ''
   menuForm.path = ''
+  menuForm.component = ''
   menuForm.parentId = undefined as unknown as number
   menuForm.icon = ''
   menuForm.sort = 0
   menuForm.isHidden = false
+  menuForm.meta = {
+    title: '',
+    requiresAuth: true,
+    keepAlive: false
+  }
 
   if (menuFormRef.value) {
     menuFormRef.value.resetFields()
@@ -327,6 +366,22 @@ const submitForm = async () => {
     if (!valid) return
 
     try {
+      // 处理组件路径格式
+      if (menuForm.component) {
+        // 移除开头的 / 和结尾的 .vue
+        menuForm.component = menuForm.component.replace(/^\//, '').replace(/\.vue$/, '')
+      }
+      
+      // 确保路径以 / 开头
+      if (menuForm.path && !menuForm.path.startsWith('/')) {
+        menuForm.path = `/${menuForm.path}`
+      }
+      
+      // 如果没有设置标题，使用菜单名称
+      if (!menuForm.meta.title) {
+        menuForm.meta.title = menuForm.name
+      }
+
       const api = dialogType.value === 'add' ? addMenu : updateMenu
       const res = await api(menuForm)
 
@@ -419,5 +474,12 @@ onMounted(() => {
       margin-right: 4px;
     }
   }
+}
+
+.form-tip {
+  font-size: 12px;
+  color: #909399;
+  line-height: 1.2;
+  padding-top: 4px;
 }
 </style>

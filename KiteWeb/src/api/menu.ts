@@ -10,6 +10,15 @@ export interface MenuItem {
   children?: MenuItem[];
   sort?: number;
   isHidden?: boolean;
+  component?: string; // 组件路径，如 'views/system/menu/index'
+  meta?: {
+    title?: string;    // 页面标题
+    requiresAuth?: boolean; // 是否需要认证
+    keepAlive?: boolean;    // 是否缓存组件
+    icon?: string;          // 图标
+    roles?: string[];       // 允许访问的角色
+    [key: string]: any;     // 其他元数据
+  };
 }
 
 // API响应接口

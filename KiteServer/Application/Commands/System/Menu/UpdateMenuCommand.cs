@@ -1,3 +1,5 @@
+using MediatR;
+using DomainShared.Dto.System;
 
 namespace Application.Commands.System.Menu
 {
@@ -37,5 +39,15 @@ namespace Application.Commands.System.Menu
         /// 是否隐藏
         /// </summary>
         public bool IsHidden { get; set; }
+
+        /// <summary>
+        /// 组件路径
+        /// </summary>
+        public string Component { get; set; }
+
+        /// <summary>
+        /// 路由元数据
+        /// </summary>
+        public MenuMetaDto Meta { get; set; }
     }
 } 

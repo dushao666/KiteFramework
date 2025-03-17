@@ -82,7 +82,7 @@ service.interceptors.response.use(
           ElMessage.error(errorData?.message || '服务器内部错误')
           break
         default:
-          ElMessage.error('未知错误，请联系管理员')
+          ElMessage.error(`未知错误 (${error.response.status})，请联系管理员`)
       }
     } else if (error.request) {
       ElMessage.error('网络错误，请检查网络连接')

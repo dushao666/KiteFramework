@@ -1,6 +1,7 @@
 using Domain.System;
 using Microsoft.Extensions.Configuration;
 using Repository.Repositories;
+using System.Text.Json;
 
 namespace Repository.Services.Seeds
 {
@@ -47,6 +48,13 @@ namespace Repository.Services.Seeds
                         Sort = 1,
                         IsHidden = false,
                         ParentId = 0,
+                        Component = "home/index",
+                        Meta = new MenuMeta
+                        {
+                            Title = "首页",
+                            RequiresAuth = true,
+                            KeepAlive = true
+                        },
                         CreateBy = "system",
                         UpdateBy = "system"
                     };
@@ -59,6 +67,12 @@ namespace Repository.Services.Seeds
                         Sort = 2,
                         IsHidden = false,
                         ParentId = 0,
+                        Component = "Layout",
+                        Meta = new MenuMeta
+                        {
+                            Title = "系统管理",
+                            RequiresAuth = true
+                        },
                         CreateBy = "system",
                         UpdateBy = "system"
                     };
@@ -71,6 +85,12 @@ namespace Repository.Services.Seeds
                         Sort = 3,
                         IsHidden = false,
                         ParentId = 0,
+                        Component = "Layout",
+                        Meta = new MenuMeta
+                        {
+                            Title = "监控管理",
+                            RequiresAuth = true
+                        },
                         CreateBy = "system",
                         UpdateBy = "system"
                     };
@@ -83,6 +103,12 @@ namespace Repository.Services.Seeds
                         Sort = 4,
                         IsHidden = false,
                         ParentId = 0,
+                        Component = "Layout",
+                        Meta = new MenuMeta
+                        {
+                            Title = "系统工具",
+                            RequiresAuth = true
+                        },
                         CreateBy = "system",
                         UpdateBy = "system"
                     };
@@ -115,6 +141,12 @@ namespace Repository.Services.Seeds
                             Sort = 1,
                             IsHidden = false,
                             ParentId = systemId,
+                            Component = "system/user/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "用户管理",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -126,6 +158,12 @@ namespace Repository.Services.Seeds
                             Sort = 2,
                             IsHidden = false,
                             ParentId = systemId,
+                            Component = "system/role/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "角色管理",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -137,6 +175,12 @@ namespace Repository.Services.Seeds
                             Sort = 3,
                             IsHidden = false,
                             ParentId = systemId,
+                            Component = "system/menu/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "菜单管理",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -148,6 +192,12 @@ namespace Repository.Services.Seeds
                             Sort = 4,
                             IsHidden = false,
                             ParentId = systemId,
+                            Component = "system/dept/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "部门管理",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -159,6 +209,12 @@ namespace Repository.Services.Seeds
                             Sort = 5,
                             IsHidden = false,
                             ParentId = systemId,
+                            Component = "system/post/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "岗位管理",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         }
@@ -175,6 +231,12 @@ namespace Repository.Services.Seeds
                             ParentId = monitorId,
                             Sort = 1,
                             IsHidden = false,
+                            Component = "monitor/online/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "在线用户",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -186,6 +248,12 @@ namespace Repository.Services.Seeds
                             ParentId = monitorId,
                             Sort = 2,
                             IsHidden = false,
+                            Component = "monitor/log/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "操作日志",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -197,6 +265,12 @@ namespace Repository.Services.Seeds
                             ParentId = monitorId,
                             Sort = 3,
                             IsHidden = false,
+                            Component = "monitor/server/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "系统性能",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         }
@@ -213,6 +287,12 @@ namespace Repository.Services.Seeds
                             ParentId = toolId,
                             Sort = 1,
                             IsHidden = false,
+                            Component = "tool/gen/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "代码生成",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         },
@@ -224,6 +304,12 @@ namespace Repository.Services.Seeds
                             ParentId = toolId,
                             Sort = 2,
                             IsHidden = false,
+                            Component = "tool/swagger/index",
+                            Meta = new MenuMeta
+                            {
+                                Title = "系统接口",
+                                RequiresAuth = true
+                            },
                             CreateBy = "system",
                             UpdateBy = "system"
                         }

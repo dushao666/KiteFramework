@@ -158,6 +158,19 @@ public static class ProgramExtensions
     }
 
     /// <summary>
+    /// 初始化种子数据
+    /// </summary>
+    public static void InitSeedData(this WebApplication app)
+    {
+        // 初始化种子数据
+        using (var scope = app.Services.CreateScope())
+        {
+            var seedDataService = scope.ServiceProvider.GetRequiredService<SeedDataService>();
+            seedDataService.InitSeedData();
+        }
+    }
+
+    /// <summary>
     /// 添加常规服务
     /// </summary>
     public static void AddCustomService(this WebApplicationBuilder builder)

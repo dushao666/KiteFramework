@@ -73,7 +73,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const isCollapse = ref(false)
 const menuList = ref<MenuItem[]>([])
-const username = computed(() => userStore.getUsername || '用户')
+const username = computed(() => userStore.username || '用户')
 
 // 获取当前激活的菜单
 const activeMenu = computed(() => {
@@ -92,31 +92,17 @@ const getMenuData = async () => {
         // 使用getUserMenus获取当前用户的菜单
         const res = await getUserMenus()
         if (res.code === 200) {
-            menuList.value = res.data
+            // 过滤掉隐藏的菜单
+            menuList.value = res.data.filter(item => !item.isHidden)
         } else {
             // 如果API返回错误，使用模拟数据
             menuList.value = [
                 {
                     id: 1,
-                    name: '仪表盘',
-                    path: '/dashboard',
-                    icon: 'Odometer',
+                    name: '首页',
+                    path: '/home',
+                    icon: 'HomeFilled',
                     children: []
-                },
-                {
-                    id: 2,
-                    name: '系统管理',
-                    path: '/system',
-                    icon: 'Setting',
-                    children: [
-                        {
-                            id: 3,
-                            name: '菜单管理',
-                            path: '/system/menu',
-                            icon: 'Menu',
-                            parentId: 2
-                        }
-                    ]
                 }
             ]
         }
@@ -125,9 +111,9 @@ const getMenuData = async () => {
         menuList.value = [
             {
                 id: 1,
-                name: '仪表盘',
-                path: '/dashboard',
-                icon: 'Odometer',
+                name: '首页',
+                path: '/home',
+                icon: 'HomeFilled',
                 children: []
             }
         ]
@@ -146,7 +132,9 @@ const handleLogout = () => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(async () => {
-        await userStore.logout()
+        // 调用 userStore 的 logout 方法
+        userStore.$reset()
+        localStorage.removeItem('userState')
         router.push('/login')
         ElMessage.success('退出登录成功')
     }).catch(() => { })

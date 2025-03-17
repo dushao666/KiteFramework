@@ -16,5 +16,15 @@ namespace DomainShared.Constant.System
         /// 最大图标长度
         /// </summary>
         public const int MaxIconLength = 100;
+
+        /// <summary>
+        /// 最大组件路径长度
+        /// </summary>
+        public const int MaxComponentLength = 200;
+
+        /// <summary>
+        /// 最大元数据长度
+        /// </summary>
+        public const int MaxMetaLength = 1000;
     }
 } 
