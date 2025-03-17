@@ -120,13 +120,13 @@
       <div v-if="currentRole">
         <p class="permission-title">为角色 <strong>{{ currentRole.name }}</strong> 分配权限</p>
         <el-tree ref="permissionTreeRef" :data="permissionTree" show-checkbox node-key="id"
-          :props="{ label: 'name', children: 'children' }" default-expand-all />
+          :props="{ label: 'name', children: 'children' }" default-expand-all v-loading="permissionLoading" />
       </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="permissionDialogVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
           <el-button type="primary" @click="savePermissions" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM
-            }}</el-button>
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -134,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getRoleList, addRole, updateRole, deleteRole, updateRoleStatus, getRolePermissions, saveRolePermissions } from '../../../api/role'
 import { getMenuTree } from '../../../api/menu'
@@ -181,6 +181,7 @@ const rules = {
 
 const loading = ref(false)
 const submitLoading = ref(false)
+const permissionLoading = ref(false)
 const roleList = ref<any[]>([])
 const total = ref(0)
 const dialogVisible = ref(false)
@@ -322,7 +323,8 @@ const handleStatusChange = async (row: any) => {
 // 处理权限分配
 const handlePermission = async (row: any) => {
   currentRole.value = row
-  permissionDialogVisible.value = true
+  loading.value = true
+  permissionLoading.value = true
 
   try {
     // 获取菜单树
@@ -332,14 +334,26 @@ const handlePermission = async (row: any) => {
 
       // 获取角色已有权限
       const permRes = await getRolePermissions(row.id)
-      if (permRes.code === 200 && permissionTreeRef.value) {
-        // 设置选中的节点
-        permissionTreeRef.value.setCheckedKeys(permRes.data)
+      if (permRes.code === 200) {
+        // 设置选中的节点 - 在显示对话框之前预先加载
+        setTimeout(() => {
+          permissionDialogVisible.value = true
+          // 使用 nextTick 确保树渲染完成后再设置选中状态
+          nextTick(() => {
+            if (permissionTreeRef.value) {
+              permissionTreeRef.value.setCheckedKeys(permRes.data)
+              permissionLoading.value = false
+            }
+          })
+        }, 100)
       }
     }
   } catch (error) {
     console.error('获取权限数据失败:', error)
     ElMessage.error('获取权限数据失败')
+    permissionLoading.value = false
+  } finally {
+    loading.value = false
   }
 }
 
@@ -482,7 +496,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 
   .el-button {
     padding: 4px 8px;
