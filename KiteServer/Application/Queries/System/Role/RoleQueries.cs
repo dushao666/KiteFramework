@@ -1,10 +1,6 @@
 using Domain.System;
-using DomainShared.Dto;
 using DomainShared.Dto.System;
-using Infrastructure.Exceptions;
-using Infrastructure.Utility;
 using MapsterMapper;
-using Microsoft.Extensions.DependencyInjection;
 using Repository.Repositories;
 
 namespace Application.Queries.System.Role
