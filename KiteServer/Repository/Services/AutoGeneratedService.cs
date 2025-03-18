@@ -33,9 +33,23 @@ namespace Repository.Services
                 if (recreateDatabase)
                 {
                     Console.WriteLine("正在删除所有表...");
-                    // 删除所有表
-                    _db.DbMaintenance.DropTable(types.Select(t => _db.EntityMaintenance.GetEntityInfo(t).DbTableName).ToArray());
-                    Console.WriteLine("所有表已删除，准备重新创建...");
+                    // 获取所有表名
+                    var tableNames = types.Select(t => _db.EntityMaintenance.GetEntityInfo(t).DbTableName).ToArray();
+                    
+                    // 获取数据库中已存在的表
+                    var existingTables = _db.DbMaintenance.GetTableInfoList().Select(t => t.Name).ToArray();
+                    
+                    // 只删除已存在的表
+                    var tablesToDrop = tableNames.Where(t => existingTables.Contains(t)).ToArray();
+                    if (tablesToDrop.Any())
+                    {
+                        _db.DbMaintenance.DropTable(tablesToDrop);
+                        Console.WriteLine($"已删除 {tablesToDrop.Length} 个表，准备重新创建...");
+                    }
+                    else
+                    {
+                        Console.WriteLine("没有需要删除的表，将直接创建新表...");
+                    }
                 }
                 
                 // 使用SqlSugar的CodeFirst功能创建表

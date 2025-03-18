@@ -18,6 +18,8 @@ const service = axios.create({
 // 请求拦截器
 service.interceptors.request.use(
   config => {
+    console.log('发送请求：', config.url, config.method, config.data || config.params)
+    
     // 处理请求头中的Content-Type
     if (config.data instanceof FormData) {
       config.headers['Content-Type'] = 'multipart/form-data'
@@ -31,8 +33,10 @@ service.interceptors.request.use(
       const token = userStore.jwtAccessToken
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
+        console.log('使用token：', token)
       } else {
         // token不存在时跳转登录
+        console.warn('未找到token，重定向到登录页')
         router.push('/login')
         return Promise.reject(new Error('请先登录'))
       }
@@ -41,6 +45,7 @@ service.interceptors.request.use(
   },
   error => {
     // 请求错误处理
+    console.error('请求发送失败：', error)
     return Promise.reject(error)
   }
 )
@@ -49,6 +54,8 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
+    console.log('收到响应：', response.config.url, res)
+    
     if (res.code !== 200) {
       ElMessage.error(res.message || '操作失败')
       return Promise.reject(new Error(res.message || '操作失败'))
@@ -57,6 +64,7 @@ service.interceptors.response.use(
   },
   error => {
     // 响应错误处理
+    console.error('响应错误：', error)
     const userStore = useUserStore()
 
     if (error.code === 'ECONNABORTED') {

@@ -30,7 +30,7 @@
         /// 钉钉用户ID
         /// </summary>
         [SugarColumn(ColumnName = "ding_user_id", Length = 50)]
-        public string DingUserId { get; set; }
+        public string? DingUserId { get; set; }
 
         /// <summary>
         /// 状态(0正常，1禁用)

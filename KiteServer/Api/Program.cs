@@ -18,11 +18,6 @@ builder.AddCustomService();
 
 var app = builder.Build();
 
-// 初始化种子数据
-Console.WriteLine("开始初始化种子数据...");
-app.InitSeedData();
-Console.WriteLine("种子数据初始化完成");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Environment.IsEnvironment("test"))
 {
@@ -39,10 +34,11 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging() || app.Enviro
 app.MapControllers();
 app.UseCookiePolicy();
 app.UseCors("default");
-app.UseCustomMiddleware(); //ע���м��
+app.UseCustomMiddleware(); // 中间件配置（包括表创建和种子数据初始化）
+
 app.UseAuthentication();
 app.UseAuthorization();
-// ���þ�̬�ļ�����
+// 配置静态文件服务
 app.UseStaticFiles();
 try
 {

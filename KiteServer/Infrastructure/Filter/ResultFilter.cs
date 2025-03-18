@@ -19,15 +19,25 @@ public class ResultFilter : IResultFilter
                 switch (resultExecutingContext.Result)
                 {
                     case ObjectResult content:
-                        if (!content.Value.GetType().Name.Equals(typeof(AjaxResponse<object>).Name))
+                        if (!content.Value.GetType().Name.Equals(typeof(AjaxResponse<object>).Name) &&
+                            !content.Value.GetType().Name.Contains("AjaxResponse"))
                         {
                             var contentResp = new AjaxResponse<object>(content.Value);
                             context.Result = new ObjectResult(contentResp);
                         }
                         break;
                     case JsonResult json:
-                        var resp = new AjaxResponse<object>(json.Value);
-                        context.Result = new ObjectResult(resp);
+                        if (json.Value != null && 
+                            (json.Value.GetType().Name.Equals(typeof(AjaxResponse<object>).Name) ||
+                             json.Value.GetType().Name.Contains("AjaxResponse")))
+                        {
+                            context.Result = json;
+                        }
+                        else
+                        {
+                            var resp = new AjaxResponse<object>(json.Value);
+                            context.Result = new ObjectResult(resp);
+                        }
                         break;
                     case EmptyResult empty:
                         context.Result = new OkObjectResult(AjaxResponse.Successed());

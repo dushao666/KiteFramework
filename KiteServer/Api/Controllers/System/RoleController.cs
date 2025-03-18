@@ -33,9 +33,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpGet("list")]
     [ProducesResponseType(typeof(AjaxResponse<List<RoleDto>>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<List<RoleDto>>> GetRoleList([FromQuery] RoleDto queryDto)
+    public async Task<IActionResult> GetRoleList([FromQuery] RoleDto queryDto)
     {
-        return await _roleQueries.GetRoleListAsync(queryDto);
+        var result = await _roleQueries.GetRoleListAsync(queryDto);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -43,9 +44,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<RoleDto>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<RoleDto>> GetRoleDetail(long id)
+    public async Task<IActionResult> GetRoleDetail(long id)
     {
-        return await _roleQueries.GetRoleDetailAsync(id);
+        var result = await _roleQueries.GetRoleDetailAsync(id);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -53,10 +55,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPost]
     [ProducesResponseType(typeof(AjaxResponse<long>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<long>> AddRole([FromBody] AddRoleCommand command)
+    public async Task<IActionResult> AddRole([FromBody] AddRoleCommand command)
     {
         var result = await _mediator.Send(command);
-        return new AjaxResponse<long>(result);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -64,11 +66,11 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<bool>> UpdateRole(long id, [FromBody] UpdateRoleCommand command)
+    public async Task<IActionResult> UpdateRole(long id, [FromBody] UpdateRoleCommand command)
     {
         command.Id = id;
         var result = await _mediator.Send(command);
-        return new AjaxResponse<bool>(result);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -76,10 +78,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<bool>> DeleteRole(long id)
+    public async Task<IActionResult> DeleteRole(long id)
     {
         var result = await _mediator.Send(new DeleteRoleCommand { Id = id });
-        return new AjaxResponse<bool>(result);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -87,10 +89,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("status")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<bool>> UpdateRoleStatus([FromBody] UpdateRoleStatusCommand command)
+    public async Task<IActionResult> UpdateRoleStatus([FromBody] UpdateRoleStatusCommand command)
     {
         var result = await _mediator.Send(command);
-        return new AjaxResponse<bool>(result);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -98,9 +100,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpGet("menus/{roleId}")]
     [ProducesResponseType(typeof(AjaxResponse<List<long>>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<List<long>>> GetRoleMenus(long roleId)
+    public async Task<IActionResult> GetRoleMenus(long roleId)
     {
-        return await _roleQueries.GetRoleMenusAsync(roleId);
+        var result = await _roleQueries.GetRoleMenusAsync(roleId);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -108,10 +111,10 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("menus")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<bool>> AssignRoleMenus([FromBody] AssignRoleMenusCommand command)
+    public async Task<IActionResult> AssignRoleMenus([FromBody] AssignRoleMenusCommand command)
     {
         var result = await _mediator.Send(command);
-        return new AjaxResponse<bool>(result);
+        return new JsonResult(result);
     }
 
     /// <summary>
@@ -130,7 +133,7 @@ public class RoleController : ControllerBase
     /// </summary>
     [HttpPut("permissions/{roleId}")]
     [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
-    public async Task<AjaxResponse<bool>> SaveRolePermissions(long roleId, [FromBody] SaveRolePermissionsRequest request)
+    public async Task<IActionResult> SaveRolePermissions(long roleId, [FromBody] SaveRolePermissionsRequest request)
     {
         var command = new AssignRoleMenusCommand
         {
@@ -139,6 +142,6 @@ public class RoleController : ControllerBase
         };
         
         var result = await _mediator.Send(command);
-        return new AjaxResponse<bool>(result);
+        return new JsonResult(result);
     }
 }

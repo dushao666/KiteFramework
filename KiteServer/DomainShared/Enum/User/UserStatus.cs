@@ -8,5 +8,5 @@ public enum UserStatus
     /// 正常
     /// </summary>
     [Description("正常")]
-    Normal = 1,
+    Normal = 0
 }

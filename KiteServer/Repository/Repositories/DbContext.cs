@@ -35,6 +35,11 @@ public class DbContext : SugarUnitOfWork
     /// 用户角色关联表
     /// </summary>
     public DbSet<UserRole> UserRoles { get; set; }
+    
+    /// <summary>
+    /// 用户岗位关联表
+    /// </summary>
+    public DbSet<UserPost> UserPosts { get; set; }
 }
 
 public class DbSet<T> : SimpleClient<T> where T : class, IDeleted, new()
