@@ -1,7 +1,7 @@
 # Kite Framework
 
 <div align="center">
-  <img src="KiteWeb\src\assets\icon\logo.png" alt="Kite Framework Logo" width="200">
+  <img src="KiteWeb\src\assets\icon\logo.png" alt="Kite Framework Logo" width="100">
   <h3>轻量级全栈开发框架</h3>
 </div>
 
