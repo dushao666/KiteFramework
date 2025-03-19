@@ -1,6 +1,7 @@
 using DomainShared.Constant.System;
 using SqlSugar;
 using System.Text.Json;
+using System.Text.Encodings.Web;
 
 namespace Domain.System
 {
@@ -81,7 +82,12 @@ namespace Domain.System
             }
             set
             {
-                MetaJson = JsonSerializer.Serialize(value);
+                var jsonOptions = new JsonSerializerOptions
+                {
+                    Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                    WriteIndented = false
+                };
+                MetaJson = JsonSerializer.Serialize(value, jsonOptions);
             }
         }
     }
