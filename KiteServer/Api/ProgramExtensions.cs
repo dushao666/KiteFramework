@@ -35,7 +35,7 @@ public static class ProgramExtensions
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug() // 设置最小日志级别
             .WriteTo.Console() // 可选：同时输出到控制台
-            .WriteTo.File("ULogs/BIAPILog.log", rollingInterval: RollingInterval.Day) // 将日志写入文件，并每天滚动，不想让日志文件夹显示的靠前
+            .WriteTo.File("ULogs/BIAPILog.log", rollingInterval: RollingInterval.Day) // 将日志写入文件，并每天滚动，ULogs是不想让日志文件夹显示的靠前
             .CreateLogger();
         //使用Serilog
         builder.Host.UseSerilog();
