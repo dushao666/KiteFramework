@@ -49,7 +49,6 @@ public static class ProgramExtensions
                            |_|\_\|_| \__|\___| |_|  |_|   \__,_||_| |_| |_| \___|   \_/\_/  \___|_|\_\
                                                                                                     
                         """);
-        Log.Information("Kite Framework 启动！");
         Log.Information($"当前主机启动环境--------------【{builder.Environment.EnvironmentName}】");
 
         // 动态读取启动地址
