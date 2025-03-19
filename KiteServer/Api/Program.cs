@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Http.Features;
-using Repository.Services;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.LogStartupInformation();
 //  Kestrel С
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
@@ -11,8 +10,9 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 });
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024; // Ϊ 2GB
+    options.MultipartBodyLengthLimit = 2L * 1024 * 1024 * 1024; // 2GB
 });
+
 builder.AddCustomDatabase();
 builder.AddCustomService();
 
