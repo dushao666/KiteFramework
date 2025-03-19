@@ -35,7 +35,7 @@ public static class ProgramExtensions
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug() // 设置最小日志级别
             .WriteTo.Console() // 可选：同时输出到控制台
-            .WriteTo.File("Logs/BIAPILog.log", rollingInterval: RollingInterval.Day) // 将日志写入文件，并每天滚动
+            .WriteTo.File("ULogs/BIAPILog.log", rollingInterval: RollingInterval.Day) // 将日志写入文件，并每天滚动，不想让日志文件夹显示的靠前
             .CreateLogger();
         //使用Serilog
         builder.Host.UseSerilog();
@@ -50,14 +50,14 @@ public static class ProgramExtensions
                                                                                                     
                         """);
         Log.Information("Kite Framework 启动！");
-        Log.Information($"当前主机启动环境-【{builder.Environment.EnvironmentName}】");
+        Log.Information($"当前主机启动环境--------------【{builder.Environment.EnvironmentName}】");
 
         // 动态读取启动地址
         var urls = builder.Configuration["ASPNETCORE_URLS"]
                    ?? builder.Configuration["urls"]
                    ?? "http://localhost:7090";
 
-        Log.Information($"当前主机启动地址-【{urls}】");
+        Log.Information($"当前主机启动地址--------------【{urls}】");
     }
 
     /// <summary>
