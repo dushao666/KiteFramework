@@ -256,6 +256,7 @@ const queryParams = reactive({
 // 用户表单
 interface UserFormData extends UserItem {
   passWord?: string;
+  dingUserId?: string;
 }
 
 const userForm = reactive<UserFormData>({
@@ -264,6 +265,7 @@ const userForm = reactive<UserFormData>({
   nickName: '',
   status: 0,
   passWord: '',
+  dingUserId: '',
   roleIds: [],
   postIds: []
 })
@@ -457,6 +459,8 @@ const handleEdit = async (row: UserItem) => {
       userForm.id = detailRes.data.id;
       userForm.name = detailRes.data.name;
       userForm.nickName = detailRes.data.nickName;
+      // 设置钉钉用户ID - 即使为空也要设置，以确保编辑时可以传递该字段
+      userForm.dingUserId = detailRes.data.dingUserId || '';
       // 确保status是数字
       userForm.status = typeof detailRes.data.status === 'string' 
         ? parseInt(detailRes.data.status) 
@@ -761,6 +765,7 @@ const resetForm = () => {
   userForm.nickName = ''
   userForm.status = 0
   userForm.passWord = ''
+  userForm.dingUserId = ''
   userForm.roleIds = []
   userForm.postIds = []
 

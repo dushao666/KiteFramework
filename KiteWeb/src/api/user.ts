@@ -30,6 +30,7 @@ export interface UserItem {
   name: string;
   nickName: string;
   status: string | number;
+  dingUserId?: string;
   roles?: string[];
   roleIds?: number[];
   postIds?: number[];
