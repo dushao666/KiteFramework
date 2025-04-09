@@ -61,13 +61,15 @@ export const loadComponent = (component: string) => {
     // 确保路径以 / 开头
     const importPath = `../views/${path}.vue`
     
-    return import(importPath).catch(error => {
+    // 添加 @vite-ignore 注释，告诉Vite跳过分析
+    return import(/* @vite-ignore */ importPath).catch(error => {
       ElMessage.error(`加载组件失败: ${path}`)
       
       // 尝试使用备用路径
       const backupPath = `../views/${path}/index.vue`
       
-      return import(backupPath).catch(backupError => {
+      // 同样添加 @vite-ignore 注释
+      return import(/* @vite-ignore */ backupPath).catch(backupError => {
         ElMessage.error(`加载组件失败，备用路径也无效: ${path}/index`)
         return import('../views/error/404.vue')
       })
