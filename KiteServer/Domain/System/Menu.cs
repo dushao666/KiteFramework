@@ -18,6 +18,7 @@ namespace Domain.System
             IsNullable = false)]
         public string Name { get; set; }
 
+        
         /// <summary>
         /// 路由地址
         /// </summary>
