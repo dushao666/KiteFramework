@@ -116,7 +116,7 @@ namespace Application.Queries.System.Menu
         }
 
         /// <summary>
-        /// 获取当前用户的菜单
+        /// 获取当前用户的菜单 
         /// </summary>
         public async Task<List<MenuDto>> GetUserMenusAsync()
         {
