@@ -22,4 +22,8 @@
     <ProjectReference Include="..\Repository\Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="DependencyInjection\Mapster\DictMapsterConfiguration.cs" />
+  </ItemGroup>
+
 </Project>

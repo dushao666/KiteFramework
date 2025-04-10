@@ -61,4 +61,8 @@
     <_ContentIncludedByDefault Remove="publish\appsettings.Test.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Controllers\System\DictDataController.cs" />
+  </ItemGroup>
+
 </Project>

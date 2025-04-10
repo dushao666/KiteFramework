@@ -6,6 +6,9 @@ using DomainShared.Dto.System;
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Infrastructure.Extension;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers.System;
 
@@ -19,12 +22,14 @@ public class UserController : ControllerBase
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     private readonly IUserQueries _userQueries;
+    private readonly ICurrentUser _currentUser;
 
-    public UserController(IMediator mediator, IMapper mapper, IUserQueries userQueries)
+    public UserController(IMediator mediator, IMapper mapper, IUserQueries userQueries, ICurrentUser currentUser)
     {
         _mediator = mediator;
         _mapper = mapper;
         _userQueries = userQueries;
+        _currentUser = currentUser;
     }
 
     /// <summary>
@@ -159,5 +164,45 @@ public class UserController : ControllerBase
         
         var result = await _mediator.Send(command);
         return new JsonResult(result);
+    }
+
+    /// <summary>
+    /// 获取当前用户信息
+    /// </summary>
+    [HttpGet("current")]
+    [Authorize]
+    [ProducesResponseType(typeof(AjaxResponse<UserDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        try
+        {
+            if (!_currentUser.IsAuthenticated || !_currentUser.UserId.HasValue)
+            {
+                return new JsonResult(AjaxResponse.Failed(StatusCodes.Status401Unauthorized, "用户未登录或登录已过期"));
+            }
+
+            var result = await _userQueries.GetUserDetailAsync(_currentUser.UserId.Value);
+            
+            // 扩展用户数据，添加角色和权限信息
+            if (result.Data != null)
+            {
+                // 创建包含用户和额外信息的响应对象
+                var responseData = new
+                {
+                    user = result.Data,
+                    roles = new List<string> { "admin" }, // 默认角色，实际应从数据库获取
+                    permissions = new List<string> { "*:*:*" } // 默认全部权限，实际应从数据库获取
+                };
+                
+                return new JsonResult(new AjaxResponse<object>(responseData));
+            }
+            
+            return new JsonResult(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"获取当前用户信息时发生错误: {ex.Message}");
+            return new JsonResult(AjaxResponse.Failed(StatusCodes.Status500InternalServerError, "获取用户信息失败，请重新登录"));
+        }
     }
 } 

@@ -136,7 +136,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "用户管理",
-                            Path = "/system/user",
+                            Path = "user",
                             Icon = "User",
                             Sort = 1,
                             IsHidden = false,
@@ -153,7 +153,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "角色管理",
-                            Path = "/system/role",
+                            Path = "role",
                             Icon = "UserFilled",
                             Sort = 2,
                             IsHidden = false,
@@ -170,7 +170,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "菜单管理",
-                            Path = "/system/menu",
+                            Path = "menu",
                             Icon = "Menu",
                             Sort = 3,
                             IsHidden = false,
@@ -187,7 +187,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "部门管理",
-                            Path = "/system/dept",
+                            Path = "dept",
                             Icon = "Notebook",
                             Sort = 4,
                             IsHidden = false,
@@ -204,7 +204,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "岗位管理",
-                            Path = "/system/post",
+                            Path = "post",
                             Icon = "Memo",
                             Sort = 5,
                             IsHidden = false,
@@ -226,7 +226,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "在线用户",
-                            Path = "/monitor/online",
+                            Path = "online",
                             Icon = "Connection",
                             ParentId = monitorId,
                             Sort = 1,
@@ -243,7 +243,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "操作日志",
-                            Path = "/monitor/log",
+                            Path = "log",
                             Icon = "Document",
                             ParentId = monitorId,
                             Sort = 2,
@@ -260,7 +260,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "系统性能",
-                            Path = "/monitor/server",
+                            Path = "server",
                             Icon = "Cpu",
                             ParentId = monitorId,
                             Sort = 3,
@@ -282,7 +282,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "代码生成",
-                            Path = "/tool/gen",
+                            Path = "gen",
                             Icon = "Edit",
                             ParentId = toolId,
                             Sort = 1,
@@ -299,7 +299,7 @@ namespace Repository.Services.Seeds
                         new Menu
                         {
                             Name = "系统接口",
-                            Path = "/tool/swagger",
+                            Path = "swagger",
                             Icon = "Link",
                             ParentId = toolId,
                             Sort = 2,

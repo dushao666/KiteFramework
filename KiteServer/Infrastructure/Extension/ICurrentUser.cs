@@ -29,13 +29,22 @@ public class CurrentUser : ICurrentUser
     {
         get
         {
-            string text = _contextAccessor?.HttpContext?.User.Claims.FirstOrDefault((Claim x) => x.Type == ClaimTypes.SerialNumber)?.Value;
-            if (string.IsNullOrEmpty(text))
+            try
             {
+                string text = _contextAccessor?.HttpContext?.User.Claims.FirstOrDefault((Claim x) => x.Type == ClaimTypes.SerialNumber)?.Value;
+                if (string.IsNullOrEmpty(text))
+                {
+                    return null;
+                }
+
+                return long.Parse(text);
+            }
+            catch (Exception ex)
+            {
+                // 转换失败时记录日志并返回null
+                Console.WriteLine($"解析用户ID出错: {ex.Message}");
                 return null;
             }
-
-            return long.Parse(text);
         }
     }
 

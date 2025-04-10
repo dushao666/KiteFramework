@@ -54,6 +54,34 @@ public class LoginController : ControllerBase
             return new JsonResult(model);
         }
     }
+    
+    /// <summary>
+    /// 退出登录
+    /// </summary>
+    [HttpPost]
+    [Route("signOut")]
+    [ProducesResponseType(typeof(AjaxResponse<bool>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> SignOutAsync()
+    {
+        try
+        {
+            // 从Claims中获取用户ID
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.SerialNumber)?.Value;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var cacheKey = userId + "_Identity";
+                await _cacheProvider.RemoveAsync(cacheKey);
+            }
+
+            return new JsonResult(AjaxResponse.Successed());
+        }
+        catch (Exception ex)
+        {
+            // 记录异常并返回成功（即使清理失败，客户端仍然可以认为退出成功）
+            Console.WriteLine($"退出登录时发生错误: {ex.Message}");
+            return new JsonResult(AjaxResponse.Successed());
+        }
+    }
 
     /// <summary>
     /// 生成Token
