@@ -130,11 +130,8 @@ namespace Application.Queries.System.Menu
                 {
                     var db = context.Menus.Context;
                     
-                    // 环境变量中是否启用完整菜单权限，对于开发环境，可以返回所有菜单
-                    var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
-                    
-                    // 开发环境或测试用户，返回所有菜单
-                    bool returnAllMenus = isDevelopment || (currentUser.IsAuthenticated && currentUser.LoginName == "admin");
+                    // 管理员用户，返回所有菜单
+                    bool returnAllMenus =  (currentUser.IsAuthenticated && currentUser.LoginName == "admin");
                     
                     if (returnAllMenus)
                     {

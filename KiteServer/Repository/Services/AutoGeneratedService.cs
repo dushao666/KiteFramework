@@ -1,6 +1,7 @@
 using Domain.Aggregate;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using SqlSugar;
 
 namespace Repository.Services
 {
@@ -52,10 +53,85 @@ namespace Repository.Services
                     }
                 }
                 
+                // 配置SqlSugar的EntityProvider，处理可空属性
+                _db.CurrentConnectionConfig.ConfigureExternalServices ??= new ConfigureExternalServices();
+                var originalEntityService = _db.CurrentConnectionConfig.ConfigureExternalServices.EntityService;
+                
+                _db.CurrentConnectionConfig.ConfigureExternalServices.EntityService = (property, column) =>
+                {
+                    // 先执行原来的EntityService处理（如果有的话）
+                    originalEntityService?.Invoke(property, column);
+                    
+                    // 然后处理可空属性
+                    if (IsNullableProperty(property))
+                    {
+                        column.IsNullable = true;
+                        Console.WriteLine($"设置属性 {property.DeclaringType?.Name}.{property.Name} 为可空");
+                    }
+                };
+                
                 // 使用SqlSugar的CodeFirst功能创建表
                 _db.CodeFirst.InitTables(types.ToArray());
                 Console.WriteLine("表结构初始化完成");
             }
+        }
+
+        /// <summary>
+        /// 判断属性是否为可空类型
+        /// </summary>
+        private bool IsNullableProperty(PropertyInfo property)
+        {
+            // 如果属性已经有SugarColumn特性并明确设置了IsNullable，直接返回
+            var sugarColumnAttr = property.GetCustomAttribute<SugarColumn>();
+            if (sugarColumnAttr != null && sugarColumnAttr.IsNullable)
+            {
+                return true;
+            }
+            
+            // 检查是否为可空值类型（如int?）
+            var propertyType = property.PropertyType;
+            if (Nullable.GetUnderlyingType(propertyType) != null)
+            {
+                return true;
+            }
+            
+            // 检查是否为带有?的字符串或引用类型
+            // C# 8.0引入的可空引用类型
+            bool isNullableReferenceType = false;
+            
+            // 检查属性是否为引用类型
+            if (!propertyType.IsValueType)
+            {
+                // 获取属性的NullabilityInfo（.NET 6+）
+                try
+                {
+                    // 尝试通过属性名称判断是否有"?"后缀标记（在源代码中的写法）
+                    // 这种方法不是100%可靠，但在某些情况下可以帮助识别
+                    if (property.GetCustomAttributes()
+                        .Any(a => a.GetType().Name.Contains("NullableAttribute") ||
+                                a.GetType().Name.Contains("Nullable")))
+                    {
+                        isNullableReferenceType = true;
+                    }
+                    
+                    // 检查C#编译器生成的NullableAttribute
+                    var nullableAttributes = property.CustomAttributes
+                        .Where(a => a.AttributeType.FullName == "System.Runtime.CompilerServices.NullableAttribute" || 
+                                   a.AttributeType.FullName == "System.Runtime.CompilerServices.NullableContextAttribute")
+                        .ToList();
+                    
+                    if (nullableAttributes.Any())
+                    {
+                        isNullableReferenceType = true;
+                    }
+                }
+                catch
+                {
+                    // 忽略异常，继续使用默认值
+                }
+            }
+            
+            return isNullableReferenceType;
         }
 
         /// <summary>

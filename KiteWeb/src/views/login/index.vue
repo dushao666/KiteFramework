@@ -150,22 +150,22 @@ const handleDingLogin = async () => {
     ElMessage.error('钉钉 SDK 未正确加载')
     return
   }
-  
+
   try {
     // 获取授权码
     const result = await window.dd.runtime.permission.requestAuthCode({
       corpId: import.meta.env.VITE_DINGTALK_CORPID
     })
-    
+
     // 获取授权码成功
-    
+
     // 使用授权码登录
     const res = await loginWithDingTalk({
       code: result.code
     })
-    
+
     // 登录响应
-    
+
     if (res.code === 200) {
       await handleLoginSuccess(res.data)
     } else {
@@ -187,7 +187,7 @@ const handleLoginSuccess = async (data: any) => {
       accessToken: data.accessToken,
       refreshToken: data.refreshToken
     })
-    
+
     // 跳转到首页
     router.push('/')
     ElMessage.success('登录成功')
