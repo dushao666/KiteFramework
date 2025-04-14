@@ -5,6 +5,8 @@ import { getUserMenus } from '../api/menu'
 import { MenuItem } from '../api/menu'
 import { ElMessage } from 'element-plus'
 
+// ==================== 路由配置 ====================
+
 // 静态路由，不需要权限控制
 export const constantRoutes: Array<RouteRecordRaw> = [
   {
@@ -58,20 +60,13 @@ export const constantRoutes: Array<RouteRecordRaw> = [
       title: '404',
       requiresAuth: false
     }
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    redirect: '/404'
   }
 ]
 
 // 动态路由，需要根据用户权限动态添加
 export const asyncRoutes: Array<RouteRecordRaw> = []
 
-// 组件映射表，用于快速查找组件
-const componentMap: Record<string, any> = {
-  Layout: Layout,
-}
+// ==================== 组件加载处理 ====================
 
 /**
  * 根据路径推断组件路径
@@ -92,7 +87,7 @@ export const inferComponentPath = (path: string): string => {
     return `${componentPath}/index`
   }
   
-  // 否则直接返回路径（如 /system/menu 返回 system/menu/index）
+  // 返回路径（如 /system/menu 返回 system/menu/index）
   return `${componentPath}/index`
 }
 
@@ -113,48 +108,36 @@ export const loadComponent = (component: string) => {
   }
   
   // 处理组件路径格式
-  // 1. 移除开头的 '/' 和结尾的 '.vue'
   let path = component.replace(/^\//, '').replace(/\.vue$/, '')
   
-  // 2. 确保路径不包含 'views/'
+  // 确保路径不包含 'views/'
   if (path.startsWith('views/')) {
     path = path.substring(6)
   }
   
-  // 3. 动态导入组件，添加错误处理
+  // 动态导入组件
   return () => {
-    // 预加载组件，创建缓存
     const importPath = `../views/${path}.vue`
     const backupPath = `../views/${path}/index.vue`
     
-    // 使用Promise.all尝试预加载可能的路径，避免首次点击失败
     return new Promise((resolve, reject) => {
-      // 首先尝试直接路径
       import(/* @vite-ignore */ importPath)
-        .then(component => {
-          resolve(component)
-        })
+        .then(component => resolve(component))
         .catch(() => {
-          // 如果失败，尝试备用路径
           import(/* @vite-ignore */ backupPath)
-            .then(component => {
-              resolve(component)
-            })
+            .then(component => resolve(component))
             .catch(error => {
-              // 两种路径都失败，加载404页面
-              ElMessage.error(`加载组件失败: ${path}`)
+              console.error(`组件加载失败: ${path}`, error)
               import('../views/error/404.vue')
-                .then(component => {
-                  resolve(component)
-                })
-                .catch(e => {
-                  reject(e)
-                })
+                .then(component => resolve(component))
+                .catch(e => reject(e))
             })
         })
     })
   }
 }
+
+// ==================== 路由生成工具 ====================
 
 /**
  * 将菜单数据转换为路由配置
@@ -190,7 +173,7 @@ export const generateRoutes = (menus: MenuItem[]): RouteRecordRaw[] => {
       // 如果没有指定组件路径，则根据菜单路径推断
       let componentPath = menu.component || inferComponentPath(menu.path)
       
-      // 确保组件路径不以 / 开头，因为动态导入时会自动添加 ../views/
+      // 确保组件路径不以 / 开头
       if (componentPath.startsWith('/')) {
         componentPath = componentPath.substring(1)
       }
@@ -205,60 +188,45 @@ export const generateRoutes = (menus: MenuItem[]): RouteRecordRaw[] => {
 }
 
 /**
- * 过滤掉没有组件的菜单项（仅用于显示的菜单）
+ * 过滤掉没有组件的菜单项
  * @param menus 菜单数据
  * @returns 过滤后的菜单数据
  */
 export const filterMenus = (menus: MenuItem[]): MenuItem[] => {
   return menus.filter(menu => {
-    // 如果有子菜单，则递归过滤
     if (menu.children && menu.children.length > 0) {
       menu.children = filterMenus(menu.children)
       return menu.children.length > 0
     }
-    
-    // 所有菜单都可以显示，因为我们会自动推断组件路径
     return true
   })
 }
 
-/**
- * 获取所有路由的名称，用于权限控制
- * @param routes 路由配置
- * @returns 路由名称数组
- */
-export const getRouteNames = (routes: RouteRecordRaw[]): string[] => {
-  const names: string[] = []
-  
-  routes.forEach(route => {
-    if (route.name) {
-      names.push(route.name.toString())
-    }
-    
-    if (route.children) {
-      names.push(...getRouteNames(route.children))
-    }
-  })
-  
-  return names
-}
+// ==================== 路由实例创建 ====================
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: constantRoutes
 })
 
+// ==================== 动态路由控制 ====================
+
 // 是否已经添加了动态路由
 let dynamicRoutesAdded = false
 
-// 设置动态路由状态
+/**
+ * 设置动态路由状态
+ * @param value 状态值
+ */
 export const setDynamicRoutesAdded = (value: boolean) => {
   dynamicRoutesAdded = value
 }
 
-// 重置路由
-export const resetRouter = async () => {
-  // 重置路由
+/**
+ * 重置路由
+ * @returns 是否重置成功
+ */
+export const resetRouter = async (): Promise<boolean> => {
   const newRouter = createRouter({
     history: createWebHashHistory(),
     routes: constantRoutes
@@ -273,8 +241,11 @@ export const resetRouter = async () => {
   return true
 }
 
-// 加载动态路由
-export const loadDynamicRoutes = async () => {
+/**
+ * 加载动态路由
+ * @returns 是否加载成功
+ */
+export const loadDynamicRoutes = async (): Promise<boolean> => {
   try {
     // 获取用户菜单
     const res = await getUserMenus()
@@ -300,13 +271,14 @@ export const loadDynamicRoutes = async () => {
     }
     return false
   } catch (error) {
-    // 加载动态路由失败
+    console.error('加载动态路由失败:', error)
     ElMessage.error('加载菜单失败，请刷新页面重试')
     return false
   }
 }
 
-// 路由守卫
+// ==================== 路由守卫 ====================
+
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   const token = userStore.jwtAccessToken
@@ -335,6 +307,7 @@ router.beforeEach(async (to, from, next) => {
         return next('/home')
       }
     } catch (error) {
+      console.error('路由加载失败:', error)
       ElMessage.error('路由加载失败，请重新登录')
       return next('/login')
     }
@@ -347,14 +320,12 @@ router.beforeEach(async (to, from, next) => {
 // 全局错误处理
 router.onError((error) => {
   console.error('路由错误:', error)
-  // 路由错误处理
   const pattern = /Loading chunk (\d)+ failed/g
   const isChunkLoadFailed = error.message.match(pattern)
-  const targetPath = router.currentRoute.value.path
   
   if (isChunkLoadFailed) {
     ElMessage.error('加载页面失败，请刷新重试')
-    router.replace(targetPath)
+    router.replace(router.currentRoute.value.path)
   }
 })
 
