@@ -39,7 +39,7 @@
         </el-button>
       </div>
 
-      <el-table v-loading="loading" :data="userList" border :row-style="{height: '50px'}">
+      <el-table v-loading="loading" :data="userList" border :row-style="{ height: '50px' }">
         <el-table-column prop="id" width="80" align="center" label="ID" />
         <el-table-column prop="name" label="用户名" align="center" min-width="120" />
         <el-table-column prop="nickName" label="昵称" align="center" min-width="120" />
@@ -71,7 +71,7 @@
                 </el-icon>
                 <span>岗位</span>
               </el-button>
-              
+
               <!-- 更多操作下拉菜单 -->
               <el-dropdown trigger="click">
                 <el-button size="small" type="default">
@@ -83,13 +83,16 @@
                 <template #dropdown>
                   <el-dropdown-menu>
                     <el-dropdown-item @click="handleResetPwd(scope.row)">
-                      <el-icon><Key /></el-icon>
+                      <el-icon>
+                        <Key />
+                      </el-icon>
                       <span>重置密码</span>
                     </el-dropdown-item>
-                    <el-dropdown-item @click="handleDelete(scope.row)" 
-                      :disabled="scope.row.name === 'admin'" 
+                    <el-dropdown-item @click="handleDelete(scope.row)" :disabled="scope.row.name === 'admin'"
                       :class="{ 'disabled-dropdown-item': scope.row.name === 'admin' }">
-                      <el-icon><Delete /></el-icon>
+                      <el-icon>
+                        <Delete />
+                      </el-icon>
                       <span>删除</span>
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -127,22 +130,12 @@
         </el-form-item>
         <el-form-item label="所属角色" prop="roleIds">
           <el-select v-model="userForm.roleIds" multiple placeholder="请选择角色" style="width: 100%">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+            <el-option v-for="item in roleOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item label="所属岗位" prop="postIds">
           <el-select v-model="userForm.postIds" multiple placeholder="请选择岗位" style="width: 100%">
-            <el-option
-              v-for="item in postOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+            <el-option v-for="item in postOptions" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -167,7 +160,8 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="resetPwdVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
-          <el-button type="primary" @click="submitResetPwd" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
+          <el-button type="primary" @click="submitResetPwd" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -176,22 +170,16 @@
     <el-dialog title="分配角色" v-model="roleDialogVisible" width="500px" append-to-body destroy-on-close>
       <div v-if="currentUser">
         <p class="role-title">为用户 <strong>{{ currentUser.name }}</strong> 分配角色</p>
-        <el-transfer
-          v-model="selectedRoleIds"
-          :data="roleOptions"
-          :titles="['可选角色', '已选角色']"
-          :props="{
-            key: 'id',
-            label: 'name'
-          }"
-          v-loading="roleLoading"
-          class="custom-transfer"
-        ></el-transfer>
+        <el-transfer v-model="selectedRoleIds" :data="roleOptions" :titles="['可选角色', '已选角色']" :props="{
+          key: 'id',
+          label: 'name'
+        }" v-loading="roleLoading" class="custom-transfer"></el-transfer>
       </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="roleDialogVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
-          <el-button type="primary" @click="saveUserRoles" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
+          <el-button type="primary" @click="saveUserRoles" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -200,22 +188,16 @@
     <el-dialog title="分配岗位" v-model="postDialogVisible" width="500px" append-to-body destroy-on-close>
       <div v-if="currentUser">
         <p class="role-title">为用户 <strong>{{ currentUser.name }}</strong> 分配岗位</p>
-        <el-transfer
-          v-model="selectedPostIds"
-          :data="postOptions"
-          :titles="['可选岗位', '已选岗位']"
-          :props="{
-            key: 'id',
-            label: 'name'
-          }"
-          v-loading="postLoading"
-          class="custom-transfer"
-        ></el-transfer>
+        <el-transfer v-model="selectedPostIds" :data="postOptions" :titles="['可选岗位', '已选岗位']" :props="{
+          key: 'id',
+          label: 'name'
+        }" v-loading="postLoading" class="custom-transfer"></el-transfer>
       </div>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="postDialogVisible = false">{{ NAMES.BUTTONS.CANCEL }}</el-button>
-          <el-button type="primary" @click="saveUserPosts" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM }}</el-button>
+          <el-button type="primary" @click="saveUserPosts" :loading="submitLoading">{{ NAMES.BUTTONS.CONFIRM
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -225,20 +207,20 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { 
-  getUserList, 
-  addUser, 
-  updateUser, 
-  deleteUser, 
-  updateUserStatus, 
-  resetUserPassword, 
-  getUserRoles, 
-  assignUserRoles, 
-  UserItem, 
-  getUserPosts, 
-  getUserDetail, 
+import {
+  getUserList,
+  addUser,
+  updateUser,
+  deleteUser,
+  updateUserStatus,
+  resetUserPassword,
+  getUserRoles,
+  assignUserRoles,
+  UserItem,
+  getUserPosts,
+  getUserDetail,
   isEditingUser,
-  assignUserPosts 
+  assignUserPosts
 } from '../../../api/user'
 import { getRoleList } from '../../../api/role'
 import { getPostList, PostItem } from '../../../api/post'
@@ -446,14 +428,14 @@ const handleAdd = () => {
 const handleEdit = async (row: UserItem) => {
   // 设置标记，表示正在编辑用户
   isEditingUser.value = true;
-  
+
   dialogType.value = 'edit'
   resetForm()
-  
+
   try {
     // 获取用户详情
     const detailRes = await getUserDetail(row.id);
-    
+
     if (detailRes.code === 200) {
       // 手动设置用户表单数据，防止自动触发其他API调用
       userForm.id = detailRes.data.id;
@@ -462,26 +444,26 @@ const handleEdit = async (row: UserItem) => {
       // 设置钉钉用户ID - 即使为空也要设置，以确保编辑时可以传递该字段
       userForm.dingUserId = detailRes.data.dingUserId || '';
       // 确保status是数字
-      userForm.status = typeof detailRes.data.status === 'string' 
-        ? parseInt(detailRes.data.status) 
+      userForm.status = typeof detailRes.data.status === 'string'
+        ? parseInt(detailRes.data.status)
         : detailRes.data.status;
-      
+
       // 手动设置角色和岗位数据
       if (detailRes.data.roleIds) {
         userForm.roleIds = [...detailRes.data.roleIds];
       } else {
         userForm.roleIds = [];
       }
-      
+
       if (detailRes.data.postIds) {
         userForm.postIds = [...detailRes.data.postIds];
       } else {
         userForm.postIds = [];
       }
-      
+
       // 单独加载角色和岗位列表
       await Promise.all([loadRoleOptions(), loadPostOptions()]);
-      
+
       dialogVisible.value = true
     } else {
       ElMessage.error(detailRes.message || '获取用户详情失败')
@@ -527,7 +509,7 @@ const handleDelete = (row: UserItem) => {
 const handleStatusChange = async (row: UserItem) => {
   // 确保状态是数字类型
   const status = typeof row.status === 'string' ? parseInt(row.status) : row.status;
-  
+
   if (row.name === 'admin' && status === 1) {
     ElMessage.warning('超级管理员用户不能停用')
     row.status = 0
@@ -563,7 +545,7 @@ const handleResetPwd = (row: UserItem) => {
   resetPwdForm.newPassword = ''
   resetPwdForm.confirmPassword = ''
   resetPwdVisible.value = true
-  
+
   if (resetPwdFormRef.value) {
     resetPwdFormRef.value.resetFields()
   }
@@ -602,7 +584,7 @@ const handleRole = async (row: UserItem) => {
   currentUser.value = row
   roleLoading.value = true
   roleDialogVisible.value = true
-  
+
   try {
     // 获取所有角色
     const roleRes = await getRoleList()
@@ -612,7 +594,7 @@ const handleRole = async (row: UserItem) => {
         name: role.name,
         disabled: false
       }))
-      
+
       // 获取用户已有角色
       const userRoleRes = await getUserRoles(row.id)
       if (userRoleRes.code === 200) {
@@ -638,7 +620,7 @@ const saveUserRoles = async () => {
   try {
     submitLoading.value = true
     const res = await assignUserRoles(currentUser.value.id, selectedRoleIds.value)
-    
+
     if (res.code === 200) {
       ElMessage.success('角色分配成功')
       roleDialogVisible.value = false
@@ -657,7 +639,7 @@ const handlePost = async (row: UserItem) => {
   currentUser.value = row
   postLoading.value = true
   postDialogVisible.value = true
-  
+
   try {
     // 获取所有岗位
     const postRes = await getPostList()
@@ -667,7 +649,7 @@ const handlePost = async (row: UserItem) => {
         name: post.name,
         disabled: false
       }))
-      
+
       // 获取用户已有岗位
       const userPostRes = await getUserPosts(row.id)
       if (userPostRes.code === 200) {
@@ -693,7 +675,7 @@ const saveUserPosts = async () => {
   try {
     submitLoading.value = true
     const res = await assignUserPosts(currentUser.value.id, selectedPostIds.value)
-    
+
     if (res.code === 200) {
       ElMessage.success('岗位分配成功')
       postDialogVisible.value = false
@@ -709,24 +691,20 @@ const saveUserPosts = async () => {
 
 // 提交表单
 const submitForm = async () => {
-  console.log('开始提交表单，表单引用:', userFormRef.value)
   if (!userFormRef.value) {
-    console.error('表单引用不存在')
     return
   }
 
   try {
     // 表单验证
     const valid = await userFormRef.value.validate()
-    console.log('表单验证结果:', valid)
-    
+
     if (!valid) {
-      console.log('表单验证失败')
       return
     }
-    
+
     submitLoading.value = true
-    
+
     // 准备提交的数据，确保与后端字段类型匹配
     const submitData = {
       ...userForm,
@@ -736,12 +714,9 @@ const submitForm = async () => {
       roleIds: Array.isArray(userForm.roleIds) ? userForm.roleIds : [],
       postIds: Array.isArray(userForm.postIds) ? userForm.postIds : []
     }
-    
-    console.log('提交用户表单数据：', JSON.stringify(submitData))
-    
+
     const api = dialogType.value === 'add' ? addUser : updateUser
     const res = await api(submitData)
-    console.log('提交用户表单响应：', res)
 
     if (res.code === 200) {
       ElMessage.success(dialogType.value === 'add' ? '添加成功' : '更新成功')
@@ -751,7 +726,6 @@ const submitForm = async () => {
       ElMessage.error(res.message || (dialogType.value === 'add' ? '添加失败' : '更新失败'))
     }
   } catch (error) {
-    console.error('提交用户表单出错：', error)
     ElMessage.error(dialogType.value === 'add' ? '添加用户失败' : '更新用户失败')
   } finally {
     submitLoading.value = false
@@ -776,19 +750,15 @@ const resetForm = () => {
 
 onMounted(async () => {
   try {
-    console.log('组件挂载，开始初始化')
     // 先加载用户列表
     await getList()
-    console.log('用户列表加载完成')
-    
+
     // 加载角色和岗位选项
     await Promise.all([
       loadRoleOptions(),
       loadPostOptions()
     ])
-    console.log('角色和岗位选项加载完成')
   } catch (error) {
-    console.error('组件初始化出错:', error)
     ElMessage.error('页面初始化失败，请刷新重试')
   }
 })
@@ -844,7 +814,7 @@ onMounted(async () => {
           background-color: #f0f9eb;
         }
       }
-      
+
       /* 调整表格单元格内边距 */
       .el-table__cell {
         padding: 8px 0;
@@ -877,20 +847,20 @@ onMounted(async () => {
       margin-right: 4px;
     }
   }
-  
+
   .more-text {
     margin-left: 2px;
   }
-  
+
   /* 下拉菜单样式 */
   :deep(.el-dropdown) {
     margin: 2px 0;
-    
+
     .el-dropdown-menu__item {
       display: flex;
       align-items: center;
       padding: 5px 12px;
-      
+
       .el-icon {
         margin-right: 5px;
       }
@@ -924,31 +894,31 @@ onMounted(async () => {
     border-radius: 4px;
     overflow: hidden;
     background: #fff;
-    
+
     .el-transfer-panel__header {
       background-color: #f5f7fa;
       padding: 8px 15px;
       border-bottom: 1px solid #ebeef5;
     }
-    
+
     .el-transfer-panel__body {
       padding-top: 10px;
     }
-    
+
     .el-checkbox__label {
       font-size: 14px;
     }
   }
-  
+
   .el-transfer__buttons {
     padding: 0 10px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    
+
     .el-button {
       margin: 5px 0;
     }
   }
 }
-</style> 
+</style>

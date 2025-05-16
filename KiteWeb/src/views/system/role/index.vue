@@ -141,7 +141,7 @@ import { getMenuTree, getUserMenus } from '../../../api/menu'
 import { NAMES } from '../../../constants'
 import { Edit, Delete, Plus, Search, Refresh, Setting } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
-import { resetRouter, loadDynamicRoutes } from '../../../router'
+import { resetRouter, loadUserMenus } from '../../../router'
 
 // 查询参数
 const queryParams = reactive({
@@ -363,13 +363,13 @@ const handlePermission = async (row: any) => {
 const refreshMenu = async () => {
   try {
     const router = useRouter()
-    
+
     // 重置路由
     await resetRouter()
-    
+
     // 重新加载动态路由
-    const success = await loadDynamicRoutes()
-    
+    const success = await loadUserMenus()
+
     if (success) {
       ElMessage.success('菜单刷新成功')
       return true
@@ -390,25 +390,25 @@ const savePermissions = async () => {
 
   try {
     submitLoading.value = true
-    
+
     // 获取选中的节点ID
     const checkedKeys = permissionTreeRef.value.getCheckedKeys()
     const halfCheckedKeys = permissionTreeRef.value.getHalfCheckedKeys()
     const allCheckedKeys = [...checkedKeys, ...halfCheckedKeys]
-    
+
     // 保存权限
     const res = await saveRolePermissions(currentRole.value.id, allCheckedKeys)
-    
+
     if (res.code === 200) {
       ElMessage.success('权限分配成功')
       permissionDialogVisible.value = false
-      
+
       // 刷新菜单和路由
       const success = await refreshMenu()
-      
+
       // 刷新角色列表
       getList()
-      
+
       // 如果菜单刷新成功，提示用户刷新页面以查看最新权限
       if (success) {
         ElMessageBox.confirm(
@@ -446,7 +446,7 @@ const submitForm = async () => {
 
     try {
       submitLoading.value = true
-      
+
       const api = dialogType.value === 'add' ? addRole : updateRole
       const res = await api(roleForm)
 

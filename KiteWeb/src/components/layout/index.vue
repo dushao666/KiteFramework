@@ -61,6 +61,8 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../../stores/userStore'
+import { useRouteStore } from '../../stores/routeStore'
+import { resetRouter } from '../../router'
 import type { MenuItem } from '../../api/menu'
 import { getMenuTree, getUserMenus } from '../../api/menu'
 import { NAMES } from '../../constants'
@@ -71,6 +73,7 @@ import { Fold, Expand, ArrowDown } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
+const routeStore = useRouteStore()
 const isCollapse = ref(false)
 const menuList = ref<MenuItem[]>([])
 const username = computed(() => userStore.username || '用户')
@@ -129,9 +132,13 @@ const handleLogout = () => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(async () => {
-        // 调用 userStore 的 logout 方法
-        userStore.$reset()
-        localStorage.removeItem('userState')
+        // 重置路由状态
+        routeStore.resetRouteState()
+
+        // 调用用户登出方法
+        userStore.logout()
+
+        // 跳转到登录页
         router.push('/login')
         ElMessage.success('退出登录成功')
     }).catch(() => { })
