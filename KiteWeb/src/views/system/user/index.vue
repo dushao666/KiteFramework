@@ -462,7 +462,7 @@ const handleEdit = async (row: UserItem) => {
       }
 
       // 单独加载角色和岗位列表
-      await Promise.all([loadRoleOptions(), loadPostOptions()]);
+      // await Promise.all([loadRoleOptions(), loadPostOptions()]);
 
       dialogVisible.value = true
     } else {
